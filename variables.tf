@@ -126,10 +126,10 @@ variable "frontend_port_settings" {
   default     = []
 }
 
-variable "policy_name" {
-  description = "Policy name to apply to the WAF configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy"
-  type        = string
-  default     = "AppGwSslPolicy20170401S"
+variable "ssl_policy" {
+  description = "SSL policy to apply to the WAF configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy"
+  type        = any
+  default     = []
 }
 
 variable "authentication_certificate_configs" {

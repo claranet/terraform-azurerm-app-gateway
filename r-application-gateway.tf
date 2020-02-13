@@ -34,37 +34,45 @@ resource "azurerm_application_gateway" "app_gateway" {
     subnet_id = module.azure-network-subnet.subnet_ids[0]
   }
 
-  waf_configuration {
-    enabled                  = var.enabled_waf
-    file_upload_limit_mb     = var.file_upload_limit_mb
-    firewall_mode            = var.waf_mode
-    max_request_body_size_kb = var.max_request_body_size_kb
-    request_body_check       = var.request_body_check
-    rule_set_type            = var.rule_set_type
-    rule_set_version         = var.rule_set_version
+  dynamic "waf_configuration" {
+    for_each = var.enabled_waf ? ["fake"] : []
+    content {
+      enabled                  = var.enabled_waf
+      file_upload_limit_mb     = coalesce(var.file_upload_limit_mb, 100)
+      firewall_mode            = coalesce(var.waf_mode, "Prevention")
+      max_request_body_size_kb = coalesce(var.max_request_body_size_kb, 128)
+      request_body_check       = var.request_body_check
+      rule_set_type            = var.rule_set_type
+      rule_set_version         = var.rule_set_version
 
-    dynamic "disabled_rule_group" {
-      for_each = var.disabled_rule_group_settings
-      content {
-        rule_group_name = lookup(disabled_rule_group.value, "rule_group_name")
-        rules           = lookup(disabled_rule_group.value, "rules")
+      dynamic "disabled_rule_group" {
+        for_each = var.disabled_rule_group_settings
+        content {
+          rule_group_name = lookup(disabled_rule_group.value, "rule_group_name")
+          rules           = lookup(disabled_rule_group.value, "rules")
+        }
+      }
+
+      dynamic "exclusion" {
+        for_each = var.waf_exclusion_settings
+        content {
+          match_variable          = lookup(exclusion.value, "match_variable")
+          selector                = lookup(exclusion.value, "selector")
+          selector_match_operator = lookup(exclusion.value, "selector_match_operator")
+        }
       }
     }
-
-    dynamic "exclusion" {
-      for_each = var.waf_exclusion_settings
-      content {
-        match_variable          = lookup(exclusion.value, "match_variable")
-        selector                = lookup(exclusion.value, "selector")
-        selector_match_operator = lookup(exclusion.value, "selector_match_operator")
-      }
-    }
-
   }
 
-  ssl_policy {
-    policy_type = "Predefined"
-    policy_name = var.policy_name
+  dynamic "ssl_policy" {
+    for_each = var.ssl_policy
+    content {
+      disabled_protocols   = lookup(ssl_policy.value, "disabled_protocols", [])
+      policy_type          = lookup(ssl_policy.value, "policy_type", "Predefined")
+      policy_name          = lookup(ssl_policy.value, "policy_name", "AppGwSslPolicy20170401S")
+      cipher_suites        = lookup(ssl_policy.value, "cipher_suites", [])
+      min_protocol_version = lookup(ssl_policy.value, "min_protocol_version", null)
+    }
   }
 
   #
@@ -78,12 +86,12 @@ resource "azurerm_application_gateway" "app_gateway" {
       path       = lookup(backend_http_settings.value, "path", "")
       probe_name = lookup(backend_http_settings.value, "probe_name", null)
 
-      affinity_cookie_name                = "ApplicationGatewayAffinity"
+      affinity_cookie_name                = lookup(backend_http_settings.value, "affinity_cookie_name", "ApplicationGatewayAffinity")
       cookie_based_affinity               = lookup(backend_http_settings.value, "cookie_based_affinity", "Disabled")
       pick_host_name_from_backend_address = lookup(backend_http_settings.value, "pick_host_name_from_backend_address", true)
       host_name                           = lookup(backend_http_settings.value, "host_name", null)
       port                                = lookup(backend_http_settings.value, "port", 443)
-      protocol                            = "Https"
+      protocol                            = lookup(backend_http_settings.value, "protocol", "Https")
       request_timeout                     = lookup(backend_http_settings.value, "request_timeout", 20)
       trusted_root_certificate_names      = lookup(backend_http_settings.value, "trusted_root_certificate_names", [])
     }
@@ -212,12 +220,12 @@ resource "azurerm_application_gateway" "app_gateway" {
     for_each = var.appgw_probes
     content {
       host                = lookup(probe.value, "host")
-      interval            = 30
+      interval            = lookup(probe.value, "interval", 30)
       name                = lookup(probe.value, "name")
       path                = lookup(probe.value, "path", "/")
-      protocol            = "Https"
-      timeout             = 30
-      unhealthy_threshold = 3
+      protocol            = lookup(probe.value, "protocol", "Https")
+      timeout             = lookup(probe.value, "timeout", 30)
+      unhealthy_threshold = lookup(probe.value, "unhealthy_threshold", 3)
       match {
         body        = lookup(probe.value, "match_body", "")
         status_code = lookup(probe.value, "match_status_code", "")
@@ -256,10 +264,10 @@ resource "azurerm_application_gateway" "app_gateway" {
     for_each = var.appgw_redirect_configuration
     content {
       name                 = lookup(redirect_configuration.value, "name")
-      redirect_type        = "Permanent"
+      redirect_type        = lookup(redirect_configuration.value, "redirect_type", "Permanent")
       target_listener_name = lookup(redirect_configuration.value, "target_listener_name")
-      include_path         = "true"
-      include_query_string = "true"
+      include_path         = lookup(redirect_configuration.value, "include_path", "true")
+      include_query_string = lookup(redirect_configuration.value, "include_query_string", "true")
     }
   }
 
