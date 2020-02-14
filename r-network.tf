@@ -1,19 +1,3 @@
-module "azure-network-vnet" {
-  source  = "claranet/vnet/azurerm"
-  version = "2.0.1"
-
-  environment         = var.environment
-  location            = var.location
-  location_short      = var.location_short
-  client_name         = var.client_name
-  stack               = var.stack
-  resource_group_name = var.resource_group_name
-
-  custom_vnet_name = var.custom_vnet_name
-  vnet_cidr        = local.vnet_cidr
-  extra_tags       = merge(local.default_tags, var.extra_tags)
-}
-
 module "azure-network-subnet" {
   source  = "claranet/subnet/azurerm"
   version = "2.1.0"
@@ -22,18 +6,18 @@ module "azure-network-subnet" {
   location_short      = var.location_short
   client_name         = var.client_name
   stack               = var.stack
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.subnet_resource_group_name != "" ? var.subnet_resource_group_name : var.resource_group_name
 
-  virtual_network_name = module.azure-network-vnet.virtual_network_name
+  virtual_network_name = var.virtual_network_name
 
-  custom_subnet_names = local.subnet_name
-  subnet_cidr_list    = local.subnet_cidr
+  custom_subnet_names = var.create_subnet == true ? local.subnet_name : []
+  subnet_cidr_list    = var.create_subnet == true ? local.subnet_cidr : []
 
-  network_security_group_ids = {
+  network_security_group_ids = var.create_subnet == true ? {
     element(local.subnet_name, 0) = module.azure-network-security-group.network_security_group_id
-  }
+  } : {}
 
-  route_table_ids = {}
+  route_table_ids = var.create_subnet == true ? {} : {}
 }
 
 
@@ -44,7 +28,7 @@ module "azure-network-security-group" {
   client_name         = var.client_name
   environment         = var.environment
   stack               = var.stack
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.subnet_resource_group_name != "" ? var.subnet_resource_group_name : var.resource_group_name
   location            = var.location
   location_short      = var.location_short
 
@@ -53,6 +37,8 @@ module "azure-network-security-group" {
   custom_name = var.custom_nsg_name
 }
 resource "azurerm_network_security_rule" "web" {
+  count = var.create_network_security_rules ? 1 : 0
+
   name = local.nsg_https_name
 
   resource_group_name         = var.resource_group_name
@@ -72,6 +58,8 @@ resource "azurerm_network_security_rule" "web" {
 
 
 resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
+  count = var.create_network_security_rules ? 1 : 0
+
   name = "allow_health_probe_application_gateway"
 
   resource_group_name         = var.resource_group_name

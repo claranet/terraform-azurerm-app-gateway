@@ -3,8 +3,6 @@ locals {
 
   appgw_name = var.appgw_name != "" ? var.appgw_name : join("-", [local.default_name, "appgw"])
 
-  vnet_cidr = var.custom_vnet_cidr != "" ? [var.custom_vnet_cidr] : ["192.168.0.0/16"]
-
   subnet_name = var.custom_subnet_name != "" ? [var.custom_subnet_name] : [join("-", [local.default_name, "subnet"])]
   subnet_cidr = var.custom_subnet_cidr != "" ? [var.custom_subnet_cidr] : ["192.168.0.0/24"]
 
@@ -16,6 +14,8 @@ locals {
   frontend_ip_configuration_name = var.frontend_ip_configuration_name != "" ? var.frontend_ip_configuration_name : join("-", [local.default_name, "frontipconfig"])
 
   gateway_ip_configuration_name = var.gateway_ip_configuration_name != "" ? var.gateway_ip_configuration_name : join("-", [local.default_name, "gwipconfig"])
+
+  diag_settings_name = var.diag_settings_name != "" ? var.diag_settings_name : join("-", [local.default_name, "diag-settings"])
 
   default_tags = {
     env   = var.environment

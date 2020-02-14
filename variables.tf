@@ -264,6 +264,12 @@ variable "enable_logging" {
   default     = true
 }
 
+variable "diag_settings_name" {
+  description = "Custom name for the diagnostic settings of Application Gateway."
+  type        = string
+  default     = ""
+}
+
 variable "logs_storage_retention" {
   description = "Retention in days for logs on Storage Account"
   type        = string
@@ -284,20 +290,14 @@ variable "logs_log_analytics_workspace_id" {
 
 ### NETWORKING
 
-variable "create_vnet" {
-  description = "Boolean to create virtual network with this module."
-  type        = bool
-  default     = true
-}
-
-variable "custom_vnet_name" {
-  description = "Custom name for the virtual network."
+variable "virtual_network_name" {
+  description = "Virtual network name to attach the subnet."
   type        = string
-  default     = null
+  default     = ""
 }
 
-variable "custom_vnet_cidr" {
-  description = "Custom CIDR for the virtual network."
+variable "subnet_resource_group_name" {
+  description = "Resource group name of the subnet."
   type        = string
   default     = ""
 }
@@ -306,6 +306,12 @@ variable "create_subnet" {
   description = "Boolean to create subnet with this module."
   type        = bool
   default     = true
+}
+
+variable "subnet_id" {
+  description = "Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`."
+  type        = string
+  default     = ""
 }
 
 variable "custom_subnet_name" {
@@ -330,4 +336,10 @@ variable "custom_nsg_https_name" {
   description = "Custom name for the network security group for HTTPS protocol."
   type        = string
   default     = null
+}
+
+variable "create_network_security_rules" {
+  description = "Boolean to define is default network security rules should be create or not. Default rules are for port 443 and for the range of ports 65200-65535 for Application Gateway healthchecks."
+  type        = bool
+  default     = true
 }

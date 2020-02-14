@@ -31,7 +31,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
-    subnet_id = module.azure-network-subnet.subnet_ids[0]
+    subnet_id = var.create_subnet == true ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id
   }
 
   dynamic "waf_configuration" {
