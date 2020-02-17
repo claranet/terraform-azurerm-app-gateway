@@ -140,18 +140,6 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   #
-  # Authentication certificate
-  #
-
-  dynamic "authentication_certificate" {
-    for_each = var.authentication_certificate_configs
-    content {
-      name = lookup(authentication_certificate.value, "name")
-      data = filebase64(lookup(authentication_certificate.value, "data"))
-    }
-  }
-
-  #
   # Trusted root certificate
   #
 

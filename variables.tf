@@ -132,12 +132,6 @@ variable "ssl_policy" {
   default     = []
 }
 
-variable "authentication_certificate_configs" {
-  description = "List of maps including authentication certificate configurations."
-  type        = list(map(string))
-  default     = []
-}
-
 variable "trusted_root_certificate_configs" {
   description = "List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'."
   type        = list(map(string))

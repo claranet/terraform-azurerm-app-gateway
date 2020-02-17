@@ -127,7 +127,6 @@ module "appgw_v2" {
 | appgw\_rewrite\_rule\_set | List of rewrite rule set including rewrite rules | `any` | `[]` | no |
 | appgw\_routings | List of maps including request routing rules configurations | `list(map(string))` | `[]` | no |
 | appgw\_url\_path\_map | List of maps including url path map configurations | `any` | `[]` | no |
-| authentication\_certificate\_configs | List of maps including authentication certificate configurations. | `list(map(string))` | `[]` | no |
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
 | create\_subnet | Boolean to create subnet with this module. | `bool` | `true` | no |
 | create\_vnet | Boolean to create virtual network with this module. | `bool` | `true` | no |
