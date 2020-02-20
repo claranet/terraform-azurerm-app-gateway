@@ -1,7 +1,7 @@
 # Azure Application Gateway
 [![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/claranet/application-gateway/azurerm/)
 
-This Terraform module creates an [Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/overview) associated with a [Public IP](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm#public-ip-addresses) and with a complete netwotk stack : virtual network, subnet, network security group. The [Diagnostics Logs](https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-diagnostics#diagnostic-logging) are activated.
+This Terraform module creates an [Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/overview) associated with a [Public IP](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm#public-ip-addresses) and with a [Subnet](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet), a [Network Security Group](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview) and network security rules authorizing port 443 and [ports for internal healthcheck of Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview#network-security-groups-on-the-application-gateway-subnet). The [Diagnostics Logs](https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-diagnostics#diagnostic-logging) are activated.
 
 ## Requirements
  
@@ -116,7 +116,7 @@ module "appgw_v2" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| app\_gateway\_subnet\_id | Application Gateway subnet ID. | `string` | n/a | yes |
+| app\_gateway\_subnet\_id | Application Gateway subnet ID. | `string` | `"null"` | no |
 | app\_gateway\_tags | Application Gateway tags. | `map(string)` | `{}` | no |
 | appgw\_backend\_http\_settings | List of maps including backend http settings configurations | `any` | n/a | yes |
 | appgw\_backend\_pools | List of maps including backend pool configurations | `any` | n/a | yes |
@@ -128,15 +128,14 @@ module "appgw_v2" {
 | appgw\_routings | List of maps including request routing rules configurations | `list(map(string))` | `[]` | no |
 | appgw\_url\_path\_map | List of maps including url path map configurations | `any` | `[]` | no |
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
+| create\_network\_security\_rules | Boolean to define is default network security rules should be create or not. Default rules are for port 443 and for the range of ports 65200-65535 for Application Gateway healthchecks. | `bool` | `true` | no |
 | create\_subnet | Boolean to create subnet with this module. | `bool` | `true` | no |
-| create\_vnet | Boolean to create virtual network with this module. | `bool` | `true` | no |
-| custom\_nsg\_https\_name | Custom name for the network security group for HTTPS protocol. | `string` | n/a | yes |
-| custom\_nsg\_name | Custom name for the network security group. | `string` | n/a | yes |
+| custom\_nsg\_https\_name | Custom name for the network security group for HTTPS protocol. | `string` | `"null"` | no |
+| custom\_nsg\_name | Custom name for the network security group. | `string` | `"null"` | no |
 | custom\_subnet\_cidr | Custom CIDR for the subnet. | `string` | `""` | no |
 | custom\_subnet\_name | Custom name for the subnet. | `string` | `""` | no |
-| custom\_vnet\_cidr | Custom CIDR for the virtual network. | `string` | `""` | no |
-| custom\_vnet\_name | Custom name for the virtual network. | `string` | n/a | yes |
-| disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | <pre>list(object({<br>    rule_group_name = string<br>    rules           = list(string)<br>  }))</pre> | `[]` | no |
+| diag\_settings\_name | Custom name for the diagnostic settings of Application Gateway. | `string` | `""` | no |
+| disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | `object` | `[]` | no |
 | enable\_logging | Boolean flag to specify whether logging is enabled | `bool` | `true` | no |
 | enabled\_waf | Boolean to enable WAF. | `bool` | `true` | no |
 | environment | Project environment | `string` | n/a | yes |
@@ -150,12 +149,11 @@ module "appgw_v2" {
 | ip\_tags | Public IP tags. | `map(string)` | `{}` | no |
 | location | Azure location. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
-| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | n/a | yes |
-| logs\_storage\_account\_id | Storage Account id for logs | `string` | n/a | yes |
+| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | `"null"` | no |
+| logs\_storage\_account\_id | Storage Account id for logs | `string` | `"null"` | no |
 | logs\_storage\_retention | Retention in days for logs on Storage Account | `string` | `"30"` | no |
 | max\_request\_body\_size\_kb | The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB. | `number` | `128` | no |
-| name\_prefix | Optional prefix for the generated name | `string` | n/a | yes |
-| policy\_name | Policy name to apply to the WAF configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy | `string` | `"AppGwSslPolicy20170401S"` | no |
+| name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
 | request\_body\_check | Is Request Body Inspection enabled? | `bool` | `true` | no |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
 | rule\_set\_type | The Type of the Rule Set used for this Web Application Firewall. | `string` | `"OWASP"` | no |
@@ -164,8 +162,12 @@ module "appgw_v2" {
 | sku\_name | The Name of the SKU to use for this Application Gateway. Possible values are Standard\_Small, Standard\_Medium, Standard\_Large, Standard\_v2, WAF\_Medium, WAF\_Large, and WAF\_v2. | `string` | `"WAF_v2"` | no |
 | sku\_tier | The Tier of the SKU to use for this Application Gateway. Possible values are Standard, Standard\_v2, WAF and WAF\_v2. | `string` | `"WAF_v2"` | no |
 | ssl\_certificates\_configs | List of maps including ssl certificates configurations | `list(map(string))` | `[]` | no |
+| ssl\_policy | SSL policy to apply to the WAF configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy | `any` | `[]` | no |
 | stack | Project stack name | `string` | n/a | yes |
+| subnet\_id | Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`. | `string` | `""` | no |
+| subnet\_resource\_group\_name | Resource group name of the subnet. | `string` | `""` | no |
 | trusted\_root\_certificate\_configs | List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'. | `list(map(string))` | `[]` | no |
+| virtual\_network\_name | Virtual network name to attach the subnet. | `string` | `""` | no |
 | waf\_exclusion\_settings | WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#match_variable | `list(map(string))` | `[]` | no |
 | waf\_mode | The Web Application Firewall Mode. Possible values are Detection and Prevention. | `string` | `"Prevention"` | no |
 | zones | A collection of availability zones to spread the Application Gateway over. This option is only supported for v2 SKUs | `list(string)` | <pre>[<br>  "1",<br>  "2",<br>  "3"<br>]</pre> | no |
@@ -174,7 +176,37 @@ module "appgw_v2" {
 
 | Name | Description |
 |------|-------------|
-| id | The ID of the Application Gateway. |
+| appgw\_backend\_address\_pool\_ids | List of backend address pool Ids. |
+| appgw\_backend\_http\_settings\_ids | List of backend HTTP settings Ids. |
+| appgw\_backend\_http\_settings\_probe\_ids | List of probe Ids from backend HTTP settings. |
+| appgw\_custom\_error\_configuration\_ids | List of custom error configuration Ids. |
+| appgw\_frontend\_ip\_configuration\_ids | List of frontend IP configuration Ids. |
+| appgw\_frontend\_port\_ids | List of frontend port Ids. |
+| appgw\_gateway\_ip\_configuration\_ids | List of IP configuration Ids. |
+| appgw\_http\_listener\_frontend\_ip\_configuration\_ids | List of frontend IP configuration Ids from HTTP listeners. |
+| appgw\_http\_listener\_frontend\_port\_ids | List of frontend port Ids from HTTP listeners. |
+| appgw\_http\_listener\_ids | List of HTTP listener Ids. |
+| appgw\_http\_listener\_ssl\_certificate\_ids | List of SSL certificate Ids from HTTP listeners. |
+| appgw\_id | The ID of the Application Gateway. |
+| appgw\_nsg\_id | The ID of the network security group from the subnet where the Application Gateway is attached. |
+| appgw\_nsg\_name | The name of the network security group from the subnet where the Application Gateway is attached. |
+| appgw\_public\_ip\_address | The public IP address of Application Gateway. |
+| appgw\_redirect\_configuration\_ids | List of redirect configuration Ids. |
+| appgw\_request\_routing\_rule\_backend\_address\_pool\_ids | List of backend address pool Ids attached to request routing rules. |
+| appgw\_request\_routing\_rule\_backend\_http\_settings\_ids | List of HTTP settings Ids attached to request routing rules. |
+| appgw\_request\_routing\_rule\_http\_listener\_ids | List of HTTP listener Ids attached to request routing rules. |
+| appgw\_request\_routing\_rule\_ids | List of request routing rules Ids. |
+| appgw\_request\_routing\_rule\_redirect\_configuration\_ids | List of redirect configuration Ids attached to request routing rules. |
+| appgw\_request\_routing\_rule\_rewrite\_rule\_set\_ids | List of rewrite rule set Ids attached to request routing rules. |
+| appgw\_request\_routing\_rule\_url\_path\_map\_ids | List of URL path map Ids attached to request routing rules. |
+| appgw\_ssl\_certificate\_ids | List of SSL certificate Ids. |
+| appgw\_ssl\_certificate\_public\_cert\_data | List of public certificates data from SSL certificates. |
+| appgw\_subnet\_id | The ID of the subnet where the Application Gateway is attached. |
+| appgw\_subnet\_name | The name of the subnet where the Application Gateway is attached. |
+| appgw\_url\_path\_map\_default\_backend\_address\_pool\_ids | List of default backend address pool Ids attached to URL path maps. |
+| appgw\_url\_path\_map\_default\_backend\_http\_settings\_ids | List of default backend HTTP settings Ids attached to URL path maps. |
+| appgw\_url\_path\_map\_default\_redirect\_configuration\_ids | List of default redirect configuration Ids attached to URL path maps. |
+| appgw\_url\_path\_map\_ids | List of URL path map Ids. |
 
 ## Related documentation
 

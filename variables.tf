@@ -33,7 +33,7 @@ variable "resource_group_name" {
 variable "name_prefix" {
   description = "Optional prefix for the generated name"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "app_gateway_tags" {
