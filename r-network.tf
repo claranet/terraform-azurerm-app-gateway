@@ -10,16 +10,15 @@ module "azure-network-subnet" {
 
   virtual_network_name = var.virtual_network_name
 
-  custom_subnet_names = var.create_subnet == true ? local.subnet_name : []
-  subnet_cidr_list    = var.create_subnet == true ? local.subnet_cidr : []
+  custom_subnet_names = var.create_subnet ? local.subnet_name : []
+  subnet_cidr_list    = var.create_subnet ? [var.subnet_cidr] : []
 
-  network_security_group_ids = var.create_subnet == true ? {
+  network_security_group_ids = var.create_subnet ? {
     element(local.subnet_name, 0) = module.azure-network-security-group.network_security_group_id
   } : {}
 
-  route_table_ids = var.create_subnet == true ? {} : {}
+  route_table_ids = var.create_subnet ? var.route_table_ids : {}
 }
-
 
 module "azure-network-security-group" {
   source  = "claranet/nsg/azurerm"
@@ -36,10 +35,11 @@ module "azure-network-security-group" {
 
   custom_name = var.custom_nsg_name
 }
+
 resource "azurerm_network_security_rule" "web" {
   count = var.create_network_security_rules ? 1 : 0
 
-  name = local.nsg_https_name
+  name = local.nsr_https_name
 
   resource_group_name         = var.resource_group_name
   network_security_group_name = module.azure-network-security-group.network_security_group_name
@@ -52,7 +52,7 @@ resource "azurerm_network_security_rule" "web" {
   source_port_range       = "*"
   destination_port_ranges = ["443"]
 
-  source_address_prefix      = "*"
+  source_address_prefix      = var.create_network_security_rules ? var.nsr_https_source_address_prefix : "*"
   destination_address_prefix = "*"
 }
 
@@ -60,7 +60,7 @@ resource "azurerm_network_security_rule" "web" {
 resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
   count = var.create_network_security_rules ? 1 : 0
 
-  name = "allow_health_probe_application_gateway"
+  name = local.nsr_healthcheck_name
 
   resource_group_name         = var.resource_group_name
   network_security_group_name = module.azure-network-security-group.network_security_group_name

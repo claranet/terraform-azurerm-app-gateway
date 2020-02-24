@@ -5,9 +5,9 @@ locals {
   appgw_name = var.appgw_name != "" ? var.appgw_name : join("-", [local.default_name, "appgw"])
 
   subnet_name = var.custom_subnet_name != "" ? [var.custom_subnet_name] : [join("-", [local.default_name, "subnet"])]
-  subnet_cidr = var.custom_subnet_cidr != "" ? [var.custom_subnet_cidr] : ["192.168.0.0/24"]
 
-  nsg_https_name = coalesce(var.custom_nsg_https_name, join("-", [local.default_name, "-https-nsr"]))
+  nsr_https_name       = coalesce(var.custom_nsr_https_name, join("-", [local.default_name, "https-nsr"]))
+  nsr_healthcheck_name = coalesce(var.custom_nsr_healthcheck_name, join("-", [local.default_name, "appgw-healthcheck-nsr"]))
 
   ip_name  = var.ip_name != "" ? var.ip_name : join("-", [local.default_name, "pubip"])
   ip_label = var.ip_label != "" ? var.ip_label : join("-", [local.default_name, "pubip"])
@@ -17,6 +17,8 @@ locals {
   gateway_ip_configuration_name = var.gateway_ip_configuration_name != "" ? var.gateway_ip_configuration_name : join("-", [local.default_name, "gwipconfig"])
 
   diag_settings_name = var.diag_settings_name != "" ? var.diag_settings_name : join("-", [local.default_name, "diag-settings"])
+
+  enable_waf = var.sku == "WAF_v2" ? true : false
 
   default_tags = {
     env   = var.environment

@@ -52,6 +52,21 @@ module "run-common" {
   tenant_id = var.azure_tenant_id
 }
 
+module "azure-virtual-network" {
+  source  = "claranet/vnet/azurerm"
+  version = "x.x.x"
+
+  environment    = var.environment
+  location       = module.azure-region.location
+  location_short = module.azure-region.location_short
+  client_name    = var.client_name
+  stack          = var.stack
+
+  resource_group_name = module.rg.resource_group_name
+
+  vnet_cidr        = ["192.168.0.0/16"]
+}
+
 
 module "appgw_v2" {
   source = "claranet/app-gateway/azurerm"
@@ -64,8 +79,11 @@ module "appgw_v2" {
   client_name         = var.client_name
   resource_group_name = module.rg.resource_group_name
 
+  virtual_network_name = module.azure-virtual-network.virtual_network_name
+  subnet_cidr          = "192.168.1.0/24"
+
   appgw_backend_http_settings = [{
-    name                  = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-backhttpsettings"
+    name                  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backhttpsettings"
     cookie_based_affinity = "Disabled"
     path                  = "/"
     port                  = 443
@@ -74,24 +92,24 @@ module "appgw_v2" {
   }]
 
   appgw_backend_pools = [{
-    name  = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-backendpool"
+    name  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backendpool"
     fqdns = ["example.com"]
   }]
 
   appgw_routings = [{
-    name                       = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-routing-https"
+    name                       = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-routing-https"
     rule_type                  = "Basic"
-    http_listener_name         = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-listener-https"
-    backend_address_pool_name  = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-backendpool"
-    backend_http_settings_name = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-backhttpsettings"
+    http_listener_name         = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-listener-https"
+    backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backendpool"
+    backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backhttpsettings"
   }]
 
   appgw_http_listeners = [{
-    name                           = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-listener-https"
-    frontend_ip_configuration_name = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-frontipconfig"
+    name                           = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-listener-https"
+    frontend_ip_configuration_name = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-frontipconfig"
     frontend_port_name             = "frontend-https-port"
     protocol                       = "Https"
-    ssl_certificate_name           = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-example-com-sslcert"
+    ssl_certificate_name           = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-example-com-sslcert"
     host_name                      = "example.com"
     require_sni                    = true
   }]
@@ -102,7 +120,7 @@ module "appgw_v2" {
   }]
 
   ssl_certificates_configs = [{
-    name     = "${var.stack}-${var.client_name}-${var.location_short}-${var.environment}-example-com-sslcert"
+    name     = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-example-com-sslcert"
     data     = "./example.com.pfx"
     password = var.certificate_example_com_password
   }]
@@ -130,14 +148,14 @@ module "appgw_v2" {
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
 | create\_network\_security\_rules | Boolean to define is default network security rules should be create or not. Default rules are for port 443 and for the range of ports 65200-65535 for Application Gateway healthchecks. | `bool` | `true` | no |
 | create\_subnet | Boolean to create subnet with this module. | `bool` | `true` | no |
-| custom\_nsg\_https\_name | Custom name for the network security group for HTTPS protocol. | `string` | `"null"` | no |
 | custom\_nsg\_name | Custom name for the network security group. | `string` | `"null"` | no |
-| custom\_subnet\_cidr | Custom CIDR for the subnet. | `string` | `""` | no |
+| custom\_nsr\_healthcheck\_name | Custom name for the network security rule for internal health check of Application Gateway. | `string` | `"null"` | no |
+| custom\_nsr\_https\_name | Custom name for the network security rule for HTTPS protocol. | `string` | `"null"` | no |
 | custom\_subnet\_name | Custom name for the subnet. | `string` | `""` | no |
 | diag\_settings\_name | Custom name for the diagnostic settings of Application Gateway. | `string` | `""` | no |
 | disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | `object` | `[]` | no |
 | enable\_logging | Boolean flag to specify whether logging is enabled | `bool` | `true` | no |
-| enabled\_waf | Boolean to enable WAF. | `bool` | `true` | no |
+| enable\_waf | Boolean to enable WAF. | `bool` | `true` | no |
 | environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
@@ -151,23 +169,25 @@ module "appgw_v2" {
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
 | logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | `"null"` | no |
 | logs\_storage\_account\_id | Storage Account id for logs | `string` | `"null"` | no |
-| logs\_storage\_retention | Retention in days for logs on Storage Account | `string` | `"30"` | no |
+| logs\_storage\_retention | Retention in days for logs on Storage Account | `number` | `30` | no |
 | max\_request\_body\_size\_kb | The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB. | `number` | `128` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
+| nsr\_https\_source\_address\_prefix | Source address prefix to allow to access on port 443 defined in dedicated network security rule. | `string` | `"*"` | no |
 | request\_body\_check | Is Request Body Inspection enabled? | `bool` | `true` | no |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
+| route\_table\_ids | The Route Table Ids map to associate with the subnets. More informations about declaration on https://github.com/claranet/terraform-azurerm-subnet. | `map(string)` | `{}` | no |
 | rule\_set\_type | The Type of the Rule Set used for this Web Application Firewall. | `string` | `"OWASP"` | no |
 | rule\_set\_version | The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1. | `number` | `3.1` | no |
+| sku | The Name of the SKU to use for this Application Gateway. Possible values are Standard\_v2 and WAF\_v2. | `string` | `"WAF_v2"` | no |
 | sku\_capacity | The Capacity of the SKU to use for this Application Gateway - which must be between 1 and 10, optional if autoscale\_configuration is set | `number` | `2` | no |
-| sku\_name | The Name of the SKU to use for this Application Gateway. Possible values are Standard\_Small, Standard\_Medium, Standard\_Large, Standard\_v2, WAF\_Medium, WAF\_Large, and WAF\_v2. | `string` | `"WAF_v2"` | no |
-| sku\_tier | The Tier of the SKU to use for this Application Gateway. Possible values are Standard, Standard\_v2, WAF and WAF\_v2. | `string` | `"WAF_v2"` | no |
 | ssl\_certificates\_configs | List of maps including ssl certificates configurations | `list(map(string))` | `[]` | no |
 | ssl\_policy | SSL policy to apply to the WAF configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy | `any` | `[]` | no |
 | stack | Project stack name | `string` | n/a | yes |
+| subnet\_cidr | Subnet CIDR to create. | `string` | n/a | yes |
 | subnet\_id | Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`. | `string` | `""` | no |
 | subnet\_resource\_group\_name | Resource group name of the subnet. | `string` | `""` | no |
 | trusted\_root\_certificate\_configs | List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'. | `list(map(string))` | `[]` | no |
-| virtual\_network\_name | Virtual network name to attach the subnet. | `string` | `""` | no |
+| virtual\_network\_name | Virtual network name to attach the subnet. | `string` | n/a | yes |
 | waf\_exclusion\_settings | WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#match_variable | `list(map(string))` | `[]` | no |
 | waf\_mode | The Web Application Firewall Mode. Possible values are Detection and Prevention. | `string` | `"Prevention"` | no |
 | zones | A collection of availability zones to spread the Application Gateway over. This option is only supported for v2 SKUs | `list(string)` | <pre>[<br>  "1",<br>  "2",<br>  "3"<br>]</pre> | no |

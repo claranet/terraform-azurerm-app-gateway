@@ -10,8 +10,8 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   sku {
     capacity = var.sku_capacity
-    name     = var.sku_name
-    tier     = var.sku_tier
+    name     = var.sku
+    tier     = var.sku
   }
 
   zones = var.zones
@@ -31,13 +31,13 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
-    subnet_id = var.create_subnet == true ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id
+    subnet_id = var.create_subnet ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id
   }
 
   dynamic "waf_configuration" {
-    for_each = var.enabled_waf ? ["fake"] : []
+    for_each = local.enable_waf ? ["fake"] : []
     content {
-      enabled                  = var.enabled_waf
+      enabled                  = var.enable_waf
       file_upload_limit_mb     = coalesce(var.file_upload_limit_mb, 100)
       firewall_mode            = coalesce(var.waf_mode, "Prevention")
       max_request_body_size_kb = coalesce(var.max_request_body_size_kb, 128)

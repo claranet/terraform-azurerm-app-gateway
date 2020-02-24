@@ -90,14 +90,8 @@ variable "sku_capacity" {
   default     = 2
 }
 
-variable "sku_name" {
-  description = "The Name of the SKU to use for this Application Gateway. Possible values are Standard_Small, Standard_Medium, Standard_Large, Standard_v2, WAF_Medium, WAF_Large, and WAF_v2."
-  type        = string
-  default     = "WAF_v2"
-}
-
-variable "sku_tier" {
-  description = "The Tier of the SKU to use for this Application Gateway. Possible values are Standard, Standard_v2, WAF and WAF_v2."
+variable "sku" {
+  description = "The Name of the SKU to use for this Application Gateway. Possible values are Standard_v2 and WAF_v2."
   type        = string
   default     = "WAF_v2"
 }
@@ -193,7 +187,7 @@ variable "appgw_rewrite_rule_set" {
 
 ### WAF
 
-variable "enabled_waf" {
+variable "enable_waf" {
   description = "Boolean to enable WAF."
   type        = bool
   default     = true
@@ -266,8 +260,8 @@ variable "diag_settings_name" {
 
 variable "logs_storage_retention" {
   description = "Retention in days for logs on Storage Account"
-  type        = string
-  default     = "30"
+  type        = number
+  default     = 30
 }
 
 variable "logs_storage_account_id" {
@@ -287,7 +281,6 @@ variable "logs_log_analytics_workspace_id" {
 variable "virtual_network_name" {
   description = "Virtual network name to attach the subnet."
   type        = string
-  default     = ""
 }
 
 variable "subnet_resource_group_name" {
@@ -308,16 +301,21 @@ variable "subnet_id" {
   default     = ""
 }
 
+variable "route_table_ids" {
+  description = "The Route Table Ids map to associate with the subnets. More informations about declaration on https://github.com/claranet/terraform-azurerm-subnet."
+  type        = map(string)
+  default     = {}
+}
+
 variable "custom_subnet_name" {
   description = "Custom name for the subnet."
   type        = string
   default     = ""
 }
 
-variable "custom_subnet_cidr" {
-  description = "Custom CIDR for the subnet."
+variable "subnet_cidr" {
+  description = "Subnet CIDR to create."
   type        = string
-  default     = ""
 }
 
 variable "custom_nsg_name" {
@@ -326,8 +324,14 @@ variable "custom_nsg_name" {
   default     = null
 }
 
-variable "custom_nsg_https_name" {
-  description = "Custom name for the network security group for HTTPS protocol."
+variable "custom_nsr_https_name" {
+  description = "Custom name for the network security rule for HTTPS protocol."
+  type        = string
+  default     = null
+}
+
+variable "custom_nsr_healthcheck_name" {
+  description = "Custom name for the network security rule for internal health check of Application Gateway."
   type        = string
   default     = null
 }
@@ -336,4 +340,10 @@ variable "create_network_security_rules" {
   description = "Boolean to define is default network security rules should be create or not. Default rules are for port 443 and for the range of ports 65200-65535 for Application Gateway healthchecks."
   type        = bool
   default     = true
+}
+
+variable "nsr_https_source_address_prefix" {
+  description = "Source address prefix to allow to access on port 443 defined in dedicated network security rule."
+  type        = string
+  default     = "*"
 }
