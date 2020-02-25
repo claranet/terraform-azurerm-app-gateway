@@ -134,7 +134,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     for_each = var.ssl_certificates_configs
     content {
       name     = lookup(ssl_certificate.value, "name")
-      data     = filebase64(lookup(ssl_certificate.value, "data"))
+      data     = lookup(ssl_certificate.value, "data")
       password = lookup(ssl_certificate.value, "password")
     }
   }

@@ -121,7 +121,7 @@ module "appgw_v2" {
 
   ssl_certificates_configs = [{
     name     = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-example-com-sslcert"
-    data     = "./example.com.pfx"
+    data     = filebase64("./example.com.pfx")
     password = var.certificate_example_com_password
   }]
 
