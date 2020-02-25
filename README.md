@@ -183,7 +183,7 @@ module "appgw_v2" {
 | ssl\_certificates\_configs | List of maps including ssl certificates configurations | `list(map(string))` | `[]` | no |
 | ssl\_policy | SSL policy to apply to the WAF configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy | `any` | `[]` | no |
 | stack | Project stack name | `string` | n/a | yes |
-| subnet\_cidr | Subnet CIDR to create. | `string` | n/a | yes |
+| subnet\_cidr | Subnet CIDR to create. | `string` | `""` | no |
 | subnet\_id | Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`. | `string` | `""` | no |
 | subnet\_resource\_group\_name | Resource group name of the subnet. | `string` | `""` | no |
 | trusted\_root\_certificate\_configs | List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'. | `list(map(string))` | `[]` | no |

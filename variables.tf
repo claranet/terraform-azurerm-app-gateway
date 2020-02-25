@@ -316,6 +316,7 @@ variable "custom_subnet_name" {
 variable "subnet_cidr" {
   description = "Subnet CIDR to create."
   type        = string
+  default     = ""
 }
 
 variable "custom_nsg_name" {
