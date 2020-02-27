@@ -3,6 +3,11 @@ output "appgw_id" {
   value       = azurerm_application_gateway.app_gateway.id
 }
 
+output "appgw_name" {
+  description = "The name of the Application Gateway."
+  value       = local.appgw_name
+}
+
 output "appgw_subnet_id" {
   description = "The ID of the subnet where the Application Gateway is attached."
   value       = var.create_subnet == true ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id

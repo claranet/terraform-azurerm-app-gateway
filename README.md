@@ -208,6 +208,7 @@ module "appgw_v2" {
 | appgw\_http\_listener\_ids | List of HTTP listener Ids. |
 | appgw\_http\_listener\_ssl\_certificate\_ids | List of SSL certificate Ids from HTTP listeners. |
 | appgw\_id | The ID of the Application Gateway. |
+| appgw\_name | The name of the Application Gateway. |
 | appgw\_nsg\_id | The ID of the network security group from the subnet where the Application Gateway is attached. |
 | appgw\_nsg\_name | The name of the network security group from the subnet where the Application Gateway is attached. |
 | appgw\_public\_ip\_address | The public IP address of Application Gateway. |
