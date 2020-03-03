@@ -68,6 +68,18 @@ variable "ip_label" {
   default     = ""
 }
 
+variable "ip_sku" {
+  description = "SKU for the public IP. Warning, can only be `Standard` for the moment."
+  type        = string
+  default     = "Standard"
+}
+
+variable "ip_allocation_method" {
+  description = "Allocation method for the public IP. Warning, can only be `Static` for the moment."
+  type        = string
+  default     = "Static"
+}
+
 ### APPGW NETWORK
 
 variable "app_gateway_subnet_id" {
