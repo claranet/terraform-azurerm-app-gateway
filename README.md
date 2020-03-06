@@ -147,6 +147,7 @@ module "appgw_v2" {
 | appgw\_url\_path\_map | List of maps including url path map configurations | `any` | `[]` | no |
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
 | create\_network\_security\_rules | Boolean to define is default network security rules should be create or not. Default rules are for port 443 and for the range of ports 65200-65535 for Application Gateway healthchecks. | `bool` | `true` | no |
+| create\_nsg | Boolean to create the network security group. | `bool` | `true` | no |
 | create\_subnet | Boolean to create subnet with this module. | `bool` | `true` | no |
 | custom\_nsg\_name | Custom name for the network security group. | `string` | `"null"` | no |
 | custom\_nsr\_healthcheck\_name | Custom name for the network security rule for internal health check of Application Gateway. | `string` | `"null"` | no |

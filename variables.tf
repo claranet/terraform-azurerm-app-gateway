@@ -331,6 +331,12 @@ variable "subnet_cidr" {
   default     = ""
 }
 
+variable "create_nsg" {
+  description = "Boolean to create the network security group."
+  type        = bool
+  default     = true
+}
+
 variable "custom_nsg_name" {
   description = "Custom name for the network security group."
   type        = string
