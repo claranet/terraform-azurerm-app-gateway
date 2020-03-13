@@ -1,7 +1,6 @@
 module "azure-network-subnet" {
-  #source  = "claranet/subnet/azurerm"
-  #version = "3.0.0"
-  source = "git@git.fr.clara.net:claranet/projects/cloud/azure/terraform/modules/subnet.git?ref=AZ-198-azurerm-2-0"
+  source  = "claranet/subnet/azurerm"
+  version = "2.1.1"
 
   environment         = var.environment
   location_short      = var.location_short
@@ -20,8 +19,6 @@ module "azure-network-subnet" {
 }
 
 module "azure-network-security-group" {
-  #source  = "claranet/nsg/azurerm"
-  #version = "3.0.0"
   source = "git@git.fr.clara.net:claranet/projects/cloud/azure/terraform/modules/nsg.git?ref=AZ-205-multiple-nsgs"
 
   client_name         = var.client_name
