@@ -7,6 +7,7 @@ module "logging" {
   resource_ids    = [azurerm_application_gateway.app_gateway.id]
   retention_days  = var.logs_storage_retention
 
-  storage_account_id         = var.logs_storage_account_id
-  log_analytics_workspace_id = var.logs_log_analytics_workspace_id
+  storage_account_id             = var.logs_storage_account_id
+  log_analytics_workspace_id     = var.logs_log_analytics_workspace_id
+  eventhub_authorization_rule_id = var.eventhub_authorization_rule_id
 }
