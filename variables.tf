@@ -288,6 +288,12 @@ variable "logs_log_analytics_workspace_id" {
   default     = null
 }
 
+variable "eventhub_authorization_rule_id" {
+  description = "Eventhub Authorization rule id for log transmission"
+  type        = string
+  default     = null
+}
+
 ### NETWORKING
 
 variable "virtual_network_name" {
