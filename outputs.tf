@@ -70,7 +70,7 @@ output "appgw_http_listener_ids" {
 
 output "appgw_http_listener_frontend_ip_configuration_ids" {
   description = "List of frontend IP configuration Ids from HTTP listeners."
-  value       = zipmap(azurerm_application_gateway.app_gateway.http_listener.*.id, azurerm_application_gateway.app_gateway.http_listener.*.frontend_ip_configuration_id)
+  value       = azurerm_application_gateway.app_gateway.http_listener.*.frontend_ip_configuration_id
 }
 
 output "appgw_http_listener_frontend_port_ids" {
