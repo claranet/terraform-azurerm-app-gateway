@@ -75,7 +75,7 @@ output "appgw_http_listener_frontend_ip_configuration_ids" {
 
 output "appgw_http_listener_frontend_port_ids" {
   description = "List of frontend port Ids from HTTP listeners."
-  value       = zipmap(azurerm_application_gateway.app_gateway.http_listener.*.id, azurerm_application_gateway.app_gateway.http_listener.*.frontend_port_id)
+  value       = azurerm_application_gateway.app_gateway.http_listener.*.frontend_port_id
 }
 
 output "appgw_request_routing_rule_ids" {
@@ -116,12 +116,6 @@ output "appgw_request_routing_rule_url_path_map_ids" {
 output "appgw_ssl_certificate_ids" {
   description = "List of SSL certificate Ids."
   value       = azurerm_application_gateway.app_gateway.ssl_certificate.*.id
-}
-
-output "appgw_ssl_certificate_public_cert_data" {
-  description = "List of public certificates data from SSL certificates."
-  value       = zipmap(azurerm_application_gateway.app_gateway.ssl_certificate.*.id, azurerm_application_gateway.app_gateway.ssl_certificate.*.public_cert_data)
-  sensitive   = true
 }
 
 output "appgw_url_path_map_ids" {
