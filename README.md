@@ -223,7 +223,6 @@ module "appgw_v2" {
 | appgw\_request\_routing\_rule\_redirect\_configuration\_ids | List of redirect configuration Ids attached to request routing rules. |
 | appgw\_request\_routing\_rule\_rewrite\_rule\_set\_ids | List of rewrite rule set Ids attached to request routing rules. |
 | appgw\_request\_routing\_rule\_url\_path\_map\_ids | List of URL path map Ids attached to request routing rules. |
-| appgw\_ssl\_certificate\_ids | List of SSL certificate Ids. |
 | appgw\_ssl\_certificate\_public\_cert\_data | List of public certificates data from SSL certificates. |
 | appgw\_subnet\_id | The ID of the subnet where the Application Gateway is attached. |
 | appgw\_subnet\_name | The name of the subnet where the Application Gateway is attached. |

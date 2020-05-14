@@ -78,11 +78,6 @@ output "appgw_http_listener_frontend_port_ids" {
   value       = zipmap(azurerm_application_gateway.app_gateway.http_listener.*.id, azurerm_application_gateway.app_gateway.http_listener.*.frontend_port_id)
 }
 
-output "appgw_http_listener_ssl_certificate_ids" {
-  description = "List of SSL certificate Ids from HTTP listeners."
-  value       = zipmap(azurerm_application_gateway.app_gateway.http_listener.*.id, azurerm_application_gateway.app_gateway.http_listener.*.ssl_certificate_id)
-}
-
 output "appgw_request_routing_rule_ids" {
   description = "List of request routing rules Ids."
   value       = azurerm_application_gateway.app_gateway.request_routing_rule.*.id
