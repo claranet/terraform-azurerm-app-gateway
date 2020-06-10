@@ -3,16 +3,13 @@
 
 This Terraform module creates an [Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/overview) associated with a [Public IP](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm#public-ip-addresses) and with a [Subnet](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet), a [Network Security Group](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview) and network security rules authorizing port 443 and [ports for internal healthcheck of Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview#network-security-groups-on-the-application-gateway-subnet). The [Diagnostics Logs](https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-diagnostics#diagnostic-logging) are activated.
 
-## Requirements
- 
-* [AzureRM Terraform provider](https://www.terraform.io/docs/providers/azurerm/) >= 1.40
+## Version compatibility
 
-## Terraform version compatibility
-
-| Module version | Terraform version |
-|----------------|-------------------|
-| >= 2.x.x       | 0.12.x            |
-| < 2.x.x        | 0.11.x            |
+| Module version    | Terraform version | AzureRM version |
+|-------------------|-------------------|-----------------|
+| >= 3.x.x          | 0.12.x            | >= 2.1          |
+| >= 2.x.x, < 3.x.x | 0.12.x            | <  2.0          |
+| <  2.x.x          | 0.11.x            | <  2.0          |
 
 ## Usage
 
@@ -133,8 +130,8 @@ module "appgw_v2" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
-| app\_gateway\_subnet\_id | Application Gateway subnet ID. | `string` | `"null"` | no |
+|------|-------------|------|---------|:--------:|
+| app\_gateway\_subnet\_id | Application Gateway subnet ID. | `string` | `null` | no |
 | app\_gateway\_tags | Application Gateway tags. | `map(string)` | `{}` | no |
 | appgw\_backend\_http\_settings | List of maps including backend http settings configurations | `any` | n/a | yes |
 | appgw\_backend\_pools | List of maps including backend pool configurations | `any` | n/a | yes |
@@ -149,15 +146,16 @@ module "appgw_v2" {
 | create\_network\_security\_rules | Boolean to define is default network security rules should be create or not. Default rules are for port 443 and for the range of ports 65200-65535 for Application Gateway healthchecks. | `bool` | `true` | no |
 | create\_nsg | Boolean to create the network security group. | `bool` | `true` | no |
 | create\_subnet | Boolean to create subnet with this module. | `bool` | `true` | no |
-| custom\_nsg\_name | Custom name for the network security group. | `string` | `"null"` | no |
-| custom\_nsr\_healthcheck\_name | Custom name for the network security rule for internal health check of Application Gateway. | `string` | `"null"` | no |
-| custom\_nsr\_https\_name | Custom name for the network security rule for HTTPS protocol. | `string` | `"null"` | no |
+| custom\_nsg\_name | Custom name for the network security group. | `string` | `null` | no |
+| custom\_nsr\_healthcheck\_name | Custom name for the network security rule for internal health check of Application Gateway. | `string` | `null` | no |
+| custom\_nsr\_https\_name | Custom name for the network security rule for HTTPS protocol. | `string` | `null` | no |
 | custom\_subnet\_name | Custom name for the subnet. | `string` | `""` | no |
 | diag\_settings\_name | Custom name for the diagnostic settings of Application Gateway. | `string` | `""` | no |
-| disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | `object` | `[]` | no |
+| disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | <pre>list(object({<br>    rule_group_name = string<br>    rules           = list(string)<br>  }))</pre> | `[]` | no |
 | enable\_logging | Boolean flag to specify whether logging is enabled | `bool` | `true` | no |
 | enable\_waf | Boolean to enable WAF. | `bool` | `true` | no |
 | environment | Project environment | `string` | n/a | yes |
+| eventhub\_authorization\_rule\_id | Eventhub Authorization rule id for log transmission | `string` | `null` | no |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
 | frontend\_ip\_configuration\_name | The Name of the Frontend IP Configuration used for this HTTP Listener. | `string` | `""` | no |
@@ -170,8 +168,8 @@ module "appgw_v2" {
 | ip\_tags | Public IP tags. | `map(string)` | `{}` | no |
 | location | Azure location. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
-| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | `"null"` | no |
-| logs\_storage\_account\_id | Storage Account id for logs | `string` | `"null"` | no |
+| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | `null` | no |
+| logs\_storage\_account\_id | Storage Account id for logs | `string` | `null` | no |
 | logs\_storage\_retention | Retention in days for logs on Storage Account | `number` | `30` | no |
 | max\_request\_body\_size\_kb | The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB. | `number` | `128` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
@@ -209,7 +207,6 @@ module "appgw_v2" {
 | appgw\_http\_listener\_frontend\_ip\_configuration\_ids | List of frontend IP configuration Ids from HTTP listeners. |
 | appgw\_http\_listener\_frontend\_port\_ids | List of frontend port Ids from HTTP listeners. |
 | appgw\_http\_listener\_ids | List of HTTP listener Ids. |
-| appgw\_http\_listener\_ssl\_certificate\_ids | List of SSL certificate Ids from HTTP listeners. |
 | appgw\_id | The ID of the Application Gateway. |
 | appgw\_name | The name of the Application Gateway. |
 | appgw\_nsg\_id | The ID of the network security group from the subnet where the Application Gateway is attached. |
@@ -223,6 +220,7 @@ module "appgw_v2" {
 | appgw\_request\_routing\_rule\_redirect\_configuration\_ids | List of redirect configuration Ids attached to request routing rules. |
 | appgw\_request\_routing\_rule\_rewrite\_rule\_set\_ids | List of rewrite rule set Ids attached to request routing rules. |
 | appgw\_request\_routing\_rule\_url\_path\_map\_ids | List of URL path map Ids attached to request routing rules. |
+| appgw\_ssl\_certificate\_ids | List of SSL certificate Ids. |
 | appgw\_subnet\_id | The ID of the subnet where the Application Gateway is attached. |
 | appgw\_subnet\_name | The name of the subnet where the Application Gateway is attached. |
 | appgw\_url\_path\_map\_default\_backend\_address\_pool\_ids | List of default backend address pool Ids attached to URL path maps. |
