@@ -129,7 +129,6 @@ variable "gateway_ip_configuration_name" {
 variable "frontend_port_settings" {
   description = "Frontend port settings. Each port setting contains the name and the port for the frontend port."
   type        = list(map(string))
-  default     = []
 }
 
 variable "ssl_policy" {
@@ -163,7 +162,6 @@ variable "ssl_certificates_configs" {
 variable "appgw_routings" {
   description = "List of maps including request routing rules configurations"
   type        = list(map(string))
-  default     = []
 }
 
 variable "appgw_probes" {
