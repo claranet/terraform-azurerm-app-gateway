@@ -19,7 +19,8 @@ module "azure-network-subnet" {
 }
 
 module "azure-network-security-group" {
-  source = "git::ssh://git@git.fr.clara.net/claranet/projects/cloud/azure/terraform/modules/nsg.git?ref=AZ-205-multiple-nsgs"
+  source  = "claranet/nsg/azurerm"
+  version = "2.1.0"
 
   client_name         = var.client_name
   environment         = var.environment
