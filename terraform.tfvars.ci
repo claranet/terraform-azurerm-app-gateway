@@ -1,0 +1,13 @@
+location="fr-central"
+location_short="frc"
+client_name="test"
+environment="test"
+stack="ci"
+resource_group_name="test-rg"
+
+extra_tags={
+    foo = "bar"
+}
+enable_logging=true
+logs_retention=7
+logs_storage_account_id="/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/rg-test/providers/Microsoft.Storage/storageAccounts/storageaccountname"
