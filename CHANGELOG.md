@@ -1,4 +1,4 @@
-# 3.0.0 - Unreleased
+# 3.0.0 - 2020-07-28
 
 Breaking
   * AZ-198: Upgrade module to be compliant with AzureRM 2.0
