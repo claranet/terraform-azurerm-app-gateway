@@ -1,6 +1,6 @@
 module "azure-network-subnet" {
   source  = "claranet/subnet/azurerm"
-  version = "2.1.1"
+  version = "3.0.0"
 
   environment         = var.environment
   location_short      = var.location_short
@@ -20,7 +20,7 @@ module "azure-network-subnet" {
 
 module "azure-network-security-group" {
   source  = "claranet/nsg/azurerm"
-  version = "2.1.0"
+  version = "3.0.0"
 
   client_name         = var.client_name
   environment         = var.environment
