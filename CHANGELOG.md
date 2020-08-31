@@ -1,3 +1,8 @@
+# 3.0.1 - Unreleased
+
+Fixed
+  * AZ-260: Fix outputs problems on destroy
+
 # 3.0.0 - 2020-07-28
 
 Breaking

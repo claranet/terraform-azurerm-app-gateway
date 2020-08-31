@@ -7,7 +7,7 @@ locals {
   subnet_name = var.custom_subnet_name != "" ? [var.custom_subnet_name] : [join("-", [local.default_name, "subnet"])]
 
   nsg_ids = var.create_nsg ? {
-    element(local.subnet_name, 0) = module.azure-network-security-group.network_security_group_id[0]
+    element(local.subnet_name, 0) = join("", module.azure-network-security-group.network_security_group_id)
   } : {}
 
   nsr_https_name       = coalesce(var.custom_nsr_https_name, join("-", [local.default_name, "https-nsr"]))
