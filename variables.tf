@@ -341,6 +341,18 @@ variable "create_nsg" {
   default     = true
 }
 
+variable "create_nsg_https_rule" {
+  description = "Boolean to create the network security group rule opening https to everyone."
+  type        = bool
+  default     = true
+}
+
+variable "create_nsg_healthprobe_rule" {
+  description = "Boolean to create the network security group rule for the health probes."
+  type        = bool
+  default     = true
+}
+
 variable "custom_nsg_name" {
   description = "Custom name for the network security group."
   type        = string
@@ -369,4 +381,12 @@ variable "nsr_https_source_address_prefix" {
   description = "Source address prefix to allow to access on port 443 defined in dedicated network security rule."
   type        = string
   default     = "*"
+}
+
+### IDENTITY
+
+variable "user_assigned_identity_id" {
+  description = "User assigned identity id assigned to this resource"
+  type        = string
+  default     = null
 }

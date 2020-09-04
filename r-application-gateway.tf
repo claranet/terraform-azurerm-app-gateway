@@ -133,9 +133,10 @@ resource "azurerm_application_gateway" "app_gateway" {
   dynamic "ssl_certificate" {
     for_each = var.ssl_certificates_configs
     content {
-      name     = lookup(ssl_certificate.value, "name", null)
-      data     = lookup(ssl_certificate.value, "data", null)
-      password = lookup(ssl_certificate.value, "password", null)
+      name                = lookup(ssl_certificate.value, "name", null)
+      data                = lookup(ssl_certificate.value, "data", null)
+      password            = lookup(ssl_certificate.value, "password", null)
+      key_vault_secret_id = lookup(ssl_certificate.value, "key_vault_secret_id", null)
     }
   }
 
@@ -258,6 +259,22 @@ resource "azurerm_application_gateway" "app_gateway" {
       include_query_string = lookup(redirect_configuration.value, "include_query_string", "true")
     }
   }
+
+  #
+  # Identity
+  #
+
+  dynamic "identity" {
+    for_each = var.user_assigned_identity_id != null ? ["fake"] : []
+    content {
+      type         = "UserAssigned"
+      identity_ids = [var.user_assigned_identity_id]
+    }
+  }
+
+  #
+  # Tags
+  #
 
   tags = merge(local.default_tags, var.app_gateway_tags)
 }
