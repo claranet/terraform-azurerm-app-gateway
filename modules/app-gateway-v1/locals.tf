@@ -24,7 +24,7 @@ locals {
   redirect_configuration_name    = format("%s-rdrcfg", local.application_gateway_name)
 
   ## Frontend port local
-  frontend_port = concat([443], var.frontend_port)
+  frontend_port = coalescelist(var.frontend_port, [443])
 
   # Network locals
 

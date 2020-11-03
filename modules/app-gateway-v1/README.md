@@ -1,13 +1,15 @@
 # Azure Application Gateway v1
+[![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](../../CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](../../NOTICE) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](../../LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/claranet/app-gateway/azurerm/latest/submodules/app-gateway-v1)
 
-## Requirements
-* [AzureRM Terraform provider](https://www.terraform.io/docs/providers/azurerm/) >= 1.31
+This Terraform module creates an [Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/overview) associated with a [Public IP](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm#public-ip-addresses) and with a [Subnet](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet), a [Network Security Group](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview) and network security rules authorizing port 443 and [ports for internal healthcheck of Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview#network-security-groups-on-the-application-gateway-subnet).
 
-## Terraform version compatibility
- 
-| Module version | Terraform version |
-|----------------|-------------------|
-| >= x.x.x       | 0.12.x            |
+## Version compatibility
+
+| Module version    | Terraform version | AzureRM version |
+|-------------------|-------------------|-----------------|
+| >= 3.x.x          | 0.12.x            | >= 2.1          |
+| >= 2.x.x, < 3.x.x | 0.12.x            | <  2.0          |
+| <  2.x.x          | 0.11.x            | <  2.0          |
 
 ## Usage
 
@@ -47,8 +49,8 @@ module "azure-network-vnet" {
   vnet_cidr           = ["10.10.0.0/16"]
 }
 
-module "azure-application-gateway" {
-  source  = "claranet/azure-application-gateway/azurerm"
+module "azure-app-gateway" {
+  source  = "claranet/app-gateway/azurerm//modules/app-gateway-v1"
   version = "x.x.x"
 
   location            = module.azure-region.location
@@ -91,7 +93,7 @@ module "azure-application-gateway" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:| 
+|------|-------------|------|---------|:--------:|
 | appgw\_backend\_http\_settings | List of maps including backend http settings configurations | `list(map(string))` | n/a | yes |
 | appgw\_backend\_pools | List of objects including backend pool configurations | <pre>list(object({<br>    name  = string<br>    fqdns = list(string)<br>  }))</pre> | n/a | yes |
 | appgw\_http\_listeners | List of maps including http listeners configurations | `list(map(string))` | n/a | yes |
@@ -106,9 +108,10 @@ module "azure-application-gateway" {
 | custom\_security\_group\_name | Custom Network Security Group name, generated if not set | `string` | `""` | no |
 | disabled\_rule\_group\_settings | List of objects including rule groups to disable | <pre>list(object({<br>    rule_group_name = string<br>    rules           = list(string)<br>  }))</pre> | `[]` | no |
 | domain\_name\_label | Label for the Domain Name. Will be used to make up the FQDN. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system. | `string` | `""` | no |
+| enable\_http2 | Enable HTTP2 | `bool` | `true` | no |
 | environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
-| frontend\_port | A list of ports used for the Frontend Port. Can be empty | `list(string)` | `[]` | no | 
+| frontend\_port | A list of ports used for the Frontend Port. Can be empty | `list(string)` | `[]` | no |
 | ip\_allocation\_method | Defines the allocation method for this IP address. Possible values are Static or Dynamic. | `string` | `"Dynamic"` | no |
 | ip\_sku | The SKU of the Public IP. Accepted values are Basic and Standard. Defaults to Basic | `string` | `"Basic"` | no |
 | location | Azure location. | `string` | n/a | yes |
@@ -125,7 +128,7 @@ module "azure-application-gateway" {
 
 ## Outputs
 
-| Name | Description | 
+| Name | Description |
 |------|-------------|
 | app\_gateway\_id | Application Gateway ID |
 | network\_security\_group\_id | Network Security Group ID of the subnet where is Application Gateway |
@@ -134,4 +137,4 @@ module "azure-application-gateway" {
 
 Terraform resource documentation: [www.terraform.io/docs/providers/azurerm/r/virtual_machine.html](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html)
 
-Microsoft Azure documentation: 
+Microsoft Azure documentation: [docs.microsoft.com/en-us/azure/application-gateway/overview](https://docs.microsoft.com/en-us/azure/application-gateway/overview)

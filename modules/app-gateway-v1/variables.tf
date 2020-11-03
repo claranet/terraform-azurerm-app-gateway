@@ -105,7 +105,7 @@ variable "sku" {
 
 variable "frontend_port" {
   description = "A list of ports used for the Frontend Port. Can be empty"
-  type        = list(string)
+  type        = list(number)
   default     = []
 }
 

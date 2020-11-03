@@ -85,7 +85,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     for_each = var.appgw_http_listeners
     content {
       name                           = format("%s-%s", local.listener_name, lookup(http_listener.value, "name"))
-      frontend_ip_configuration_name = local.local.frontend_ip_configuration_name
+      frontend_ip_configuration_name = local.frontend_ip_configuration_name
       frontend_port_name             = format("%s-%s", local.frontend_port_name, lookup(http_listener.value, "port"))
       host_name                      = lookup(http_listener.value, "host_name")
       protocol                       = lookup(http_listener.value, "protocol")
@@ -196,12 +196,12 @@ resource "azurerm_application_gateway" "app_gateway" {
     for_each = var.appgw_probes
     content {
       host                = lookup(probe.value, "host")
-      interval            = 30
+      interval            = lookup(probe.value, "interval", 30)
       name                = lookup(probe.value, "name")
       path                = lookup(probe.value, "path", "/")
       protocol            = lookup(probe.value, "protocol", "Https")
-      timeout             = 30
-      unhealthy_threshold = 3
+      timeout             = lookup(probe.value, "timeout", 30)
+      unhealthy_threshold = lookup(probe.value, "unhealthy_threshold", 3)
     }
   }
 

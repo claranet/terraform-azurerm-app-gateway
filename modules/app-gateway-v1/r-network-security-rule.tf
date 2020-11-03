@@ -6,13 +6,13 @@ resource "azurerm_network_security_rule" "allow_web" {
   priority                    = 100
   protocol                    = "Tcp"
   resource_group_name         = var.resource_group_name
-  description                 = "Allow http and https access from internet"
+  description                 = "Allow access from frontend_port of appgw"
 
   source_port_range = "*"
 
   source_address_prefix = "Internet"
 
-  destination_port_ranges    = [443]
+  destination_port_ranges    = local.frontend_port
   destination_address_prefix = "*"
 }
 
