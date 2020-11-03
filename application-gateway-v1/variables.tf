@@ -42,6 +42,12 @@ variable "extra_tags" {
   default     = {}
 }
 
+variable "enable_http2" {
+  description = "Enable HTTP2"
+  type        = bool
+  default     = true
+}
+
 # Network inputs
 
 variable "custom_ippub_name" {

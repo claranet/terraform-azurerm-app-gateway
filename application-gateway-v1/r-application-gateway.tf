@@ -2,6 +2,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   location            = var.location
   name                = local.application_gateway_name
   resource_group_name = var.resource_group_name
+  enable_http2        = var.enable_http2
 
   #
   # Common
@@ -47,6 +48,19 @@ resource "azurerm_application_gateway" "app_gateway" {
         content {
           rule_group_name = lookup(disabled_rule_group.value, "rule_group_name")
           rules           = lookup(disabled_rule_group.value, "rules")
+        }
+      }
+
+      #
+      # Exclusion configuration
+      #
+
+      dynamic "exclusion" {
+        for_each = var.waf_exclusion
+        content {
+          selector                = lookup(exclusion.value, "selector")
+          selector_match_operator = lookup(exclusion.value, "selector_match_operator")
+          match_variable          = lookup(exclusion.value, "match_variable")
         }
       }
     }
