@@ -218,7 +218,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       unhealthy_threshold                       = lookup(probe.value, "unhealthy_threshold", 3)
       match {
         body        = lookup(probe.value, "match_body", "")
-        status_code = lookup(probe.value, "match_status_code", [])
+        status_code = lookup(probe.value, "match_status_code", ["200-399"])
       }
     }
   }
