@@ -208,13 +208,14 @@ resource "azurerm_application_gateway" "app_gateway" {
   dynamic "probe" {
     for_each = var.appgw_probes
     content {
-      host                = lookup(probe.value, "host", null)
-      interval            = lookup(probe.value, "interval", 30)
-      name                = lookup(probe.value, "name", null)
-      path                = lookup(probe.value, "path", "/")
-      protocol            = lookup(probe.value, "protocol", "Https")
-      timeout             = lookup(probe.value, "timeout", 30)
-      unhealthy_threshold = lookup(probe.value, "unhealthy_threshold", 3)
+      host                                      = lookup(probe.value, "host", null)
+      interval                                  = lookup(probe.value, "interval", 30)
+      name                                      = lookup(probe.value, "name", null)
+      path                                      = lookup(probe.value, "path", "/")
+      protocol                                  = lookup(probe.value, "protocol", "Https")
+      timeout                                   = lookup(probe.value, "timeout", 30)
+      pick_host_name_from_backend_http_settings = lookup(probe.value, "pick_host_name_from_backend_http_settings", false)
+      unhealthy_threshold                       = lookup(probe.value, "unhealthy_threshold", 3)
       match {
         body        = lookup(probe.value, "match_body", "")
         status_code = lookup(probe.value, "match_status_code", [])
