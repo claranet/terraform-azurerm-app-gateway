@@ -1,14 +1,14 @@
-# Unreleased
+# v3.1.0 - 2020-11-10
 
 Added
   * AZ-183: Add unmaintained module for Application Gateway v1
 
-# 3.0.1 - 2020-08-31
+# v3.0.1 - 2020-08-31
 
 Fixed
   * AZ-260: Fix outputs problems on destroy
 
-# 3.0.0 - 2020-07-28
+# v3.0.0 - 2020-07-28
 
 Breaking
   * AZ-198: Upgrade module to be compliant with AzureRM 2.0
