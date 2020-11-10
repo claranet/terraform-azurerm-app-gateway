@@ -1,3 +1,8 @@
+# Unreleased
+
+Added
+  * AZ-183: Add unmaintained module for Application Gateway v1
+
 # 3.0.1 - 2020-08-31
 
 Fixed
