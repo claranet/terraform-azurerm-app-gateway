@@ -36,7 +36,7 @@ module "azure-network-security-group" {
 }
 
 resource "azurerm_network_security_rule" "web" {
-  count = var.create_nsg ? 1 : 0
+  count = var.create_nsg && var.create_nsg_https_rule ? 1 : 0
 
   name = local.nsr_https_name
 
@@ -57,7 +57,7 @@ resource "azurerm_network_security_rule" "web" {
 
 
 resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
-  count = var.create_nsg ? 1 : 0
+  count = var.create_nsg && var.create_nsg_healthprobe_rule ? 1 : 0
 
   name = local.nsr_healthcheck_name
 

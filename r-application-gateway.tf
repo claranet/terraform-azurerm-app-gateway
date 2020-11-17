@@ -133,9 +133,10 @@ resource "azurerm_application_gateway" "app_gateway" {
   dynamic "ssl_certificate" {
     for_each = var.ssl_certificates_configs
     content {
-      name     = lookup(ssl_certificate.value, "name", null)
-      data     = lookup(ssl_certificate.value, "data", null)
-      password = lookup(ssl_certificate.value, "password", null)
+      name                = lookup(ssl_certificate.value, "name", null)
+      data                = lookup(ssl_certificate.value, "data", null)
+      password            = lookup(ssl_certificate.value, "password", null)
+      key_vault_secret_id = lookup(ssl_certificate.value, "key_vault_secret_id", null)
     }
   }
 
@@ -207,16 +208,17 @@ resource "azurerm_application_gateway" "app_gateway" {
   dynamic "probe" {
     for_each = var.appgw_probes
     content {
-      host                = lookup(probe.value, "host", null)
-      interval            = lookup(probe.value, "interval", 30)
-      name                = lookup(probe.value, "name", null)
-      path                = lookup(probe.value, "path", "/")
-      protocol            = lookup(probe.value, "protocol", "Https")
-      timeout             = lookup(probe.value, "timeout", 30)
-      unhealthy_threshold = lookup(probe.value, "unhealthy_threshold", 3)
+      host                                      = lookup(probe.value, "host", null)
+      interval                                  = lookup(probe.value, "interval", 30)
+      name                                      = lookup(probe.value, "name", null)
+      path                                      = lookup(probe.value, "path", "/")
+      protocol                                  = lookup(probe.value, "protocol", "Https")
+      timeout                                   = lookup(probe.value, "timeout", 30)
+      pick_host_name_from_backend_http_settings = lookup(probe.value, "pick_host_name_from_backend_http_settings", false)
+      unhealthy_threshold                       = lookup(probe.value, "unhealthy_threshold", 3)
       match {
         body        = lookup(probe.value, "match_body", "")
-        status_code = lookup(probe.value, "match_status_code", [])
+        status_code = lookup(probe.value, "match_status_code", ["200-399"])
       }
     }
   }
@@ -258,6 +260,22 @@ resource "azurerm_application_gateway" "app_gateway" {
       include_query_string = lookup(redirect_configuration.value, "include_query_string", "true")
     }
   }
+
+  #
+  # Identity
+  #
+
+  dynamic "identity" {
+    for_each = var.user_assigned_identity_id != null ? ["fake"] : []
+    content {
+      type         = "UserAssigned"
+      identity_ids = [var.user_assigned_identity_id]
+    }
+  }
+
+  #
+  # Tags
+  #
 
   tags = merge(local.default_tags, var.app_gateway_tags)
 }
