@@ -1,7 +1,7 @@
-# unrleased
+# v3.2.0 - 2020-11-17
 
 Added
-  * AZ-244 Add new variables for NSG rules and user identity
+  * AZ-244: Add new variables for NSG rules and user identity
 
 # v3.1.0 - 2020-11-10
 
