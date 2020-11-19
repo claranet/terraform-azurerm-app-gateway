@@ -1,4 +1,4 @@
-# v3.2.1/v4.0.0 - Unreleased
+# v3.2.1/v4.0.0 - 2020-11-19
 
 Updated
   * AZ-273: Module now compatible terraform `v0.13+`
