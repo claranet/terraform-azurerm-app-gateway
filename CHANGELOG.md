@@ -2,6 +2,7 @@
 
 Added
   * AZ-378: Add ability to create a private Application Gateway with HTTP listener on private IP
+  * AZ-378: Lowercase default generated name
 
 # v3.2.1/v4.0.0 - 2020-11-19
 
