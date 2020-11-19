@@ -5,6 +5,7 @@ locals {
   appgw_name = var.appgw_name != "" ? var.appgw_name : join("-", [local.default_name, "appgw"])
 
   subnet_name = var.custom_subnet_name != "" ? [var.custom_subnet_name] : [join("-", [local.default_name, "subnet"])]
+  subnet_id   = var.create_subnet ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id
 
   nsg_ids = var.create_nsg ? {
     element(local.subnet_name, 0) = join("", module.azure-network-security-group.network_security_group_id)
@@ -16,7 +17,8 @@ locals {
   ip_name  = var.ip_name != "" ? var.ip_name : join("-", [local.default_name, "pubip"])
   ip_label = var.ip_label != "" ? var.ip_label : join("-", [local.default_name, "pubip"])
 
-  frontend_ip_configuration_name = var.frontend_ip_configuration_name != "" ? var.frontend_ip_configuration_name : join("-", [local.default_name, "frontipconfig"])
+  frontend_ip_configuration_name      = var.frontend_ip_configuration_name != "" ? var.frontend_ip_configuration_name : join("-", [local.default_name, "frontipconfig"])
+  frontend_priv_ip_configuration_name = var.frontend_priv_ip_configuration_name != "" ? var.frontend_ip_configuration_name : join("-", [local.default_name, "frontipconfig-priv"])
 
   gateway_ip_configuration_name = var.gateway_ip_configuration_name != "" ? var.gateway_ip_configuration_name : join("-", [local.default_name, "gwipconfig"])
 

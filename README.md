@@ -138,6 +138,8 @@ module "appgw_v2" {
 | appgw\_backend\_pools | List of maps including backend pool configurations | `any` | n/a | yes |
 | appgw\_http\_listeners | List of maps including http listeners configurations | `list(map(string))` | n/a | yes |
 | appgw\_name | Application Gateway name. | `string` | `""` | no |
+| appgw\_private | Boolean variable to create a private Application Gateway. When `true`, the default http listener will listen on private IP instead of the public IP. | `bool` | `false` | no |
+| appgw\_private\_ip | Private IP for Application Gateway. Used when variable `appgw_private` is set to `true`. | `string` | `null` | no |
 | appgw\_probes | List of maps including request probes configurations | `any` | `[]` | no |
 | appgw\_redirect\_configuration | List of maps including redirect configurations | `list(map(string))` | `[]` | no |
 | appgw\_rewrite\_rule\_set | List of rewrite rule set including rewrite rules | `any` | `[]` | no |
@@ -163,6 +165,7 @@ module "appgw_v2" {
 | file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
 | frontend\_ip\_configuration\_name | The Name of the Frontend IP Configuration used for this HTTP Listener. | `string` | `""` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | `list(map(string))` | n/a | yes |
+| frontend\_priv\_ip\_configuration\_name | The Name of the private Frontend IP Configuration used for this HTTP Listener. | `string` | `""` | no |
 | gateway\_ip\_configuration\_name | The Name of the Application Gateway IP Configuration. | `string` | `""` | no |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |
 | ip\_label | Domain name label for public IP. | `string` | `""` | no |
