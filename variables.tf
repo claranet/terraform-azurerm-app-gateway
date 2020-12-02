@@ -246,7 +246,7 @@ variable "disabled_rule_group_settings" {
   default = []
 }
 
-variable "add_dev_portal_disable_rules" {
+variable "disable_waf_rules_for_dev_portal" {
   description = "Whether to disable some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link"
   type        = bool
   default     = false

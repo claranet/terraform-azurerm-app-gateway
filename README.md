@@ -155,6 +155,7 @@ module "appgw_v2" {
 | custom\_nsr\_https\_name | Custom name for the network security rule for HTTPS protocol. | `string` | `null` | no |
 | custom\_subnet\_name | Custom name for the subnet. | `string` | `""` | no |
 | diag\_settings\_name | Custom name for the diagnostic settings of Application Gateway. | `string` | `""` | no |
+| disable\_waf\_rules\_for\_dev\_portal | Whether to disable some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link | `bool` | `false` | no |
 | disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | <pre>list(object({<br>    rule_group_name = string<br>    rules           = list(string)<br>  }))</pre> | `[]` | no |
 | enable\_http2 | Whether to enable http2 or not | `bool` | `true` | no |
 | enable\_logging | Boolean flag to specify whether logging is enabled | `bool` | `true` | no |

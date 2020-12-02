@@ -62,5 +62,5 @@ locals {
     }
   ]
 
-  disabled_rule_group_settings = var.add_dev_portal_disable_rules ? concat(local.disabled_rule_group_settings_dev_portal, var.disabled_rule_group_settings) : var.disabled_rule_group_settings
+  disabled_rule_group_settings = var.disable_waf_rules_for_dev_portal ? concat(local.disabled_rule_group_settings_dev_portal, var.disabled_rule_group_settings) : var.disabled_rule_group_settings
 }
