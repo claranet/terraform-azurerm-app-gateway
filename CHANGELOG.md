@@ -1,3 +1,8 @@
+# Unreleased
+
+Updated
+  * AZ-399: Added `default_redirect_configuration_name` to the `url_path_map` block in order to permit simultaneous usage of `appgw_redirect_configuration`
+
 # v4.2.0 - 2021-01-07 
 
 Updated
