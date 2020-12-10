@@ -120,6 +120,12 @@ variable "frontend_ip_configuration_name" {
   default     = ""
 }
 
+variable "frontend_priv_ip_configuration_name" {
+  description = "The Name of the private Frontend IP Configuration used for this HTTP Listener."
+  type        = string
+  default     = ""
+}
+
 variable "gateway_ip_configuration_name" {
   description = "The Name of the Application Gateway IP Configuration."
   type        = string
@@ -387,6 +393,20 @@ variable "nsr_https_source_address_prefix" {
 
 variable "user_assigned_identity_id" {
   description = "User assigned identity id assigned to this resource"
+  type        = string
+  default     = null
+}
+
+### APPGW PRIVATE 
+
+variable "appgw_private" {
+  description = "Boolean variable to create a private Application Gateway. When `true`, the default http listener will listen on private IP instead of the public IP."
+  type        = bool
+  default     = false
+}
+
+variable "appgw_private_ip" {
+  description = "Private IP for Application Gateway. Used when variable `appgw_private` is set to `true`."
   type        = string
   default     = null
 }

@@ -21,6 +21,16 @@ resource "azurerm_application_gateway" "app_gateway" {
     public_ip_address_id = azurerm_public_ip.ip.id
   }
 
+  dynamic "frontend_ip_configuration" {
+    for_each = var.appgw_private ? ["fake"] : []
+    content {
+      name                          = local.frontend_priv_ip_configuration_name
+      private_ip_address_allocation = var.appgw_private ? "Static" : null
+      private_ip_address            = var.appgw_private ? var.appgw_private_ip : null
+      subnet_id                     = var.appgw_private ? local.subnet_id : null
+    }
+  }
+
   dynamic "frontend_port" {
     for_each = var.frontend_port_settings
     content {
@@ -105,7 +115,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     for_each = var.appgw_http_listeners
     content {
       name                           = lookup(http_listener.value, "name", null)
-      frontend_ip_configuration_name = lookup(http_listener.value, "frontend_ip_conf", local.frontend_ip_configuration_name)
+      frontend_ip_configuration_name = lookup(http_listener.value, "frontend_ip_conf", var.appgw_private ? local.frontend_priv_ip_configuration_name : local.frontend_ip_configuration_name)
       frontend_port_name             = lookup(http_listener.value, "frontend_port_name", null)
       protocol                       = lookup(http_listener.value, "protocol", "Https")
       ssl_certificate_name           = lookup(http_listener.value, "ssl_certificate_name", null)
