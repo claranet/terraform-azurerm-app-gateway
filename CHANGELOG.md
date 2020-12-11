@@ -1,6 +1,7 @@
 # Unreleased
 
 Added
+  * AZ-376: Add enable_http2 parameter, handle ip_addresses param on backend_pools
   * AZ-378: Add ability to create a private Application Gateway with HTTP listener on private IP
   * AZ-378: Lowercase default generated name
 

@@ -410,3 +410,9 @@ variable "appgw_private_ip" {
   type        = string
   default     = null
 }
+
+variable "enable_http2" {
+  description = "Whether to enable http2 or not"
+  type        = bool
+  default     = true
+}

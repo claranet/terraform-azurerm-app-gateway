@@ -16,6 +16,8 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   zones = var.zones
 
+  enable_http2 = var.enable_http2
+
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
     public_ip_address_id = azurerm_public_ip.ip.id
@@ -131,8 +133,9 @@ resource "azurerm_application_gateway" "app_gateway" {
   dynamic "backend_address_pool" {
     for_each = var.appgw_backend_pools
     content {
-      name  = lookup(backend_address_pool.value, "name", null)
-      fqdns = lookup(backend_address_pool.value, "fqdns", null)
+      name         = lookup(backend_address_pool.value, "name", null)
+      fqdns        = lookup(backend_address_pool.value, "fqdns", null)
+      ip_addresses = lookup(backend_address_pool.value, "ip_addresses", null)
     }
   }
 
