@@ -1,8 +1,10 @@
-# Unreleased
+# v4.1.0 - 2020-12-11
 
 Added
-  * AZ-376: Add enable_http2 parameter, handle ip_addresses param on backend_pools
+  * AZ-376: Add `enable_http2` parameter, handle `ip_addresses` param on `backend_pool` block
   * AZ-378: Add ability to create a private Application Gateway with HTTP listener on private IP
+
+Updated:
   * AZ-378: Lowercase default generated name
 
 # v3.2.1/v4.0.0 - 2020-11-19
