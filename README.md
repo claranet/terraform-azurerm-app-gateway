@@ -157,6 +157,7 @@ module "appgw_v2" {
 | custom\_subnet\_name | Custom name for the subnet. | `string` | `""` | no |
 | diag\_settings\_name | Custom name for the diagnostic settings of Application Gateway. | `string` | `""` | no |
 | disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | <pre>list(object({<br>    rule_group_name = string<br>    rules           = list(string)<br>  }))</pre> | `[]` | no |
+| enable\_http2 | Whether to enable http2 or not | `bool` | `true` | no |
 | enable\_logging | Boolean flag to specify whether logging is enabled | `bool` | `true` | no |
 | enable\_waf | Boolean to enable WAF. | `bool` | `true` | no |
 | environment | Project environment | `string` | n/a | yes |
