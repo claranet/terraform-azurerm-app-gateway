@@ -4,7 +4,7 @@ Updated
   * AZ-422: Remove unused variable `app_gateway_subnet_id`
 
 Added
-  * AZ-392: possibility to deactivate some WAF rules in case there's a developer portal behind the APIM
+  * AZ-392: possibility to deactivate some WAF rules in case there's an APIM developer portal behind the Application Gateway
 
 # v4.1.0 - 2020-12-11
 
