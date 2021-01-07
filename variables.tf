@@ -80,14 +80,6 @@ variable "ip_allocation_method" {
   default     = "Static"
 }
 
-### APPGW NETWORK
-
-variable "app_gateway_subnet_id" {
-  description = "Application Gateway subnet ID."
-  type        = string
-  default     = null
-}
-
 # Application gateway inputs
 
 variable "appgw_name" {

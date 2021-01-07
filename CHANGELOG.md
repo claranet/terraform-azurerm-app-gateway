@@ -1,3 +1,8 @@
+# Unreleased 
+
+Updated
+  * AZ-422: Remove unused variable `app_gateway_subnet_id`
+
 # v4.1.0 - 2020-12-11
 
 Added
