@@ -58,7 +58,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       rule_set_version         = var.rule_set_version
 
       dynamic "disabled_rule_group" {
-        for_each = var.disabled_rule_group_settings
+        for_each = local.disabled_rule_group_settings
         content {
           rule_group_name = lookup(disabled_rule_group.value, "rule_group_name", null)
           rules           = lookup(disabled_rule_group.value, "rules", null)

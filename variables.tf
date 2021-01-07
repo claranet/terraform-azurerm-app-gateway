@@ -246,6 +246,12 @@ variable "disabled_rule_group_settings" {
   default = []
 }
 
+variable "disable_waf_rules_for_dev_portal" {
+  description = "Whether to disable some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link"
+  type        = bool
+  default     = false
+}
+
 variable "waf_exclusion_settings" {
   description = "WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#match_variable"
   type        = list(map(string))
