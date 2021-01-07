@@ -132,7 +132,6 @@ module "appgw_v2" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| app\_gateway\_subnet\_id | Application Gateway subnet ID. | `string` | `null` | no |
 | app\_gateway\_tags | Application Gateway tags. | `map(string)` | `{}` | no |
 | appgw\_backend\_http\_settings | List of maps including backend http settings configurations | `any` | n/a | yes |
 | appgw\_backend\_pools | List of maps including backend pool configurations | `any` | n/a | yes |
