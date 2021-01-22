@@ -243,9 +243,10 @@ resource "azurerm_application_gateway" "app_gateway" {
   dynamic "url_path_map" {
     for_each = var.appgw_url_path_map
     content {
-      name                               = lookup(url_path_map.value, "name", null)
-      default_backend_address_pool_name  = lookup(url_path_map.value, "default_backend_address_pool_name", null)
-      default_backend_http_settings_name = lookup(url_path_map.value, "default_backend_http_settings_name", lookup(url_path_map.value, "default_backend_address_pool_name", null))
+      name                                = lookup(url_path_map.value, "name", null)
+      default_backend_address_pool_name   = lookup(url_path_map.value, "default_backend_address_pool_name", null)
+      default_redirect_configuration_name = lookup(url_path_map.value, "default_redirect_configuration_name", null)
+      default_backend_http_settings_name  = lookup(url_path_map.value, "default_backend_http_settings_name", lookup(url_path_map.value, "default_backend_address_pool_name", null))
 
       dynamic "path_rule" {
         for_each = lookup(url_path_map.value, "path_rule")
@@ -269,6 +270,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       name                 = lookup(redirect_configuration.value, "name", null)
       redirect_type        = lookup(redirect_configuration.value, "redirect_type", "Permanent")
       target_listener_name = lookup(redirect_configuration.value, "target_listener_name", null)
+      target_url           = lookup(redirect_configuration.value, "target_url", null)
       include_path         = lookup(redirect_configuration.value, "include_path", "true")
       include_query_string = lookup(redirect_configuration.value, "include_query_string", "true")
     }

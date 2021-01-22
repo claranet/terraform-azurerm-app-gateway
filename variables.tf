@@ -136,7 +136,7 @@ variable "ssl_policy" {
 }
 
 variable "trusted_root_certificate_configs" {
-  description = "List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'."
+  description = "List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate)"
   type        = list(map(string))
   default     = []
 }
@@ -152,7 +152,13 @@ variable "appgw_http_listeners" {
 }
 
 variable "ssl_certificates_configs" {
-  description = "List of maps including ssl certificates configurations"
+  description = <<EOD
+List of maps including ssl certificates configurations.
+The path to a base-64 encoded certificate is expected in the 'data' parameter:
+```
+data = filebase64("./file_path")
+```
+EOD
   type        = list(map(string))
   default     = []
 }
