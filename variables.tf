@@ -152,7 +152,13 @@ variable "appgw_http_listeners" {
 }
 
 variable "ssl_certificates_configs" {
-  description = "List of maps including ssl certificates configurations. The path to a base-64 encoded certificate is expected in the 'data' parameter `data = filebase64("./file_path")`"
+  description = <<EOD
+List of maps including ssl certificates configurations.
+The path to a base-64 encoded certificate is expected in the 'data' parameter:
+```
+data = filebase64("./file_path")
+```
+EOD
   type        = list(map(string))
   default     = []
 }

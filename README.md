@@ -188,13 +188,13 @@ module "appgw_v2" {
 | rule\_set\_version | The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1. | `number` | `3.1` | no |
 | sku | The Name of the SKU to use for this Application Gateway. Possible values are Standard\_v2 and WAF\_v2. | `string` | `"WAF_v2"` | no |
 | sku\_capacity | The Capacity of the SKU to use for this Application Gateway - which must be between 1 and 10, optional if autoscale\_configuration is set | `number` | `2` | no |
-| ssl\_certificates\_configs | List of maps including ssl certificates configurations. | `list(map(string))` | `[]` | no |
+| ssl\_certificates\_configs | List of maps including ssl certificates configurations.<br>The path to a base-64 encoded certificate is expected in the 'data' parameter:<pre>data = filebase64("./file_path")</pre> | `list(map(string))` | `[]` | no |
 | ssl\_policy | Application Gateway SSL configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy | `any` | `[]` | no |
 | stack | Project stack name | `string` | n/a | yes |
 | subnet\_cidr | Subnet CIDR to create. | `string` | `""` | no |
 | subnet\_id | Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`. | `string` | `""` | no |
 | subnet\_resource\_group\_name | Resource group name of the subnet. | `string` | `""` | no |
-| trusted\_root\_certificate\_configs | List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'. | `list(map(string))` | `[]` | no |
+| trusted\_root\_certificate\_configs | List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate) | `list(map(string))` | `[]` | no |
 | user\_assigned\_identity\_id | User assigned identity id assigned to this resource | `string` | `null` | no |
 | virtual\_network\_name | Virtual network name to attach the subnet. | `string` | n/a | yes |
 | waf\_exclusion\_settings | WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#match_variable | `list(map(string))` | `[]` | no |
