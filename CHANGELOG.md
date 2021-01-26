@@ -1,5 +1,8 @@
 # Unreleased
 
+Added
+  * AZ-429 Add autoscaling
+
 Fixed
   * AZ-449: Update default value for `policy_name` parameter in `ssl_policy` block
 

@@ -46,6 +46,10 @@ resource "azurerm_application_gateway" "app_gateway" {
     subnet_id = var.create_subnet ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id
   }
 
+  #
+  # Security
+  #
+
   dynamic "waf_configuration" {
     for_each = local.enable_waf ? ["fake"] : []
     content {
@@ -84,6 +88,18 @@ resource "azurerm_application_gateway" "app_gateway" {
       policy_name          = lookup(var.ssl_policy, "policy_type") == "Predefined" ? lookup(var.ssl_policy, "policy_name", "AppGwSslPolicy20170401S") : null
       cipher_suites        = lookup(var.ssl_policy, "cipher_suites", [])
       min_protocol_version = lookup(var.ssl_policy, "min_protocol_version", null)
+    }
+  }
+
+  #
+  # Autoscaling
+  #
+
+  dynamic "autoscale_configuration" {
+    for_each = var.autoscaling
+    content {
+      min_capacity = lookup(autoscale_configuration.value, "min_capacity")
+      max_capacity = lookup(autoscale_configuration.value, "max_capacity")
     }
   }
 
