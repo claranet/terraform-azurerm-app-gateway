@@ -431,7 +431,7 @@ variable "enable_http2" {
 
 variable "autoscaling" {
   type        = list(map(string))
-  description = "Map containing autoscaling parameters"
+  description = "List of maps containing autoscaling parameters"
   default     = []
 }
 
