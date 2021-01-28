@@ -99,7 +99,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     for_each = var.autoscaling
     content {
       min_capacity = lookup(autoscale_configuration.value, "min_capacity", 1)
-      max_capacity = lookup(autoscale_configuration.value, "max_capacity")
+      max_capacity = lookup(autoscale_configuration.value, "max_capacity", 5)
     }
   }
 
