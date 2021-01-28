@@ -98,7 +98,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   dynamic "autoscale_configuration" {
     for_each = var.autoscaling
     content {
-      min_capacity = lookup(autoscale_configuration.value, "min_capacity")
+      min_capacity = lookup(autoscale_configuration.value, "min_capacity", 1)
       max_capacity = lookup(autoscale_configuration.value, "max_capacity")
     }
   }
