@@ -131,8 +131,8 @@ variable "frontend_port_settings" {
 
 variable "ssl_policy" {
   description = "Application Gateway SSL configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy"
-  type        = any
-  default     = []
+  type        = map(any)
+  default     = null
 }
 
 variable "trusted_root_certificate_configs" {
