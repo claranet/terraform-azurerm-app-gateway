@@ -1,4 +1,4 @@
-# v4.4.0 - unreleased
+# v4.4.0 - 2021-02-22
 
 Added
   * AZ-450: Added `firewall_policy_id` to the `http_listener` block in order to permit a link between custom WAF policies and listeners
