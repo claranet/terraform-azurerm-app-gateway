@@ -3,6 +3,9 @@
 Added
   * AZ-450: Added `firewall_policy_id` to the `http_listener` block in order to permit a link between custom WAF policies and listeners
 
+Breaking
+  * AZ-449: Change `ssl_policy` input parameter type to `map(any)` (we cannot have multiple policies)
+
 # v4.3.0 - 2021-01-22
 
 Updated

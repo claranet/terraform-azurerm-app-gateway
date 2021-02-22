@@ -77,7 +77,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   dynamic "ssl_policy" {
-    for_each = var.ssl_policy
+    for_each = var.ssl_policy == null ? [] : ["dummy"]
     content {
       disabled_protocols   = lookup(ssl_policy.value, "disabled_protocols", [])
       policy_type          = lookup(ssl_policy.value, "policy_type", "Predefined")
