@@ -123,6 +123,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       ssl_certificate_name           = lookup(http_listener.value, "ssl_certificate_name", null)
       host_name                      = lookup(http_listener.value, "host_name", null)
       require_sni                    = lookup(http_listener.value, "require_sni", null)
+      firewall_policy_id             = lookup(http_listener.value, "firewall_policy_id", null)
     }
   }
 
