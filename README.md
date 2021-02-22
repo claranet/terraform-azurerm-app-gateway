@@ -110,6 +110,7 @@ module "appgw_v2" {
     ssl_certificate_name           = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-example-com-sslcert"
     host_name                      = "example.com"
     require_sni                    = true
+    firewall_policy_id             = module.waf_policy.id
   }]
 
   frontend_port_settings = [{
