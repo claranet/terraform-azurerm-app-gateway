@@ -77,13 +77,13 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   dynamic "ssl_policy" {
-    for_each = var.ssl_policy == null ? [] : ["dummy"]
+    for_each = var.ssl_policy == null ? [] : [1]
     content {
-      disabled_protocols   = lookup(ssl_policy.value, "disabled_protocols", [])
-      policy_type          = lookup(ssl_policy.value, "policy_type", "Predefined")
-      policy_name          = lookup(ssl_policy.value, "policy_name", "AppGwSslPolicy20170401S")
-      cipher_suites        = lookup(ssl_policy.value, "cipher_suites", [])
-      min_protocol_version = lookup(ssl_policy.value, "min_protocol_version", null)
+      disabled_protocols   = lookup(var.ssl_policy, "disabled_protocols", [])
+      policy_type          = lookup(var.ssl_policy, "policy_type", "Predefined")
+      policy_name          = lookup(var.ssl_policy, "policy_name", "AppGwSslPolicy20170401S")
+      cipher_suites        = lookup(var.ssl_policy, "cipher_suites", [])
+      min_protocol_version = lookup(var.ssl_policy, "min_protocol_version", null)
     }
   }
 

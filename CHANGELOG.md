@@ -1,3 +1,8 @@
+# v4.4.1 - 2021-02-23
+
+Fixed
+  * AZ-449: Fix `ssl_policy` type and usage
+
 # v4.4.0 - 2021-02-22
 
 Added
