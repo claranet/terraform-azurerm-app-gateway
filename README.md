@@ -111,7 +111,28 @@ module "appgw_v2" {
     host_name                      = "example.com"
     require_sni                    = true
     firewall_policy_id             = module.waf_policy.id
+    custom_error_configuration     = {
+      custom1 = {
+        custom_error_page_url = "https://example.com/custom_error_403_page.html"
+        status_code           = "HttpStatus403"
+      },
+      custom2 = {
+        custom_error_page_url = "https://example.com/custom_error_502_page.html"
+        status_code           = "HttpStatus502"
+      }
+    }
   }]
+
+  custom_error_configuration = [
+    {
+      custom_error_page_url = "https://example.com/custom_error_403_page.html"
+      status_code           = "HttpStatus403"
+    },
+    {
+      custom_error_page_url = "https://example.com/custom_error_502_page.html"
+      status_code           = "HttpStatus502"
+    }
+  ]
 
   frontend_port_settings = [{
     name = "frontend-https-port"
@@ -141,7 +162,7 @@ module "appgw_v2" {
 | app\_gateway\_tags | Application Gateway tags. | `map(string)` | `{}` | no |
 | appgw\_backend\_http\_settings | List of maps including backend http settings configurations | `any` | n/a | yes |
 | appgw\_backend\_pools | List of maps including backend pool configurations | `any` | n/a | yes |
-| appgw\_http\_listeners | List of maps including http listeners configurations | `list(map(string))` | n/a | yes |
+| appgw\_http\_listeners | List of maps including http listeners configurations | `any` | n/a | yes |
 | appgw\_name | Application Gateway name. | `string` | `""` | no |
 | appgw\_private | Boolean variable to create a private Application Gateway. When `true`, the default http listener will listen on private IP instead of the public IP. | `bool` | `false` | no |
 | appgw\_private\_ip | Private IP for Application Gateway. Used when variable `appgw_private` is set to `true`. | `string` | `null` | no |
@@ -156,6 +177,7 @@ module "appgw_v2" {
 | create\_nsg\_healthprobe\_rule | Boolean to create the network security group rule for the health probes. | `bool` | `true` | no |
 | create\_nsg\_https\_rule | Boolean to create the network security group rule opening https to everyone. | `bool` | `true` | no |
 | create\_subnet | Boolean to create subnet with this module. | `bool` | `true` | no |
+| custom\_error\_configuration | Custom page URL for HTTP 403 and 502 errors. | `list(map(string))` | `[]` | no |
 | custom\_nsg\_name | Custom name for the network security group. | `string` | `null` | no |
 | custom\_nsr\_healthcheck\_name | Custom name for the network security rule for internal health check of Application Gateway. | `string` | `null` | no |
 | custom\_nsr\_https\_name | Custom name for the network security rule for HTTPS protocol. | `string` | `null` | no |
