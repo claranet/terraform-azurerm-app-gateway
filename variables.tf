@@ -147,7 +147,7 @@ variable "appgw_backend_pools" {
 }
 
 variable "appgw_http_listeners" {
-  description = "List of maps including http listeners configurations and map of maps inclunding listener custom error configuration"
+  description = "List of maps including http listeners configurations and map of maps including listener custom error configurations"
   type        = any
 }
 
