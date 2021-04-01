@@ -1,13 +1,11 @@
-# Unreleased
-
-Added
-  * AZ-429: Add autoscaling
-
-Fixed
-  * AZ-449: Update default value for `policy_name` parameter in `ssl_policy` block
+# v4.5.0 - 2021-04-01
 
 Added
   * AZ-463: Add `custom_error_configuration` to the global level and `http_listener` block in order to permit custom error pages usage
+  * AZ-429: Add autoscaling parameters
+
+Fixed
+  * AZ-449: Update default value for `policy_name` parameter in `ssl_policy` block
 
 # v4.4.1 - 2021-02-23
 
