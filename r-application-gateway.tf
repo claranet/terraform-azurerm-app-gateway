@@ -124,6 +124,24 @@ resource "azurerm_application_gateway" "app_gateway" {
       host_name                      = lookup(http_listener.value, "host_name", null)
       require_sni                    = lookup(http_listener.value, "require_sni", null)
       firewall_policy_id             = lookup(http_listener.value, "firewall_policy_id", null)
+      dynamic "custom_error_configuration" {
+        for_each = lookup(http_listener.value, "custom_error_configuration", {})
+        content {
+          custom_error_page_url = lookup(custom_error_configuration.value, "custom_error_page_url", null)
+          status_code           = lookup(custom_error_configuration.value, "status_code", null)
+        }
+      }
+    }
+  }
+
+  #
+  # Custom error configuration
+  #
+  dynamic "custom_error_configuration" {
+    for_each = var.custom_error_configuration
+    content {
+      custom_error_page_url = lookup(custom_error_configuration.value, "custom_error_page_url", null)
+      status_code           = lookup(custom_error_configuration.value, "status_code", null)
     }
   }
 

@@ -3,6 +3,9 @@
 Fixed
   * AZ-449: Update default value for `policy_name` parameter in `ssl_policy` block
 
+Added
+  * AZ-463: Add `custom_error_configuration` to the global level and `http_listener` block in order to permit custom error pages usage
+
 # v4.4.1 - 2021-02-23
 
 Fixed

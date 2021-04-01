@@ -147,8 +147,14 @@ variable "appgw_backend_pools" {
 }
 
 variable "appgw_http_listeners" {
-  description = "List of maps including http listeners configurations"
+  description = "List of maps including http listeners configurations and map of maps including listener custom error configurations"
+  type        = any
+}
+
+variable "custom_error_configuration" {
+  description = "List of maps including global level custom error configurations"
   type        = list(map(string))
+  default     = []
 }
 
 variable "ssl_certificates_configs" {
