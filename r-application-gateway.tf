@@ -9,7 +9,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   #
 
   sku {
-    capacity = length(var.autoscaling) != 0 ? null : var.sku_capacity
+    capacity = length(var.autoscaling_parameters) != 0 ? null : var.sku_capacity
     name     = var.sku
     tier     = var.sku
   }
