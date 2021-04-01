@@ -1,3 +1,8 @@
+# v4.5.1 - 2021-04-01
+
+Fixed
+  * AZ-429: Fix autoscaling parameters default value
+
 # v4.5.0 - 2021-04-01
 
 Added
