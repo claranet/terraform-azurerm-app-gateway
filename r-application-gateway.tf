@@ -9,7 +9,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   #
 
   sku {
-    capacity = var.sku_capacity
+    capacity = length(var.autoscaling_parameters) != 0 ? null : var.sku_capacity
     name     = var.sku
     tier     = var.sku
   }
@@ -45,6 +45,10 @@ resource "azurerm_application_gateway" "app_gateway" {
     name      = local.gateway_ip_configuration_name
     subnet_id = var.create_subnet ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id
   }
+
+  #
+  # Security
+  #
 
   dynamic "waf_configuration" {
     for_each = local.enable_waf ? ["fake"] : []
@@ -84,6 +88,18 @@ resource "azurerm_application_gateway" "app_gateway" {
       policy_name          = lookup(var.ssl_policy, "policy_type") == "Predefined" ? lookup(var.ssl_policy, "policy_name", "AppGwSslPolicy20170401S") : null
       cipher_suites        = lookup(var.ssl_policy, "cipher_suites", [])
       min_protocol_version = lookup(var.ssl_policy, "min_protocol_version", null)
+    }
+  }
+
+  #
+  # Autoscaling
+  #
+
+  dynamic "autoscale_configuration" {
+    for_each = toset(var.autoscaling_parameters != null ? ["fake"] : [])
+    content {
+      min_capacity = lookup(var.autoscaling_parameters, "min_capacity")
+      max_capacity = lookup(var.autoscaling_parameters, "max_capacity", 5)
     }
   }
 

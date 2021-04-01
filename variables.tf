@@ -426,3 +426,12 @@ variable "enable_http2" {
   type        = bool
   default     = true
 }
+
+### Autoscaling
+
+variable "autoscaling_parameters" {
+  type        = map(string)
+  description = "Map containing autoscaling parameters. Must contain at least min_capacity"
+  default     = {}
+}
+
