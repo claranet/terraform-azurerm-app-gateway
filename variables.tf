@@ -136,7 +136,7 @@ variable "ssl_policy" {
 }
 
 variable "trusted_root_certificate_configs" {
-  description = "List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate)"
+  description = "List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data' or 'filename'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate)"
   type        = list(map(string))
   default     = []
 }

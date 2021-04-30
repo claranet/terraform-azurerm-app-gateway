@@ -196,7 +196,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     for_each = var.trusted_root_certificate_configs
     content {
       name = lookup(trusted_root_certificate.value, "name", null)
-      data = filebase64(lookup(trusted_root_certificate.value, "data", null))
+      data = lookup(trusted_root_certificate.value, "data", null) == null ? filebase64(lookup(trusted_root_certificate.value, "filename", null)) : lookup(trusted_root_certificate.value, "data", null)
     }
   }
 

@@ -227,7 +227,7 @@ module "appgw_v2" {
 | subnet\_cidr | Subnet CIDR to create. | `string` | `""` | no |
 | subnet\_id | Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`. | `string` | `""` | no |
 | subnet\_resource\_group\_name | Resource group name of the subnet. | `string` | `""` | no |
-| trusted\_root\_certificate\_configs | List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate) | `list(map(string))` | `[]` | no |
+| trusted\_root\_certificate\_configs | List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data' or 'filename'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate) | `list(map(string))` | `[]` | no |
 | user\_assigned\_identity\_id | User assigned identity id assigned to this resource | `string` | `null` | no |
 | virtual\_network\_name | Virtual network name to attach the subnet. | `string` | n/a | yes |
 | waf\_exclusion\_settings | WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#match_variable | `list(map(string))` | `[]` | no |
