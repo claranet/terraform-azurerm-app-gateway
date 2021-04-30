@@ -1,4 +1,4 @@
-# v4.6.0 - unrleased
+# v4.6.0 - 2021-04-30
 
 Breaking
   * AZ-490: Change `trusted_root_certificate_configs` variable usage: it must contains `filename` pointing to the certificate path or `data` with the certificate content in base64 format
