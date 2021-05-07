@@ -1,6 +1,10 @@
 # Unreleased
+
 Added
   * AZ-512: Improvements on `rewrite_rule_set` block
+
+Fixed
+  * AZ-494: Fix `request_routing_rule` block to manage `redirect_configuration_name` parameter
 
 # v4.7.0 - 2021-06-07
 

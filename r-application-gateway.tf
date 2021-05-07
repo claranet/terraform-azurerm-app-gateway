@@ -211,8 +211,8 @@ resource "azurerm_application_gateway" "app_gateway" {
       rule_type = lookup(request_routing_rule.value, "rule_type", "Basic")
 
       http_listener_name          = lookup(request_routing_rule.value, "http_listener_name", lookup(request_routing_rule.value, "name", null))
-      backend_address_pool_name   = lookup(request_routing_rule.value, "backend_address_pool_name", lookup(request_routing_rule.value, "name", null))
-      backend_http_settings_name  = lookup(request_routing_rule.value, "backend_http_settings_name", lookup(request_routing_rule.value, "name", null))
+      backend_address_pool_name   = lookup(request_routing_rule.value, "backend_address_pool_name", null)
+      backend_http_settings_name  = lookup(request_routing_rule.value, "backend_http_settings_name", null)
       url_path_map_name           = lookup(request_routing_rule.value, "url_path_map_name", null)
       redirect_configuration_name = lookup(request_routing_rule.value, "redirect_configuration_name", null)
       rewrite_rule_set_name       = lookup(request_routing_rule.value, "rewrite_rule_set_name", null)
