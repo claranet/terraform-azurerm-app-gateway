@@ -22,8 +22,6 @@ locals {
 
   gateway_ip_configuration_name = var.gateway_ip_configuration_name != "" ? var.gateway_ip_configuration_name : join("-", [local.default_name, "gwipconfig"])
 
-  diag_settings_name = var.diag_settings_name != "" ? var.diag_settings_name : join("-", [local.default_name, "diag-settings"])
-
   enable_waf = var.sku == "WAF_v2" ? true : false
 
   default_tags = {
