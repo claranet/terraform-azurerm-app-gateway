@@ -1,5 +1,8 @@
 # Unreleased
 
+Breaking
+  * AZ-160: Unify diagnostics settings on all Claranet modules
+
 Fixed
   * AZ-503: url_path_map hash key `paths` transform input as list, so it wasn't possible to pass a list as expected. Now flattening to be sure to have a list
 
