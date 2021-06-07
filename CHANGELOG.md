@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-503: url_path_map hash key `paths` transform input as list, so it wasn't possible to pass a list as expected. Now flattening to be sure to have a list
+
 # v4.6.0 - 2021-04-30
 
 Breaking
@@ -35,7 +40,7 @@ Breaking
 Updated
   * AZ-399: Added `default_redirect_configuration_name` to the `url_path_map` block in order to permit simultaneous usage of `appgw_redirect_configuration`
 
-# v4.2.0 - 2021-01-07 
+# v4.2.0 - 2021-01-07
 
 Updated
   * AZ-422: Remove unused variable `app_gateway_subnet_id`
