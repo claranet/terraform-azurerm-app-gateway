@@ -233,7 +233,7 @@ resource "azurerm_application_gateway" "app_gateway" {
           name          = lookup(rewrite_rule.value, "name", null)
           rule_sequence = lookup(rewrite_rule.value, "rule_sequence", null)
 
-          dynamic "condition" { 
+          dynamic "condition" {
             for_each = lookup(rewrite_rule.value, "condition_variable", null) != null ? ["fake"] : []
             content {
               ignore_case = lookup(rewrite_rule.value, "condition_ignore_case", null)
@@ -241,23 +241,23 @@ resource "azurerm_application_gateway" "app_gateway" {
               pattern     = lookup(rewrite_rule.value, "condition_pattern", null)
               variable    = lookup(rewrite_rule.value, "condition_variable", null)
             }
-          }  
+          }
 
           dynamic "response_header_configuration" {
             for_each = lookup(rewrite_rule.value, "response_header_name", null) != null ? ["fake"] : []
-            content {            
+            content {
               header_name  = lookup(rewrite_rule.value, "response_header_name", null)
               header_value = lookup(rewrite_rule.value, "response_header_value", null)
             }
-          }         
+          }
 
           dynamic "request_header_configuration" {
             for_each = lookup(rewrite_rule.value, "request_header_name", null) != null ? ["fake"] : []
-            content {  
+            content {
               header_name  = lookup(rewrite_rule.value, "request_header_name", null)
               header_value = lookup(rewrite_rule.value, "request_header_value", null)
             }
-          }  
+          }
         }
       }
     }
