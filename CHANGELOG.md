@@ -1,4 +1,4 @@
-# Unreleased
+# v4.8.0 - 2021-06-25
 
 Added
   * AZ-512: Improvements on `rewrite_rule_set` block
