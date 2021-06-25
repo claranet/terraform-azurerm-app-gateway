@@ -2,7 +2,7 @@ locals {
   name_prefix  = var.name_prefix != "" ? replace(var.name_prefix, "/[a-z0-9]$/", "$0-") : ""
   default_name = lower("${local.name_prefix}${var.stack}-${var.client_name}-${var.location_short}-${var.environment}")
 
-  appgw_name = var.appgw_name != "" ? var.appgw_name : join("-", [local.default_name, "appgw"])
+  appgw_name = var.custom_appgw_name != "" ? var.custom_appgw_name : join("-", [local.default_name, "appgw"])
 
   subnet_name = var.custom_subnet_name != "" ? [var.custom_subnet_name] : [join("-", [local.default_name, "subnet"])]
   subnet_id   = var.create_subnet ? module.azure_network_subnet.subnet_ids[0] : var.subnet_id
@@ -17,10 +17,10 @@ locals {
   ip_name  = var.ip_name != "" ? var.ip_name : join("-", [local.default_name, "pubip"])
   ip_label = var.ip_label != "" ? var.ip_label : join("-", [local.default_name, "pubip"])
 
-  frontend_ip_configuration_name      = var.frontend_ip_configuration_name != "" ? var.frontend_ip_configuration_name : join("-", [local.default_name, "frontipconfig"])
-  frontend_priv_ip_configuration_name = var.frontend_priv_ip_configuration_name != "" ? var.frontend_ip_configuration_name : join("-", [local.default_name, "frontipconfig-priv"])
+  frontend_ip_configuration_name      = var.custom_frontend_ip_configuration_name != "" ? var.custom_frontend_ip_configuration_name : join("-", [local.default_name, "frontipconfig"])
+  frontend_priv_ip_configuration_name = var.custom_frontend_priv_ip_configuration_name != "" ? var.custom_frontend_priv_ip_configuration_name : join("-", [local.default_name, "frontipconfig-priv"])
 
-  gateway_ip_configuration_name = var.gateway_ip_configuration_name != "" ? var.gateway_ip_configuration_name : join("-", [local.default_name, "gwipconfig"])
+  gateway_ip_configuration_name = var.custom_gateway_ip_configuration_name != "" ? var.custom_gateway_ip_configuration_name : join("-", [local.default_name, "gwipconfig"])
 
   enable_waf = var.sku == "WAF_v2" ? true : false
 
