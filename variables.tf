@@ -50,22 +50,10 @@ variable "extra_tags" {
 
 # PUBLIC IP
 
-variable "ip_name" {
-  description = "Public IP name."
-  type        = string
-  default     = ""
-}
-
 variable "ip_tags" {
   description = "Public IP tags."
   type        = map(string)
   default     = {}
-}
-
-variable "ip_label" {
-  description = "Domain name label for public IP."
-  type        = string
-  default     = ""
 }
 
 variable "ip_sku" {

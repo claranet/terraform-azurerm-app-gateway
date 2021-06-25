@@ -14,8 +14,8 @@ locals {
   nsr_https_name       = coalesce(var.custom_nsr_https_name, join("-", [local.default_name, "https-nsr"]))
   nsr_healthcheck_name = coalesce(var.custom_nsr_healthcheck_name, join("-", [local.default_name, "appgw-healthcheck-nsr"]))
 
-  ip_name  = var.ip_name != "" ? var.ip_name : join("-", [local.default_name, "pubip"])
-  ip_label = var.ip_label != "" ? var.ip_label : join("-", [local.default_name, "pubip"])
+  ip_name  = var.custom_ip_name != "" ? var.custom_ip_name : join("-", [local.default_name, "pubip"])
+  ip_label = var.custom_ip_label != "" ? var.custom_ip_label : join("-", [local.default_name, "pubip"])
 
   frontend_ip_configuration_name      = var.custom_frontend_ip_configuration_name != "" ? var.custom_frontend_ip_configuration_name : join("-", [local.default_name, "frontipconfig"])
   frontend_priv_ip_configuration_name = var.custom_frontend_priv_ip_configuration_name != "" ? var.custom_frontend_priv_ip_configuration_name : join("-", [local.default_name, "frontipconfig-priv"])
