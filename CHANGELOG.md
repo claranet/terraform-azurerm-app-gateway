@@ -1,3 +1,7 @@
+# Unreleased
+Added
+  * AZ-512: Improvements on `rewrite_rule_set` block
+
 # v4.7.0 - 2021-06-07
 
 Breaking
