@@ -299,7 +299,7 @@ variable "subnet_cidr" {
 variable "create_nsg" {
   description = "Boolean to create the network security group."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "create_nsg_https_rule" {
