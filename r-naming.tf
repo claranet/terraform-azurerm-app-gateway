@@ -59,28 +59,31 @@ resource "azurecaf_name" "nsr-healthcheck" {
 }
 
 resource "azurecaf_name" "frontipconfig" {
-  name        = var.stack
-  prefixes    = compact([var.use_caf_naming ? "frontipconfig" : "", local.name_prefix])
-  suffixes    = compact([var.client_name, var.environment, local.name_suffix, var.use_caf_naming ? "" : "frontipconfig"])
-  use_slug    = var.use_caf_naming
-  clean_input = true
-  separator   = "-"
+  name          = var.stack
+  resource_type = "azurerm_public_ip"
+  prefixes      = compact([var.use_caf_naming ? "frontipconfig" : "", local.name_prefix])
+  suffixes      = compact([var.client_name, var.environment, local.name_suffix, var.use_caf_naming ? "" : "frontipconfig"])
+  use_slug      = false
+  clean_input   = true
+  separator     = "-"
 }
 
 resource "azurecaf_name" "frontipconfig-priv" {
-  name        = var.stack
-  prefixes    = compact([var.use_caf_naming ? "frontipconfig-priv" : "", local.name_prefix])
-  suffixes    = compact([var.client_name, var.environment, local.name_suffix, var.use_caf_naming ? "" : "frontipconfig-priv"])
-  use_slug    = var.use_caf_naming
-  clean_input = true
-  separator   = "-"
+  name          = var.stack
+  resource_type = "azurerm_public_ip"
+  prefixes      = compact([var.use_caf_naming ? "frontipconfig-priv" : "", local.name_prefix])
+  suffixes      = compact([var.client_name, var.environment, local.name_suffix, var.use_caf_naming ? "" : "frontipconfig-priv"])
+  use_slug      = false
+  clean_input   = true
+  separator     = "-"
 }
 
 resource "azurecaf_name" "gwipconfig" {
-  name        = var.stack
-  prefixes    = compact([var.use_caf_naming ? "gwipconfig" : "", local.name_prefix])
-  suffixes    = compact([var.client_name, var.environment, local.name_suffix, var.use_caf_naming ? "" : "gwipconfig"])
-  use_slug    = var.use_caf_naming
-  clean_input = true
-  separator   = "-"
+  name          = var.stack
+  resource_type = "azurerm_public_ip"
+  prefixes      = compact([var.use_caf_naming ? "gwipconfig" : "", local.name_prefix])
+  suffixes      = compact([var.client_name, var.environment, local.name_suffix, var.use_caf_naming ? "" : "gwipconfig"])
+  use_slug      = false
+  clean_input   = true
+  separator     = "-"
 }
