@@ -161,6 +161,12 @@ module "appgw_v2" {
 }
 ```
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| azurerm | >= 2.56 |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
