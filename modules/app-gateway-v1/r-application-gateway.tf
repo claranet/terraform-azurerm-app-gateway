@@ -21,7 +21,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
-    subnet_id = module.azure-network-subnet.subnet_ids[0]
+    subnet_id = module.azure_network_subnet.subnet_ids[0]
   }
 
   dynamic "frontend_port" {
@@ -56,7 +56,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       #
 
       dynamic "exclusion" {
-        for_each = var.waf_exclusion
+        for_each = var.waf_exclusions
         content {
           selector                = lookup(exclusion.value, "selector")
           selector_match_operator = lookup(exclusion.value, "selector_match_operator")
@@ -67,7 +67,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   dynamic "ssl_policy" {
-    for_each = var.ssl_policy_settings
+    for_each = var.ssl_policy
     content {
       disabled_protocols   = lookup(ssl_policy.value, "disabled_protocols", [])
       policy_type          = lookup(ssl_policy.value, "policy_type", "Predefined")

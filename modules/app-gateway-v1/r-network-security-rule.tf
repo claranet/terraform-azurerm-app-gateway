@@ -2,7 +2,7 @@ resource "azurerm_network_security_rule" "allow_web" {
   access                      = "Allow"
   direction                   = "Inbound"
   name                        = "allow_web_application_gateway"
-  network_security_group_name = module.network-security-group.network_security_group_name
+  network_security_group_name = module.network_security_group.network_security_group_name
   priority                    = 100
   protocol                    = "Tcp"
   resource_group_name         = var.resource_group_name
@@ -20,7 +20,7 @@ resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
   access                      = "Allow"
   direction                   = "Inbound"
   name                        = "allow_health_probe_application_gateway"
-  network_security_group_name = module.network-security-group.network_security_group_name
+  network_security_group_name = module.network_security_group.network_security_group_name
   priority                    = 101
   protocol                    = "Tcp"
   resource_group_name         = var.resource_group_name

@@ -33,5 +33,8 @@ locals {
     format("%s%s-%s-%s-%s-pubip", local.name_prefix, var.stack, var.client_name, var.location_short, var.environment),
   )
 
-  subnet_name = format("%s-%s-%s-%s-appgw-subnet", var.stack, var.client_name, var.location_short, var.environment)
+  subnet_names = [
+    for cidr in var.subnet_cidr_list :
+    format("%s-%s-%s-%s-appgw-subnet%s", var.stack, var.client_name, var.location_short, var.environment, index(var.subnet_cidr_list, cidr))
+  ]
 }
