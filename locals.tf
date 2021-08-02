@@ -5,10 +5,10 @@ locals {
   appgw_name = var.appgw_name != "" ? var.appgw_name : join("-", [local.default_name, "appgw"])
 
   subnet_name = var.custom_subnet_name != "" ? [var.custom_subnet_name] : [join("-", [local.default_name, "subnet"])]
-  subnet_id   = var.create_subnet ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id
+  subnet_id   = var.create_subnet ? module.azure_network_subnet.subnet_ids[0] : var.subnet_id
 
   nsg_ids = var.create_nsg ? {
-    element(local.subnet_name, 0) = join("", module.azure-network-security-group.network_security_group_id)
+    element(local.subnet_name, 0) = join("", module.azure_network_security_group.network_security_group_id)
   } : {}
 
   nsr_https_name       = coalesce(var.custom_nsr_https_name, join("-", [local.default_name, "https-nsr"]))

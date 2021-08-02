@@ -1,5 +1,8 @@
 # Unreleased
 
+Breaking
+  * AZ-546: Clean module, remove unused variables, needs a `terraform state mv` for renamed modules
+
 Fixed
   * AZ-530: Fix provider required version
 

@@ -1,4 +1,4 @@
-module "azure-network-subnet" {
+module "azure_network_subnet" {
   source  = "claranet/subnet/azurerm"
   version = "3.0.0"
 
@@ -18,7 +18,7 @@ module "azure-network-subnet" {
   route_table_ids = var.create_subnet ? var.route_table_ids : {}
 }
 
-module "azure-network-security-group" {
+module "azure_network_security_group" {
   source  = "claranet/nsg/azurerm"
   version = "3.0.0"
 
@@ -41,7 +41,7 @@ resource "azurerm_network_security_rule" "web" {
   name = local.nsr_https_name
 
   resource_group_name         = var.subnet_resource_group_name != "" ? var.subnet_resource_group_name : var.resource_group_name
-  network_security_group_name = module.azure-network-security-group.network_security_group_name[0]
+  network_security_group_name = module.azure_network_security_group.network_security_group_name[0]
 
   priority  = 100
   direction = "Inbound"
@@ -62,7 +62,7 @@ resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
   name = local.nsr_healthcheck_name
 
   resource_group_name         = var.subnet_resource_group_name != "" ? var.subnet_resource_group_name : var.resource_group_name
-  network_security_group_name = module.azure-network-security-group.network_security_group_name[0]
+  network_security_group_name = module.azure_network_security_group.network_security_group_name[0]
 
   priority  = 101
   direction = "Inbound"
