@@ -90,6 +90,27 @@ module "azure-app-gateway" {
 }
 ```
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| azurerm | ~> 1.32 |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| azure_network_subnet | claranet/subnet/azurerm | 2.1.0 |
+| network_security_group | claranet/nsg/azurerm | 2.0.1 |
+
+## Resources
+
+| Name |
+|------|
+| [azurerm_application_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway) |
+| [azurerm_network_security_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) |
+| [azurerm_public_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -111,7 +132,7 @@ module "azure-app-gateway" {
 | enable\_http2 | Enable HTTP2 | `bool` | `true` | no |
 | environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
-| frontend\_port | A list of ports used for the Frontend Port. Can be empty | `list(string)` | `[]` | no |
+| frontend\_port | A list of ports used for the Frontend Port. Can be empty | `list(number)` | `[]` | no |
 | ip\_allocation\_method | Defines the allocation method for this IP address. Possible values are Static or Dynamic. | `string` | `"Dynamic"` | no |
 | ip\_sku | The SKU of the Public IP. Accepted values are Basic and Standard. Defaults to Basic | `string` | `"Basic"` | no |
 | location | Azure location. | `string` | n/a | yes |
@@ -125,6 +146,7 @@ module "azure-app-gateway" {
 | subnet\_cidr\_list | List of CIDRs to create Application Gateway dedicated subnet | `list(string)` | n/a | yes |
 | virtual\_network\_name | Name of the Virtual Network where we'll create the Application Gateway dedicated subnet | `string` | n/a | yes |
 | waf\_configuration\_settings | A map used to configured WAF if defined | `map(string)` | `{}` | no |
+| waf\_exclusions | A list used to configured WAF exclusions if defined | `list(map(string))` | `[]` | no |
 
 ## Outputs
 

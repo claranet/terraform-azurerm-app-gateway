@@ -161,6 +161,28 @@ module "appgw_v2" {
 }
 ```
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| azurerm | >= 2.56 |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| azure_network_security_group | claranet/nsg/azurerm | 3.0.0 |
+| azure_network_subnet | claranet/subnet/azurerm | 3.0.0 |
+| diagnostics | claranet/diagnostic-settings/azurerm | 4.0.1 |
+
+## Resources
+
+| Name |
+|------|
+| [azurerm_application_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway) |
+| [azurerm_network_security_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) |
+| [azurerm_public_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -179,7 +201,6 @@ module "appgw_v2" {
 | appgw\_url\_path\_map | List of maps including url path map configurations | `any` | `[]` | no |
 | autoscaling\_parameters | Map containing autoscaling parameters. Must contain at least min\_capacity | `map(string)` | `null` | no |
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
-| create\_network\_security\_rules | Boolean to define is default network security rules should be create or not. Default rules are for port 443 and for the range of ports 65200-65535 for Application Gateway healthchecks. | `bool` | `true` | no |
 | create\_nsg | Boolean to create the network security group. | `bool` | `true` | no |
 | create\_nsg\_healthprobe\_rule | Boolean to create the network security group rule for the health probes. | `bool` | `true` | no |
 | create\_nsg\_https\_rule | Boolean to create the network security group rule opening https to everyone. | `bool` | `true` | no |

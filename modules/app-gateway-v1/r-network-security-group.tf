@@ -1,4 +1,4 @@
-module "network-security-group" {
+module "network_security_group" {
   source  = "claranet/nsg/azurerm"
   version = "2.0.1"
 

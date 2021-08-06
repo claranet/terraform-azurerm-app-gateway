@@ -115,6 +115,12 @@ variable "waf_configuration_settings" {
   default     = {}
 }
 
+variable "waf_exclusions" {
+  description = "A list used to configured WAF exclusions if defined"
+  type        = list(map(string))
+  default     = []
+}
+
 variable "disabled_rule_group_settings" {
   type = list(object({
     rule_group_name = string

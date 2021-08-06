@@ -374,12 +374,6 @@ variable "custom_nsr_healthcheck_name" {
   default     = null
 }
 
-variable "create_network_security_rules" {
-  description = "Boolean to define is default network security rules should be create or not. Default rules are for port 443 and for the range of ports 65200-65535 for Application Gateway healthchecks."
-  type        = bool
-  default     = true
-}
-
 variable "nsr_https_source_address_prefix" {
   description = "Source address prefix to allow to access on port 443 defined in dedicated network security rule."
   type        = string

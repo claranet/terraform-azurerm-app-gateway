@@ -43,7 +43,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
-    subnet_id = var.create_subnet ? module.azure-network-subnet.subnet_ids[0] : var.subnet_id
+    subnet_id = var.create_subnet ? module.azure_network_subnet.subnet_ids[0] : var.subnet_id
   }
 
   #
