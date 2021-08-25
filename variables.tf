@@ -284,10 +284,16 @@ variable "subnet_id" {
   default     = ""
 }
 
-variable "route_table_ids" {
-  description = "The Route Table Ids map to associate with the subnets. More informations about declaration on https://github.com/claranet/terraform-azurerm-subnet."
-  type        = map(string)
-  default     = {}
+variable "route_table_name" {
+  description = "The Route Table name to associate with the subnet"
+  type        = string
+  default     = null
+}
+
+variable "route_table_rg" {
+  description = "The Route Table RG to associate with the subnet. Default is the same RG than the subnet."
+  type        = string
+  default     = null
 }
 
 variable "subnet_cidr" {
