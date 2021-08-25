@@ -6,7 +6,7 @@ This Terraform module creates an [Application Gateway](https://docs.microsoft.co
 ## Version compatibility
 
 | Module version    | Terraform version | AzureRM version |
-|-------------------|-------------------|-----------------|
+| ----------------- | ----------------- | --------------- |
 | >= 3.x.x          | 0.12.x            | >= 2.1          |
 | >= 2.x.x, < 3.x.x | 0.12.x            | <  2.0          |
 | <  2.x.x          | 0.11.x            | <  2.0          |
@@ -90,6 +90,7 @@ module "azure-app-gateway" {
 }
 ```
 
+<!-- BEGIN_TF_DOCS -->
 ## Providers
 
 | Name | Version |
@@ -100,16 +101,17 @@ module "azure-app-gateway" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| azure_network_subnet | claranet/subnet/azurerm | 2.1.0 |
-| network_security_group | claranet/nsg/azurerm | 2.0.1 |
+| azure\_network\_subnet | claranet/subnet/azurerm | 2.1.0 |
+| network\_security\_group | claranet/nsg/azurerm | 2.0.1 |
 
 ## Resources
 
-| Name |
-|------|
-| [azurerm_application_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway) |
-| [azurerm_network_security_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) |
-| [azurerm_public_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) |
+| Name | Type |
+|------|------|
+| [azurerm_application_gateway.app_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway) | resource |
+| [azurerm_network_security_rule.allow_health_probe_app_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
+| [azurerm_network_security_rule.allow_web](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
+| [azurerm_public_ip.ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 
 ## Inputs
 
@@ -154,9 +156,7 @@ module "azure-app-gateway" {
 |------|-------------|
 | app\_gateway\_id | Application Gateway ID |
 | network\_security\_group\_id | Network Security Group ID of the subnet where is Application Gateway |
-
+<!-- END_TF_DOCS -->
 ## Related documentation
-
-Terraform resource documentation: [www.terraform.io/docs/providers/azurerm/r/virtual_machine.html](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html)
 
 Microsoft Azure documentation: [docs.microsoft.com/en-us/azure/application-gateway/overview](https://docs.microsoft.com/en-us/azure/application-gateway/overview)
