@@ -2,7 +2,7 @@ locals {
   name_prefix  = var.name_prefix != "" ? replace(var.name_prefix, "/[a-z0-9]$/", "$0-") : ""
   default_name = lower("${local.name_prefix}${var.stack}-${var.client_name}-${var.location_short}-${var.environment}")
 
-  appgw_name = var.custom_appgw_name != "" ? var.custom_appgw_name : join("-", [local.default_name, "appgw"])
+  appgw_name = coalesce(var.custom_appgw_name, join("-", [local.default_name, "appgw"]))
 
   subnet_name = var.custom_subnet_name != "" ? [var.custom_subnet_name] : [join("-", [local.default_name, "subnet"])]
   subnet_id   = var.create_subnet ? module.azure_network_subnet.subnet_ids[0] : var.subnet_id
