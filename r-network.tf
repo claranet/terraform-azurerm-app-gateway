@@ -2,7 +2,7 @@ module "azure_network_subnet" {
   source  = "claranet/subnet/azurerm"
   version = "4.2.1"
 
-  for_each = var.create_subnet ? ["_"] : []
+  for_each = var.create_subnet ? toset(["appgw_subnet"]) : []
 
   environment         = var.environment
   location_short      = var.location_short
@@ -25,7 +25,7 @@ module "azure_network_security_group" {
   source  = "claranet/nsg/azurerm"
   version = "4.1.1"
 
-  for_each = var.create_nsg ? ["_"] : []
+  for_each = var.create_nsg ? toset(["appgw_nsg"]) : []
 
   client_name         = var.client_name
   environment         = var.environment
@@ -45,7 +45,7 @@ resource "azurerm_network_security_rule" "web" {
   name = local.nsr_https_name
 
   resource_group_name         = coalesce(var.subnet_resource_group_name, var.resource_group_name)
-  network_security_group_name = module.azure_network_security_group[0].network_security_group_name
+  network_security_group_name = module.azure_network_security_group["appgw_nsg"].network_security_group_name
 
   priority  = 100
   direction = "Inbound"
@@ -66,7 +66,7 @@ resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
   name = local.nsr_healthcheck_name
 
   resource_group_name         = coalesce(var.subnet_resource_group_name, var.resource_group_name)
-  network_security_group_name = module.azure_network_security_group[0].network_security_group_name
+  network_security_group_name = module.azure_network_security_group["appgw_nsg"].network_security_group_name
 
   priority  = 101
   direction = "Inbound"

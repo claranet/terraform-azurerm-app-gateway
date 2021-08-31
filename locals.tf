@@ -5,9 +5,9 @@ locals {
   appgw_name = coalesce(var.custom_appgw_name, join("-", [local.default_name, "appgw"]))
 
   subnet_name = coalesce(var.custom_subnet_name, join("-", [local.default_name, "subnet"]))
-  subnet_id   = var.create_subnet ? module.azure_network_subnet[0].subnet_id : var.subnet_id
+  subnet_id   = var.create_subnet ? module.azure_network_subnet["appgw_subnet"].subnet_id : var.subnet_id
 
-  nsg_name = var.create_nsg ? module.azure_network_security_group[0].network_security_group_name : null
+  nsg_name = var.create_nsg ? module.azure_network_security_group["appgw_nsg"].network_security_group_name : null
 
   nsr_https_name       = coalesce(var.custom_nsr_https_name, join("-", [local.default_name, "https-nsr"]))
   nsr_healthcheck_name = coalesce(var.custom_nsr_healthcheck_name, join("-", [local.default_name, "appgw-healthcheck-nsr"]))
