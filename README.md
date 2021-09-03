@@ -149,7 +149,7 @@ module "appgw_v2" {
     policy_name = "AppGwSslPolicy20170401S"
   }
 
-  autoscale_parameters = {
+  autoscaling_parameters = {
     min_capacity = 10
     max_capacity = 60
   }
