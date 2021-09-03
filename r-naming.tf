@@ -8,7 +8,7 @@ resource "azurecaf_name" "appgw" {
   separator     = "-"
 }
 
-resource "azurecaf_name" "subnet-appgw" {
+resource "azurecaf_name" "subnet_appgw" {
   name          = var.stack
   resource_type = "azurerm_subnet"
   prefixes      = var.name_prefix == "" ? null : [local.name_prefix]
@@ -18,7 +18,7 @@ resource "azurecaf_name" "subnet-appgw" {
   separator     = "-"
 }
 
-resource "azurecaf_name" "nsg-appgw" {
+resource "azurecaf_name" "nsg_appgw" {
   name          = var.stack
   resource_type = "azurerm_network_security_group"
   prefixes      = var.name_prefix == "" ? null : [local.name_prefix]
@@ -28,7 +28,7 @@ resource "azurecaf_name" "nsg-appgw" {
   separator     = "-"
 }
 
-resource "azurecaf_name" "pip-appgw" {
+resource "azurecaf_name" "pip_appgw" {
   name          = var.stack
   resource_type = "azurerm_public_ip"
   prefixes      = var.name_prefix == "" ? null : [local.name_prefix]
@@ -38,7 +38,7 @@ resource "azurecaf_name" "pip-appgw" {
   separator     = "-"
 }
 
-resource "azurecaf_name" "nsr-https" {
+resource "azurecaf_name" "nsr_https" {
   name          = var.stack
   resource_type = "azurerm_network_security_group_rule"
   prefixes      = var.name_prefix == "" ? null : [local.name_prefix]
@@ -48,7 +48,7 @@ resource "azurecaf_name" "nsr-https" {
   separator     = "-"
 }
 
-resource "azurecaf_name" "nsr-healthcheck" {
+resource "azurecaf_name" "nsr_healthcheck" {
   name          = var.stack
   resource_type = "azurerm_network_security_group_rule"
   prefixes      = var.name_prefix == "" ? null : [local.name_prefix]
@@ -68,7 +68,7 @@ resource "azurecaf_name" "frontipconfig" {
   separator     = "-"
 }
 
-resource "azurecaf_name" "frontipconfig-priv" {
+resource "azurecaf_name" "frontipconfig_priv" {
   name          = var.stack
   resource_type = "azurerm_public_ip"
   prefixes      = compact([var.use_caf_naming ? "frontipconfig-priv" : "", local.name_prefix])
