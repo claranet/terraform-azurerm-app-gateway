@@ -234,12 +234,12 @@ resource "azurerm_application_gateway" "app_gateway" {
           rule_sequence = lookup(rewrite_rule.value, "rule_sequence", null)
 
           dynamic "condition" {
-            for_each = lookup(rewrite_rule.value, "condition_variable", null) != null ? ["fake"] : []
+            for_each = lookup(rewrite_rule.value, "condition", null)
             content {
-              ignore_case = lookup(rewrite_rule.value, "condition_ignore_case", null)
-              negate      = lookup(rewrite_rule.value, "condition_negate", null)
-              pattern     = lookup(rewrite_rule.value, "condition_pattern", null)
-              variable    = lookup(rewrite_rule.value, "condition_variable", null)
+              ignore_case = lookup(condition.value, "condition_ignore_case", null)
+              negate      = lookup(condition.value, "condition_negate", null)
+              pattern     = lookup(condition.value, "condition_pattern", null)
+              variable    = lookup(condition.value, "condition_variable", null)
             }
           }
 
@@ -256,6 +256,15 @@ resource "azurerm_application_gateway" "app_gateway" {
             content {
               header_name  = lookup(rewrite_rule.value, "request_header_name", null)
               header_value = lookup(rewrite_rule.value, "request_header_value", null)
+            }
+          }
+
+          dynamic "url" {
+            for_each = lookup(rewrite_rule.value, "url_reroute", null) != null ? ["fake"] : []
+            content {
+              path         = lookup(rewrite_rule.value, "url_path", null)
+              query_string = lookup(rewrite_rule.value, "url_query_string", null)
+              reroute      = lookup(rewrite_rule.value, "url_reroute", null)
             }
           }
         }
