@@ -3,12 +3,13 @@
 
 This Terraform module creates an [Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/overview) associated with a [Public IP](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm#public-ip-addresses) and with a [Subnet](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet), a [Network Security Group](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview) and network security rules authorizing port 443 and [ports for internal healthcheck of Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview#network-security-groups-on-the-application-gateway-subnet). The [Diagnostics Logs](https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-diagnostics#diagnostic-logging) are activated.
 
-## Version compatibility
+<!-- BEGIN_TF_DOCS -->
+## Global versionning rule for Claranet Azure modules
 
 | Module version | Terraform version | AzureRM version |
 | -------------- | ----------------- | --------------- |
-| >= 5.x.x       | 0.15.x & 1.0.x    | >= 2.56         |
-| >= 4.x.x       | 0.13.x & 0.14.x   | >= 2.0          |
+| >= 5.x.x       | 0.15.x & 1.0.x    | >= 2.0          |
+| >= 4.x.x       | 0.13.x            | >= 2.0          |
 | >= 3.x.x       | 0.12.x            | >= 2.0          |
 | >= 2.x.x       | 0.12.x            | < 2.0           |
 | <  2.x.x       | 0.11.x            | < 2.0           |
@@ -20,7 +21,7 @@ which set some terraform variables in the environment needed by this module.
 More details about variables set by the `terraform-wrapper` available in the [documentation](https://github.com/claranet/terraform-wrapper#environment).
 
 ```hcl
-module "azure-region" {
+module "azure_region" {
   source  = "claranet/regions/azurerm"
   version = "x.x.x"
 
@@ -31,58 +32,60 @@ module "rg" {
   source  = "claranet/rg/azurerm"
   version = "x.x.x"
 
-  location     = module.azure-region.location
-  client_name  = var.client_name
-  environment  = var.environment
-  stack        = var.stack
+  location    = module.azure_region.location
+  client_name = var.client_name
+  environment = var.environment
+  stack       = var.stack
 }
 
-module "run-common" {
-  source = "claranet/run-common/azurerm"
+module "run_common" {
+  source  = "claranet/run-common/azurerm"
   version = "x.x.x"
 
   client_name         = var.client_name
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
   environment         = var.environment
   stack               = var.stack
   resource_group_name = module.rg.resource_group_name
 
   tenant_id = var.azure_tenant_id
+
+  monitoring_function_splunk_token = null
 }
 
-module "azure-virtual-network" {
+module "azure_virtual_network" {
   source  = "claranet/vnet/azurerm"
   version = "x.x.x"
 
   environment    = var.environment
-  location       = module.azure-region.location
-  location_short = module.azure-region.location_short
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
   client_name    = var.client_name
   stack          = var.stack
 
   resource_group_name = module.rg.resource_group_name
 
-  vnet_cidr        = ["192.168.0.0/16"]
+  vnet_cidr = ["192.168.0.0/16"]
 }
 
 
 module "appgw_v2" {
-  source = "claranet/app-gateway/azurerm"
+  source  = "claranet/app-gateway/azurerm"
   version = "x.x.x"
 
   stack               = var.stack
   environment         = var.environment
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
   client_name         = var.client_name
   resource_group_name = module.rg.resource_group_name
 
-  virtual_network_name = module.azure-virtual-network.virtual_network_name
+  virtual_network_name = module.azure_virtual_network.virtual_network_name
   subnet_cidr          = "192.168.1.0/24"
 
   appgw_backend_http_settings = [{
-    name                  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backhttpsettings"
+    name                  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
     cookie_based_affinity = "Disabled"
     path                  = "/"
     port                  = 443
@@ -91,27 +94,27 @@ module "appgw_v2" {
   }]
 
   appgw_backend_pools = [{
-    name  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backendpool"
+    name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
     fqdns = ["example.com"]
   }]
 
   appgw_routings = [{
-    name                       = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-routing-https"
+    name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-routing-https"
     rule_type                  = "Basic"
-    http_listener_name         = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-listener-https"
-    backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backendpool"
-    backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backhttpsettings"
+    http_listener_name         = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-listener-https"
+    backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
+    backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
   }]
 
   appgw_http_listeners = [{
-    name                           = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-listener-https"
-    frontend_ip_configuration_name = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-frontipconfig"
+    name                           = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-listener-https"
+    frontend_ip_configuration_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-frontipconfig"
     frontend_port_name             = "frontend-https-port"
     protocol                       = "Https"
-    ssl_certificate_name           = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-example-com-sslcert"
+    ssl_certificate_name           = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-com-sslcert"
     host_name                      = "example.com"
     require_sni                    = true
-    custom_error_configuration     = {
+    custom_error_configuration = {
       custom1 = {
         custom_error_page_url = "https://example.com/custom_error_403_page.html"
         status_code           = "HttpStatus403"
@@ -140,8 +143,8 @@ module "appgw_v2" {
   }]
 
   ssl_certificates_configs = [{
-    name     = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-example-com-sslcert"
-    data     = filebase64("./example.com.pfx")
+    name     = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-com-sslcert"
+    data     = var.certificate_example_com_filebase64
     password = var.certificate_example_com_password
   }]
 
@@ -156,13 +159,13 @@ module "appgw_v2" {
   }
 
   logs_destinations_ids = [
-    module.run-common.log_analytics_workspace_id,
-    module.run-common.logs_storage_account_id,
+    module.run_common.log_analytics_workspace_id,
+    module.run_common.logs_storage_account_id,
   ]
 }
+
 ```
 
-<!-- BEGIN_TF_DOCS -->
 ## Providers
 
 | Name | Version |

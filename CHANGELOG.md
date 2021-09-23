@@ -6,6 +6,7 @@ Breaking
 
 Changed
   * AZ-532: Revamp README with latest `terraform-docs` tool
+  * AZ-572: Revamp examples and improve CI
 
 Fixed
   * AZ-530: Fix provider required version
