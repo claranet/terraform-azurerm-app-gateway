@@ -305,6 +305,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       default_backend_address_pool_name   = lookup(url_path_map.value, "default_backend_address_pool_name", null)
       default_redirect_configuration_name = lookup(url_path_map.value, "default_redirect_configuration_name", null)
       default_backend_http_settings_name  = lookup(url_path_map.value, "default_backend_http_settings_name", lookup(url_path_map.value, "default_backend_address_pool_name", null))
+      default_rewrite_rule_set_name       = lookup(url_path_map.value, "default_rewrite_rule_set_name", null)
 
       dynamic "path_rule" {
         for_each = lookup(url_path_map.value, "path_rule")
