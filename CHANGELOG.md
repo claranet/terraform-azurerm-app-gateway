@@ -3,6 +3,9 @@
 Breaking
   * AZ-546: Clean module, remove unused variables, needs a `terraform state mv` for renamed modules
   * AZ-521: Revamp variables names, module cleanup
+  * AZ-515: Option to use Azure CAF naming provider to name resources
+  * AZ-515: Require Terraform 0.13+
+  * AZ-484: CI updated, module now optimized for Terraform 1.0+
 
 Changed
   * AZ-532: Revamp README with latest `terraform-docs` tool

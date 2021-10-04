@@ -1,24 +1,5 @@
 locals {
-  name_prefix  = var.name_prefix != "" ? replace(var.name_prefix, "/[a-z0-9]$/", "$0-") : ""
-  default_name = lower("${local.name_prefix}${var.stack}-${var.client_name}-${var.location_short}-${var.environment}")
-
-  appgw_name = coalesce(var.custom_appgw_name, join("-", [local.default_name, "appgw"]))
-
-  subnet_name = coalesce(var.custom_subnet_name, join("-", [local.default_name, "subnet"]))
-  subnet_id   = var.create_subnet ? module.azure_network_subnet["appgw_subnet"].subnet_id : var.subnet_id
-
-  nsg_name = var.create_nsg ? module.azure_network_security_group["appgw_nsg"].network_security_group_name : null
-
-  nsr_https_name       = coalesce(var.custom_nsr_https_name, join("-", [local.default_name, "https-nsr"]))
-  nsr_healthcheck_name = coalesce(var.custom_nsr_healthcheck_name, join("-", [local.default_name, "appgw-healthcheck-nsr"]))
-
-  ip_name  = coalesce(var.custom_ip_name, join("-", [local.default_name, "pubip"]))
-  ip_label = coalesce(var.custom_ip_label, join("-", [local.default_name, "pubip"]))
-
-  frontend_ip_configuration_name      = coalesce(var.custom_frontend_ip_configuration_name, join("-", [local.default_name, "frontipconfig"]))
-  frontend_priv_ip_configuration_name = coalesce(var.custom_frontend_priv_ip_configuration_name, join("-", [local.default_name, "frontipconfig-priv"]))
-
-  gateway_ip_configuration_name = coalesce(var.custom_gateway_ip_configuration_name, join("-", [local.default_name, "gwipconfig"]))
+  subnet_id = var.create_subnet ? module.azure_network_subnet["appgw_subnet"].subnet_id : var.subnet_id
 
   enable_waf = var.sku == "WAF_v2" ? true : false
 

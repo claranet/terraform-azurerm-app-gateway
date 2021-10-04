@@ -30,12 +30,6 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "name_prefix" {
-  description = "Optional prefix for the generated name"
-  type        = string
-  default     = ""
-}
-
 variable "app_gateway_tags" {
   description = "Application Gateway tags."
   type        = map(string)
