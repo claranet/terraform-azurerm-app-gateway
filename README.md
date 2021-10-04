@@ -3,10 +3,12 @@
 
 This Terraform module creates an [Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/overview) associated with a [Public IP](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm#public-ip-addresses) and with a [Subnet](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet), a [Network Security Group](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview) and network security rules authorizing port 443 and [ports for internal healthcheck of Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview#network-security-groups-on-the-application-gateway-subnet). The [Diagnostics Logs](https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-diagnostics#diagnostic-logging) are activated.
 
-## Version compatibility
+<!-- BEGIN_TF_DOCS -->
+## Global versionning rule for Claranet Azure modules
 
 | Module version | Terraform version | AzureRM version |
-|----------------|-------------------| --------------- |
+| -------------- | ----------------- | --------------- |
+| >= 5.x.x       | 0.15.x & 1.0.x    | >= 2.0          |
 | >= 4.x.x       | 0.13.x            | >= 2.0          |
 | >= 3.x.x       | 0.12.x            | >= 2.0          |
 | >= 2.x.x       | 0.12.x            | < 2.0           |
@@ -19,7 +21,7 @@ which set some terraform variables in the environment needed by this module.
 More details about variables set by the `terraform-wrapper` available in the [documentation](https://github.com/claranet/terraform-wrapper#environment).
 
 ```hcl
-module "azure-region" {
+module "azure_region" {
   source  = "claranet/regions/azurerm"
   version = "x.x.x"
 
@@ -30,58 +32,60 @@ module "rg" {
   source  = "claranet/rg/azurerm"
   version = "x.x.x"
 
-  location     = module.azure-region.location
-  client_name  = var.client_name
-  environment  = var.environment
-  stack        = var.stack
+  location    = module.azure_region.location
+  client_name = var.client_name
+  environment = var.environment
+  stack       = var.stack
 }
 
-module "run-common" {
-  source = "claranet/run-common/azurerm"
+module "run_common" {
+  source  = "claranet/run-common/azurerm"
   version = "x.x.x"
 
   client_name         = var.client_name
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
   environment         = var.environment
   stack               = var.stack
   resource_group_name = module.rg.resource_group_name
 
   tenant_id = var.azure_tenant_id
+
+  monitoring_function_splunk_token = null
 }
 
-module "azure-virtual-network" {
+module "azure_virtual_network" {
   source  = "claranet/vnet/azurerm"
   version = "x.x.x"
 
   environment    = var.environment
-  location       = module.azure-region.location
-  location_short = module.azure-region.location_short
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
   client_name    = var.client_name
   stack          = var.stack
 
   resource_group_name = module.rg.resource_group_name
 
-  vnet_cidr        = ["192.168.0.0/16"]
+  vnet_cidr = ["192.168.0.0/16"]
 }
 
 
 module "appgw_v2" {
-  source = "claranet/app-gateway/azurerm"
+  source  = "claranet/app-gateway/azurerm"
   version = "x.x.x"
 
   stack               = var.stack
   environment         = var.environment
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
   client_name         = var.client_name
   resource_group_name = module.rg.resource_group_name
 
-  virtual_network_name = module.azure-virtual-network.virtual_network_name
+  virtual_network_name = module.azure_virtual_network.virtual_network_name
   subnet_cidr          = "192.168.1.0/24"
 
   appgw_backend_http_settings = [{
-    name                  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backhttpsettings"
+    name                  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
     cookie_based_affinity = "Disabled"
     path                  = "/"
     port                  = 443
@@ -90,27 +94,27 @@ module "appgw_v2" {
   }]
 
   appgw_backend_pools = [{
-    name  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backendpool"
+    name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
     fqdns = ["example.com"]
   }]
 
   appgw_routings = [{
-    name                       = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-routing-https"
+    name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-routing-https"
     rule_type                  = "Basic"
-    http_listener_name         = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-listener-https"
-    backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backendpool"
-    backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-backhttpsettings"
+    http_listener_name         = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-listener-https"
+    backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
+    backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
   }]
 
   appgw_http_listeners = [{
-    name                           = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-listener-https"
-    frontend_ip_configuration_name = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-frontipconfig"
+    name                           = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-listener-https"
+    frontend_ip_configuration_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-frontipconfig"
     frontend_port_name             = "frontend-https-port"
     protocol                       = "Https"
-    ssl_certificate_name           = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-example-com-sslcert"
+    ssl_certificate_name           = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-com-sslcert"
     host_name                      = "example.com"
     require_sni                    = true
-    custom_error_configuration     = {
+    custom_error_configuration = {
       custom1 = {
         custom_error_page_url = "https://example.com/custom_error_403_page.html"
         status_code           = "HttpStatus403"
@@ -139,8 +143,8 @@ module "appgw_v2" {
   }]
 
   ssl_certificates_configs = [{
-    name     = "${var.stack}-${var.client_name}-${module.azure-region.location_short}-${var.environment}-example-com-sslcert"
-    data     = filebase64("./example.com.pfx")
+    name     = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-com-sslcert"
+    data     = var.certificate_example_com_filebase64
     password = var.certificate_example_com_password
   }]
 
@@ -150,15 +154,16 @@ module "appgw_v2" {
   }
 
   autoscaling_parameters = {
-    min_capacity = 10
-    max_capacity = 60
+    min_capacity = 2
+    max_capacity = 15
   }
 
   logs_destinations_ids = [
-    module.run-common.log_analytics_workspace_id,
-    module.run-common.logs_storage_account_id,
+    module.run_common.log_analytics_workspace_id,
+    module.run_common.logs_storage_account_id,
   ]
 }
+
 ```
 
 ## Providers
@@ -171,17 +176,18 @@ module "appgw_v2" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| azure_network_security_group | claranet/nsg/azurerm | 3.0.0 |
-| azure_network_subnet | claranet/subnet/azurerm | 3.0.0 |
-| diagnostics | claranet/diagnostic-settings/azurerm | 4.0.1 |
+| azure\_network\_security\_group | claranet/nsg/azurerm | 4.1.1 |
+| azure\_network\_subnet | claranet/subnet/azurerm | 4.2.1 |
+| diagnostics | claranet/diagnostic-settings/azurerm | 4.0.2 |
 
 ## Resources
 
-| Name |
-|------|
-| [azurerm_application_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway) |
-| [azurerm_network_security_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) |
-| [azurerm_public_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) |
+| Name | Type |
+|------|------|
+| [azurerm_application_gateway.app_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway) | resource |
+| [azurerm_network_security_rule.allow_health_probe_app_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
+| [azurerm_network_security_rule.web](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
+| [azurerm_public_ip.ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 
 ## Inputs
 
@@ -191,7 +197,6 @@ module "appgw_v2" {
 | appgw\_backend\_http\_settings | List of maps including backend http settings configurations | `any` | n/a | yes |
 | appgw\_backend\_pools | List of maps including backend pool configurations | `any` | n/a | yes |
 | appgw\_http\_listeners | List of maps including http listeners configurations and map of maps including listener custom error configurations | `any` | n/a | yes |
-| appgw\_name | Application Gateway name. | `string` | `""` | no |
 | appgw\_private | Boolean variable to create a private Application Gateway. When `true`, the default http listener will listen on private IP instead of the public IP. | `bool` | `false` | no |
 | appgw\_private\_ip | Private IP for Application Gateway. Used when variable `appgw_private` is set to `true`. | `string` | `null` | no |
 | appgw\_probes | List of maps including request probes configurations | `any` | `[]` | no |
@@ -201,11 +206,17 @@ module "appgw_v2" {
 | appgw\_url\_path\_map | List of maps including url path map configurations | `any` | `[]` | no |
 | autoscaling\_parameters | Map containing autoscaling parameters. Must contain at least min\_capacity | `map(string)` | `null` | no |
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
-| create\_nsg | Boolean to create the network security group. | `bool` | `true` | no |
+| create\_nsg | Boolean to create the network security group. | `bool` | `false` | no |
 | create\_nsg\_healthprobe\_rule | Boolean to create the network security group rule for the health probes. | `bool` | `true` | no |
 | create\_nsg\_https\_rule | Boolean to create the network security group rule opening https to everyone. | `bool` | `true` | no |
 | create\_subnet | Boolean to create subnet with this module. | `bool` | `true` | no |
+| custom\_appgw\_name | Application Gateway custom name. Generated by default. | `string` | `""` | no |
 | custom\_error\_configuration | List of maps including global level custom error configurations | `list(map(string))` | `[]` | no |
+| custom\_frontend\_ip\_configuration\_name | The custom name of the Frontend IP Configuration used. Generated by default. | `string` | `""` | no |
+| custom\_frontend\_priv\_ip\_configuration\_name | The Name of the private Frontend IP Configuration used for this HTTP Listener. | `string` | `""` | no |
+| custom\_gateway\_ip\_configuration\_name | The Name of the Application Gateway IP Configuration. | `string` | `""` | no |
+| custom\_ip\_label | Domain name label for public IP. | `string` | `""` | no |
+| custom\_ip\_name | Public IP custom name. Generated by default. | `string` | `""` | no |
 | custom\_nsg\_name | Custom name for the network security group. | `string` | `null` | no |
 | custom\_nsr\_healthcheck\_name | Custom name for the network security rule for internal health check of Application Gateway. | `string` | `null` | no |
 | custom\_nsr\_https\_name | Custom name for the network security rule for HTTPS protocol. | `string` | `null` | no |
@@ -217,13 +228,8 @@ module "appgw_v2" {
 | environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
-| frontend\_ip\_configuration\_name | The Name of the Frontend IP Configuration used for this HTTP Listener. | `string` | `""` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | `list(map(string))` | n/a | yes |
-| frontend\_priv\_ip\_configuration\_name | The Name of the private Frontend IP Configuration used for this HTTP Listener. | `string` | `""` | no |
-| gateway\_ip\_configuration\_name | The Name of the Application Gateway IP Configuration. | `string` | `""` | no |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |
-| ip\_label | Domain name label for public IP. | `string` | `""` | no |
-| ip\_name | Public IP name. | `string` | `""` | no |
 | ip\_sku | SKU for the public IP. Warning, can only be `Standard` for the moment. | `string` | `"Standard"` | no |
 | ip\_tags | Public IP tags. | `map(string)` | `{}` | no |
 | location | Azure location. | `string` | n/a | yes |
@@ -237,7 +243,8 @@ module "appgw_v2" {
 | nsr\_https\_source\_address\_prefix | Source address prefix to allow to access on port 443 defined in dedicated network security rule. | `string` | `"*"` | no |
 | request\_body\_check | Is Request Body Inspection enabled? | `bool` | `true` | no |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
-| route\_table\_ids | The Route Table Ids map to associate with the subnets. More informations about declaration on https://github.com/claranet/terraform-azurerm-subnet. | `map(string)` | `{}` | no |
+| route\_table\_name | The Route Table name to associate with the subnet | `string` | `null` | no |
+| route\_table\_rg | The Route Table RG to associate with the subnet. Default is the same RG than the subnet. | `string` | `null` | no |
 | rule\_set\_type | The Type of the Rule Set used for this Web Application Firewall. | `string` | `"OWASP"` | no |
 | rule\_set\_version | The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1. | `number` | `3.1` | no |
 | sku | The Name of the SKU to use for this Application Gateway. Possible values are Standard\_v2 and WAF\_v2. | `string` | `"WAF_v2"` | no |
@@ -289,9 +296,7 @@ module "appgw_v2" {
 | appgw\_url\_path\_map\_default\_backend\_http\_settings\_ids | List of default backend HTTP settings Ids attached to URL path maps. |
 | appgw\_url\_path\_map\_default\_redirect\_configuration\_ids | List of default redirect configuration Ids attached to URL path maps. |
 | appgw\_url\_path\_map\_ids | List of URL path map Ids. |
-
+<!-- END_TF_DOCS -->
 ## Related documentation
-
-Terraform resource documentation: [www.terraform.io/docs/providers/azurerm/r/application_gateway.html](https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html)
 
 Microsoft Azure documentation: [docs.microsoft.com/en-us/azure/application-gateway/overview](https://docs.microsoft.com/en-us/azure/application-gateway/overview)

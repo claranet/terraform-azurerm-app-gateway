@@ -50,22 +50,10 @@ variable "extra_tags" {
 
 # PUBLIC IP
 
-variable "ip_name" {
-  description = "Public IP name."
-  type        = string
-  default     = ""
-}
-
 variable "ip_tags" {
   description = "Public IP tags."
   type        = map(string)
   default     = {}
-}
-
-variable "ip_label" {
-  description = "Domain name label for public IP."
-  type        = string
-  default     = ""
 }
 
 variable "ip_sku" {
@@ -81,12 +69,6 @@ variable "ip_allocation_method" {
 }
 
 # Application gateway inputs
-
-variable "appgw_name" {
-  description = "Application Gateway name."
-  type        = string
-  default     = ""
-}
 
 variable "sku_capacity" {
   description = "The Capacity of the SKU to use for this Application Gateway - which must be between 1 and 10, optional if autoscale_configuration is set"
@@ -104,24 +86,6 @@ variable "zones" {
   description = "A collection of availability zones to spread the Application Gateway over. This option is only supported for v2 SKUs"
   type        = list(string)
   default     = ["1", "2", "3"]
-}
-
-variable "frontend_ip_configuration_name" {
-  description = "The Name of the Frontend IP Configuration used for this HTTP Listener."
-  type        = string
-  default     = ""
-}
-
-variable "frontend_priv_ip_configuration_name" {
-  description = "The Name of the private Frontend IP Configuration used for this HTTP Listener."
-  type        = string
-  default     = ""
-}
-
-variable "gateway_ip_configuration_name" {
-  description = "The Name of the Application Gateway IP Configuration."
-  type        = string
-  default     = ""
 }
 
 variable "frontend_port_settings" {
@@ -320,16 +284,16 @@ variable "subnet_id" {
   default     = ""
 }
 
-variable "route_table_ids" {
-  description = "The Route Table Ids map to associate with the subnets. More informations about declaration on https://github.com/claranet/terraform-azurerm-subnet."
-  type        = map(string)
-  default     = {}
+variable "route_table_name" {
+  description = "The Route Table name to associate with the subnet"
+  type        = string
+  default     = null
 }
 
-variable "custom_subnet_name" {
-  description = "Custom name for the subnet."
+variable "route_table_rg" {
+  description = "The Route Table RG to associate with the subnet. Default is the same RG than the subnet."
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "subnet_cidr" {
@@ -341,7 +305,7 @@ variable "subnet_cidr" {
 variable "create_nsg" {
   description = "Boolean to create the network security group."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "create_nsg_https_rule" {
@@ -354,24 +318,6 @@ variable "create_nsg_healthprobe_rule" {
   description = "Boolean to create the network security group rule for the health probes."
   type        = bool
   default     = true
-}
-
-variable "custom_nsg_name" {
-  description = "Custom name for the network security group."
-  type        = string
-  default     = null
-}
-
-variable "custom_nsr_https_name" {
-  description = "Custom name for the network security rule for HTTPS protocol."
-  type        = string
-  default     = null
-}
-
-variable "custom_nsr_healthcheck_name" {
-  description = "Custom name for the network security rule for internal health check of Application Gateway."
-  type        = string
-  default     = null
 }
 
 variable "nsr_https_source_address_prefix" {

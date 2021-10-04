@@ -2,6 +2,11 @@
 
 Breaking
   * AZ-546: Clean module, remove unused variables, needs a `terraform state mv` for renamed modules
+  * AZ-521: Revamp variables names, module cleanup
+
+Changed
+  * AZ-532: Revamp README with latest `terraform-docs` tool
+  * AZ-572: Revamp examples and improve CI
 
 Fixed
   * AZ-530: Fix provider required version
