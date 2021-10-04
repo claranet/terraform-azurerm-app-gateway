@@ -1,4 +1,4 @@
-# Unreleased
+# v5.0.0 - 2021-10-04
 
 Breaking
   * AZ-546: Clean module, remove unused variables, needs a `terraform state mv` for renamed modules
