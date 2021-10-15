@@ -130,7 +130,7 @@ module "appgw_v2" {
     policy_name = "AppGwSslPolicy20170401S"
   }
 
-  rewrite_rule_set = {
+  appgw_rewrite_rule_set = {
     name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-set"
     rewrite_rule = [
       {
@@ -148,9 +148,9 @@ module "appgw_v2" {
         response_header_value = "DENY"
       },
       {
-        name                  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-url"
-        rule_sequence         = 100
-        condition             = [
+        name          = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-url"
+        rule_sequence = 100
+        condition = [
           {
             condition_ignore_case = false
             condition_negate      = false
