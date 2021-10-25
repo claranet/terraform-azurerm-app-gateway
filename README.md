@@ -184,7 +184,7 @@ module "appgw_v2" {
 |------|--------|---------|
 | azure\_network\_security\_group | claranet/nsg/azurerm | 4.1.1 |
 | azure\_network\_subnet | claranet/subnet/azurerm | 4.2.1 |
-| diagnostics | claranet/diagnostic-settings/azurerm | 4.0.2 |
+| diagnostics | claranet/diagnostic-settings/azurerm | 4.0.3 |
 
 ## Resources
 
