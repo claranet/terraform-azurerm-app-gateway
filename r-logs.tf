@@ -3,6 +3,7 @@ module "diagnostics" {
   version = "4.0.3"
 
   resource_id           = azurerm_application_gateway.app_gateway.id
+  name                  = var.logs_name
   logs_destinations_ids = var.logs_destinations_ids
   log_categories        = var.logs_categories
   metric_categories     = var.logs_metrics_categories
