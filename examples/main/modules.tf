@@ -130,6 +130,47 @@ module "appgw_v2" {
     policy_name = "AppGwSslPolicy20170401S"
   }
 
+  appgw_rewrite_rule_set = {
+    name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-set"
+    rewrite_rule = [
+      {
+        name          = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-response-header"
+        rule_sequence = 100
+        condition = [
+          {
+            condition_ignore_case = true
+            condition_negate      = false
+            condition_pattern     = "text/html(.*)"
+            condition_variable    = "http_resp_Content-Type"
+          }
+        ]
+        response_header_name  = "X-Frame-Options"
+        response_header_value = "DENY"
+      },
+      {
+        name          = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-url"
+        rule_sequence = 100
+        condition = [
+          {
+            condition_ignore_case = false
+            condition_negate      = false
+            condition_pattern     = ".*-R[0-9]{10,10}\\.html"
+            condition_variable    = "var_uri_path"
+          },
+          {
+            condition_ignore_case = true
+            condition_negate      = false
+            condition_pattern     = ".*\\.fr"
+            condition_variable    = "var_host"
+          }
+        ]
+        url_path     = "/fr{var_uri_path}"
+        query_string = null
+        url_reroute  = false
+      }
+    ]
+  }
+
   autoscaling_parameters = {
     min_capacity = 2
     max_capacity = 15

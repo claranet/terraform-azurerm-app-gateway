@@ -234,12 +234,12 @@ resource "azurerm_application_gateway" "app_gateway" {
           rule_sequence = lookup(rewrite_rule.value, "rule_sequence", null)
 
           dynamic "condition" {
-            for_each = lookup(rewrite_rule.value, "condition_variable", null) != null ? ["fake"] : []
+            for_each = lookup(rewrite_rule.value, "condition", {})
             content {
-              ignore_case = lookup(rewrite_rule.value, "condition_ignore_case", null)
-              negate      = lookup(rewrite_rule.value, "condition_negate", null)
-              pattern     = lookup(rewrite_rule.value, "condition_pattern", null)
-              variable    = lookup(rewrite_rule.value, "condition_variable", null)
+              ignore_case = lookup(condition.value, "condition_ignore_case", null)
+              negate      = lookup(condition.value, "condition_negate", null)
+              pattern     = lookup(condition.value, "condition_pattern", null)
+              variable    = lookup(condition.value, "condition_variable", null)
             }
           }
 
@@ -256,6 +256,15 @@ resource "azurerm_application_gateway" "app_gateway" {
             content {
               header_name  = lookup(rewrite_rule.value, "request_header_name", null)
               header_value = lookup(rewrite_rule.value, "request_header_value", null)
+            }
+          }
+
+          dynamic "url" {
+            for_each = lookup(rewrite_rule.value, "url_reroute", null) != null ? ["fake"] : []
+            content {
+              path         = lookup(rewrite_rule.value, "url_path", null)
+              query_string = lookup(rewrite_rule.value, "url_query_string", null)
+              reroute      = lookup(rewrite_rule.value, "url_reroute", null)
             }
           }
         }
@@ -296,6 +305,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       default_backend_address_pool_name   = lookup(url_path_map.value, "default_backend_address_pool_name", null)
       default_redirect_configuration_name = lookup(url_path_map.value, "default_redirect_configuration_name", null)
       default_backend_http_settings_name  = lookup(url_path_map.value, "default_backend_http_settings_name", lookup(url_path_map.value, "default_backend_address_pool_name", null))
+      default_rewrite_rule_set_name       = lookup(url_path_map.value, "default_rewrite_rule_set_name", null)
 
       dynamic "path_rule" {
         for_each = lookup(url_path_map.value, "path_rule")
