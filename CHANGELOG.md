@@ -1,7 +1,9 @@
-# Unreleased
+# v5.1.0 - 2021-11-23
 
 Fixed
   * AZ-589: Avoid plan drift when specifying Diagnostic Settings categories
+
+Changed
   * AZ-574: Fix `rewrite_rule_set` block to manage `url` parameter and make possible to use several `conditions`
 
 # v5.0.0 - 2021-10-04
