@@ -234,7 +234,7 @@ resource "azurerm_application_gateway" "app_gateway" {
           rule_sequence = lookup(rewrite_rule.value, "rule_sequence", null)
 
           dynamic "condition" {
-            for_each = lookup(rewrite_rule.value, "condition", null)
+            for_each = lookup(rewrite_rule.value, "condition", {})
             content {
               ignore_case = lookup(condition.value, "condition_ignore_case", null)
               negate      = lookup(condition.value, "condition_negate", null)
