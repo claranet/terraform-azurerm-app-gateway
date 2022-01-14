@@ -223,7 +223,7 @@ module "appgw_v2" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| azure\_network\_security\_group | claranet/nsg/azurerm | 4.1.1 |
+| azure\_network\_security\_group | claranet/nsg/azurerm | 5.1.0 |
 | azure\_network\_subnet | claranet/subnet/azurerm | 4.2.1 |
 | diagnostics | claranet/diagnostic-settings/azurerm | 5.0.0 |
 

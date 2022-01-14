@@ -23,7 +23,7 @@ module "azure_network_subnet" {
 
 module "azure_network_security_group" {
   source  = "claranet/nsg/azurerm"
-  version = "4.1.1"
+  version = "5.1.0"
 
   for_each = var.create_nsg ? toset(["appgw_nsg"]) : []
 
@@ -36,10 +36,11 @@ module "azure_network_security_group" {
 
   custom_network_security_group_name = var.custom_nsg_name
 
-  extra_tags = merge(local.default_tags, var.extra_tags)
+  deny_all_inbound = false
 
-  # The option has to be integrated in this module beforehand (waiting for the new version of the module)
-  # default_tags_enabled = false
+  default_tags_enabled = var.default_tags_enabled
+
+  extra_tags = merge(local.default_tags, var.extra_tags)
 }
 
 resource "azurerm_network_security_rule" "web" {
