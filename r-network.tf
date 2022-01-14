@@ -37,6 +37,9 @@ module "azure_network_security_group" {
   custom_network_security_group_name = var.custom_nsg_name
 
   extra_tags = merge(local.default_tags, var.extra_tags)
+
+  # The option has to be integrated in this module beforehand (waiting for the new version of the module)
+  # default_tags_enabled = false
 }
 
 resource "azurerm_network_security_rule" "web" {
