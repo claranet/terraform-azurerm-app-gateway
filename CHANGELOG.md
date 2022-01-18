@@ -1,4 +1,4 @@
-# unreleased
+# v5.1.1 - 2022-01-19
 
 Changed
   * AZ-594: Upgrade `diagnostics` module to `v5.0.0`
