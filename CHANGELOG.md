@@ -2,6 +2,7 @@
 
 Added
   * AZ-615: Add an option to enable or disable default tags
+  * AZ-675: Add `ssl_profile` block available in parameters
 
 # v5.1.1 - 2022-01-19
 

@@ -91,6 +91,17 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
+  dynamic "ssl_profile" {
+    for_each = var.ssl_profile == null ? [] : [1]
+
+    content {
+      name                             = var.ssl_profile.name
+      trusted_client_certificate_names = lookup(var.ssl_profile, "trusted_client_certificate_names", null)
+      verify_client_cert_issuer_dn     = lookup(var.ssl_profile, "verify_client_cert_issuer_dn ", null)
+      ssl_policy                       = lookup(var.ssl_profile, "ssl_policy", var.ssl_policy)
+    }
+  }
+
   #
   # Autoscaling
   #
