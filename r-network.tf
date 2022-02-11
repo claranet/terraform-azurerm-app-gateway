@@ -23,7 +23,7 @@ module "azure_network_subnet" {
 
 module "azure_network_security_group" {
   source  = "claranet/nsg/azurerm"
-  version = "4.1.1"
+  version = "5.1.0"
 
   for_each = var.create_nsg ? toset(["appgw_nsg"]) : []
 
@@ -35,6 +35,10 @@ module "azure_network_security_group" {
   location_short      = var.location_short
 
   custom_network_security_group_name = var.custom_nsg_name
+
+  deny_all_inbound = false
+
+  default_tags_enabled = var.default_tags_enabled
 
   extra_tags = merge(local.default_tags, var.extra_tags)
 }

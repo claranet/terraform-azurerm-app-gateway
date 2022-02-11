@@ -223,7 +223,7 @@ module "appgw_v2" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| azure\_network\_security\_group | claranet/nsg/azurerm | 4.1.1 |
+| azure\_network\_security\_group | claranet/nsg/azurerm | 5.1.0 |
 | azure\_network\_subnet | claranet/subnet/azurerm | 4.2.1 |
 | diagnostics | claranet/diagnostic-settings/azurerm | 5.0.0 |
 
@@ -278,12 +278,13 @@ module "appgw_v2" {
 | custom\_nsr\_healthcheck\_name | Custom name for the network security rule for internal health check of Application Gateway. | `string` | `null` | no |
 | custom\_nsr\_https\_name | Custom name for the network security rule for HTTPS protocol. | `string` | `null` | no |
 | custom\_subnet\_name | Custom name for the subnet. | `string` | `""` | no |
+| default\_tags\_enabled | Option to enable or disable default tags. | `bool` | `true` | no |
 | disable\_waf\_rules\_for\_dev\_portal | Whether to disable some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link | `bool` | `false` | no |
 | disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | <pre>list(object({<br>    rule_group_name = string<br>    rules           = list(string)<br>  }))</pre> | `[]` | no |
 | enable\_http2 | Whether to enable http2 or not | `bool` | `true` | no |
 | enable\_waf | Boolean to enable WAF. | `bool` | `true` | no |
 | environment | Project environment | `string` | n/a | yes |
-| extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
+| extra\_tags | Extra tags to add. | `map(string)` | `{}` | no |
 | file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | `list(map(string))` | n/a | yes |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |

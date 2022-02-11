@@ -30,25 +30,7 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "app_gateway_tags" {
-  description = "Application Gateway tags."
-  type        = map(string)
-  default     = {}
-}
-
-variable "extra_tags" {
-  description = "Extra tags to add"
-  type        = map(string)
-  default     = {}
-}
-
 # PUBLIC IP
-
-variable "ip_tags" {
-  description = "Public IP tags."
-  type        = map(string)
-  default     = {}
-}
 
 variable "ip_sku" {
   description = "SKU for the public IP. Warning, can only be `Standard` for the moment."
@@ -303,7 +285,7 @@ variable "user_assigned_identity_id" {
   default     = null
 }
 
-### APPGW PRIVATE 
+### APPGW PRIVATE
 
 variable "appgw_private" {
   description = "Boolean variable to create a private Application Gateway. When `true`, the default http listener will listen on private IP instead of the public IP."

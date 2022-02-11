@@ -3,11 +3,6 @@ locals {
 
   enable_waf = var.sku == "WAF_v2" ? true : false
 
-  default_tags = {
-    env   = var.environment
-    stack = var.stack
-  }
-
   # https://docs.microsoft.com/fr-fr/azure/api-management/api-management-howto-integrate-internal-vnet-appgateway#exposing-the-developer-portal-externally-through-application-gateway
   disabled_rule_group_settings_dev_portal = [
     {
