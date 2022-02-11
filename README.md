@@ -217,7 +217,7 @@ module "appgw_v2" {
 | Name | Version |
 |------|---------|
 | azurecaf | ~> 1.1 |
-| azurerm | >= 2.56 |
+| azurerm | >= 2.76 |
 
 ## Modules
 
@@ -310,6 +310,7 @@ module "appgw_v2" {
 | sku\_capacity | The Capacity of the SKU to use for this Application Gateway - which must be between 1 and 10, optional if autoscale\_configuration is set | `number` | `2` | no |
 | ssl\_certificates\_configs | List of maps including ssl certificates configurations.<br>The path to a base-64 encoded certificate is expected in the 'data' parameter:<pre>data = filebase64("./file_path")</pre> | `list(map(string))` | `[]` | no |
 | ssl\_policy | Application Gateway SSL configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy | `any` | `null` | no |
+| ssl\_profile | Application Gateway SSL profile. Default profile is used when this variable is set to null. | `any` | `null` | no |
 | stack | Project stack name | `string` | n/a | yes |
 | subnet\_cidr | Subnet CIDR to create. | `string` | `""` | no |
 | subnet\_id | Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`. | `string` | `""` | no |

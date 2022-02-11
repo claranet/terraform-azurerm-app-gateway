@@ -75,6 +75,12 @@ variable "ssl_policy" {
   default     = null
 }
 
+variable "ssl_profile" {
+  description = "Application Gateway SSL profile. Default profile is used when this variable is set to null."
+  type        = any
+  default     = null
+}
+
 variable "trusted_root_certificate_configs" {
   description = "List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data' or 'filename'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate)"
   type        = list(map(string))
