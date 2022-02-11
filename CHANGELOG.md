@@ -1,9 +1,9 @@
-# Unreleased
+# v5.2.0 - 2022-02-11
 
 Added
   * AZ-615: Add an option to enable or disable default tags
   * AZ-675: Add `ssl_profile` block available in parameters
-  * AZ-675: Bump minimum version of `AzureRM` provider to `v2.76` (azurerm_application_gateway - mTLS support for Application Gateways (#13273))
+  * AZ-675: Bump minimum version of `AzureRM` provider to `v2.76` (`azurerm_application_gateway` - mTLS support for Application Gateways (#13273))
 
 # v5.1.1 - 2022-01-19
 
