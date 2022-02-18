@@ -157,7 +157,9 @@ resource "azurerm_application_gateway" "app_gateway" {
       frontend_port_name             = lookup(http_listener.value, "frontend_port_name", null)
       protocol                       = lookup(http_listener.value, "protocol", "Https")
       ssl_certificate_name           = lookup(http_listener.value, "ssl_certificate_name", null)
+      ssl_profile_name               = lookup(http_listener.value, "ssl_profile_name ", null)
       host_name                      = lookup(http_listener.value, "host_name", null)
+      host_names                     = lookup(http_listener.value, "host_names", null)
       require_sni                    = lookup(http_listener.value, "require_sni", null)
       firewall_policy_id             = lookup(http_listener.value, "firewall_policy_id", null)
       dynamic "custom_error_configuration" {

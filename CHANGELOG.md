@@ -1,3 +1,8 @@
+# unreleased
+
+Added
+  * AZ-675: Add `ssl_profile_name` and `host_names` attributes in `http_listener` content block
+
 # v5.2.0 - 2022-02-11
 
 Added
