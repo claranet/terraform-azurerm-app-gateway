@@ -2,6 +2,9 @@
 
 Fixed
   * AZ-675: Fix `frontend_ip_configuration_name` attribute lookup in `http_listener` blocks
+  
+Added
+  * AZ-698: Add `firewall_policy_id` variable
 
 # v5.3.0 - 2022-02-18
 
