@@ -16,7 +16,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   zones = var.zones
 
-  firewall_policy_id = var.firewall_policy_id 
+  firewall_policy_id = var.firewall_policy_id
 
   enable_http2 = var.enable_http2
 
