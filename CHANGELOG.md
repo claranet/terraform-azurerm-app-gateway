@@ -5,6 +5,7 @@ Fixed
   
 Added
   * AZ-698: Add `firewall_policy_id` variable
+  * AZ-698: Add `rewrite_rule_set_name` parameter in `url_path_map`
 
 # v5.3.0 - 2022-02-18
 
