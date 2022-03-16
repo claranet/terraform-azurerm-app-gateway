@@ -337,7 +337,7 @@ resource "azurerm_application_gateway" "app_gateway" {
           name                       = lookup(path_rule.value, "path_rule_name", null)
           backend_address_pool_name  = lookup(path_rule.value, "backend_address_pool_name", lookup(path_rule.value, "path_rule_name", null))
           backend_http_settings_name = lookup(path_rule.value, "backend_http_settings_name", lookup(path_rule.value, "path_rule_name", null))
-          rewrite_rule_set_name      = lookup(path_rule.value, "rewrite_rule_set_name", lookup(path_rule.value, "path_rule_name", null))
+          rewrite_rule_set_name      = lookup(path_rule.value, "rewrite_rule_set_name", null)
           paths                      = flatten([lookup(path_rule.value, "paths", null)])
         }
       }
