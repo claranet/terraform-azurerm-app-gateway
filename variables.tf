@@ -84,7 +84,7 @@ variable "ssl_profile" {
 variable "firewall_policy_id" {
   description = "ID of an Web Application Firewall Policy"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "trusted_root_certificate_configs" {
