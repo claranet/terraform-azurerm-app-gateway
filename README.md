@@ -199,6 +199,24 @@ module "appgw_v2" {
     ]
   }
 
+  appgw_url_path_map = [
+    {
+      name                                = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-map"
+      default_backend_address_pool_name   = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
+      default_redirect_configuration_name = "Default-redirect-configuration-name"
+      default_rewrite_rule_set_name       = "Default-rewrite-rule-set-name"
+      path_rule = [
+        {
+          name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-map"
+          backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
+          backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
+          rewrite_rule_set_name      = "Rewrite-rule-set-name"
+          paths                      = "/"
+        }
+      ]
+    },
+  ]
+
   autoscaling_parameters = {
     min_capacity = 2
     max_capacity = 15
