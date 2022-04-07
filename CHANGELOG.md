@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-675: Fix `frontend_ip_configuration_name` attribute lookup in `http_listener` blocks
+
 # v5.3.0 - 2022-02-18
 
 Added
