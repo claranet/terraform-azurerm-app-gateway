@@ -1,5 +1,8 @@
 # Unreleased
 
+Added
+  * AZ-724: Add `priority` attribute in `request_routing_rule` content block
+
 Fixed
   * AZ-675: Fix `frontend_ip_configuration_name` attribute lookup in `http_listener` blocks
   
