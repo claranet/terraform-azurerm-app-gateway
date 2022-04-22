@@ -2,6 +2,10 @@
 
 Fixed
   * AZ-675: Fix `frontend_ip_configuration_name` attribute lookup in `http_listener` blocks
+  
+Added
+  * AZ-698: Add `firewall_policy_id` variable
+  * AZ-698: Add `rewrite_rule_set_name` parameter in `url_path_map`
 
 # v5.3.0 - 2022-02-18
 

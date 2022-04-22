@@ -16,6 +16,8 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   zones = var.zones
 
+  firewall_policy_id = var.firewall_policy_id
+
   enable_http2 = var.enable_http2
 
   frontend_ip_configuration {
@@ -335,6 +337,7 @@ resource "azurerm_application_gateway" "app_gateway" {
           name                       = lookup(path_rule.value, "path_rule_name", null)
           backend_address_pool_name  = lookup(path_rule.value, "backend_address_pool_name", lookup(path_rule.value, "path_rule_name", null))
           backend_http_settings_name = lookup(path_rule.value, "backend_http_settings_name", lookup(path_rule.value, "path_rule_name", null))
+          rewrite_rule_set_name      = lookup(path_rule.value, "rewrite_rule_set_name", null)
           paths                      = flatten([lookup(path_rule.value, "paths", null)])
         }
       }

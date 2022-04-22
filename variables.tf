@@ -81,6 +81,12 @@ variable "ssl_profile" {
   default     = null
 }
 
+variable "firewall_policy_id" {
+  description = "ID of a Web Application Firewall Policy"
+  type        = string
+  default     = null
+}
+
 variable "trusted_root_certificate_configs" {
   description = "List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data' or 'filename'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate)"
   type        = list(map(string))
