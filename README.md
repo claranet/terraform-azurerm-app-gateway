@@ -207,11 +207,11 @@ module "appgw_v2" {
       default_rewrite_rule_set_name       = "Default-rewrite-rule-set-name"
       path_rule = [
         {
-          name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-map"
+          name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-rule"
           backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
           backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
           rewrite_rule_set_name      = "Rewrite-rule-set-name"
-          paths                      = "/"
+          paths                      = ["/"]
         }
       ]
     },
@@ -304,7 +304,7 @@ module "appgw_v2" {
 | environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add. | `map(string)` | `{}` | no |
 | file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
-| firewall\_policy\_id | ID of an Web Application Firewall Policy | `string` | `null` | no |
+| firewall\_policy\_id | ID of a Web Application Firewall Policy | `string` | `null` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | `list(map(string))` | n/a | yes |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |
 | ip\_sku | SKU for the public IP. Warning, can only be `Standard` for the moment. | `string` | `"Standard"` | no |

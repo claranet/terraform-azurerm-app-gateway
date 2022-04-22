@@ -82,7 +82,7 @@ variable "ssl_profile" {
 }
 
 variable "firewall_policy_id" {
-  description = "ID of an Web Application Firewall Policy"
+  description = "ID of a Web Application Firewall Policy"
   type        = string
   default     = null
 }

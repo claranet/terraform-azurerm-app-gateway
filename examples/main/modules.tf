@@ -179,11 +179,11 @@ module "appgw_v2" {
       default_rewrite_rule_set_name       = "Default-rewrite-rule-set-name"
       path_rule = [
         {
-          name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-map"
+          name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-rule"
           backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
           backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
           rewrite_rule_set_name      = "Rewrite-rule-set-name"
-          paths                      = "/"
+          paths                      = ["/"]
         }
       ]
     },
