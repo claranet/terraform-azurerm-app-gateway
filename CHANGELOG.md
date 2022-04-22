@@ -1,4 +1,4 @@
-# Unreleased
+# v5.4.0 - 2022-04-22
 
 Added
   * AZ-724: Add `priority` attribute in `request_routing_rule` content block
