@@ -177,6 +177,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   #
   # Custom error configuration
   #
+
   dynamic "custom_error_configuration" {
     for_each = var.custom_error_configuration
     content {
@@ -240,6 +241,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       url_path_map_name           = lookup(request_routing_rule.value, "url_path_map_name", null)
       redirect_configuration_name = lookup(request_routing_rule.value, "redirect_configuration_name", null)
       rewrite_rule_set_name       = lookup(request_routing_rule.value, "rewrite_rule_set_name", null)
+      priority                    = lookup(request_routing_rule.value, "priority", null)
     }
   }
 
