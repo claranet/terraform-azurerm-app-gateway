@@ -1,3 +1,8 @@
+# unreleased
+
+Added
+  * AZ-769: Update module to Azurerm V3
+
 # v5.5.0 - 2022-06-24
 
 Added

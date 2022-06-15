@@ -234,8 +234,8 @@ module "appgw_v2" {
 
 | Name | Version |
 |------|---------|
-| azurecaf | ~> 1.1 |
-| azurerm | >= 2.83 |
+| azurecaf | ~> 1.2 |
+| azurerm | >= 3.0 |
 
 ## Modules
 
@@ -276,7 +276,7 @@ module "appgw_v2" {
 | appgw\_probes | List of maps including request probes configurations | `any` | `[]` | no |
 | appgw\_redirect\_configuration | List of maps including redirect configurations | `list(map(string))` | `[]` | no |
 | appgw\_rewrite\_rule\_set | List of rewrite rule set including rewrite rules | `any` | `[]` | no |
-| appgw\_routings | List of maps including request routing rules configurations. If you wish to use rule `priority`, you will have to specify rule-priority field values for all the existing request routing rules. Once the rule priority field is in use, any new routing rule that is created would also need to have a rule priority field value as part of its config. | `list(map(string))` | n/a | yes |
+| appgw\_routings | List of maps including request routing rules configurations. With Azurerm V3 provider, priority becomes mandatory parameter | `list(map(string))` | n/a | yes |
 | appgw\_url\_path\_map | List of maps including url path map configurations | `any` | `[]` | no |
 | autoscaling\_parameters | Map containing autoscaling parameters. Must contain at least min\_capacity | `map(string)` | `null` | no |
 | client\_name | Client name/account used in naming | `string` | n/a | yes |
