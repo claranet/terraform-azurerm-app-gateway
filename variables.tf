@@ -122,7 +122,7 @@ EOD
 }
 
 variable "appgw_routings" {
-  description = "List of maps including request routing rules configurations. If you wish to use rule `priority`, you will have to specify rule-priority field values for all the existing request routing rules. Once the rule priority field is in use, any new routing rule that is created would also need to have a rule priority field value as part of its config."
+  description = "List of maps including request routing rules configurations. With Azurerm V3 provider, priority becomes mandatory parameter"
   type        = list(map(string))
 }
 
