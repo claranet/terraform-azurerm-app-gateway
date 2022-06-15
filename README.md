@@ -234,7 +234,7 @@ module "appgw_v2" {
 
 | Name | Version |
 |------|---------|
-| azurecaf | ~> 1.2 |
+| azurecaf | ~> 1.1 |
 | azurerm | ~> 3.0 |
 
 ## Modules
