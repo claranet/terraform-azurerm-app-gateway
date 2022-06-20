@@ -21,3 +21,9 @@ variable "ip_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "nsg_tags" {
+  description = "Network Security Group tags."
+  type        = map(string)
+  default     = {}
+}
