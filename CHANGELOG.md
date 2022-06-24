@@ -1,4 +1,4 @@
-# Unreleased
+# v5.5.0 - 2022-06-24
 
 Added
   * AZ-782: Add `nsg_tags`
