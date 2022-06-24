@@ -60,8 +60,8 @@ variable "sku" {
 
 variable "zones" {
   description = "A collection of availability zones to spread the Application Gateway over. This option is only supported for v2 SKUs"
-  type        = list(string)
-  default     = ["1", "2", "3"]
+  type        = list(number)
+  default     = [1, 2, 3]
 }
 
 variable "frontend_port_settings" {
@@ -122,7 +122,7 @@ EOD
 }
 
 variable "appgw_routings" {
-  description = "List of maps including request routing rules configurations. If you wish to use rule `priority`, you will have to specify rule-priority field values for all the existing request routing rules. Once the rule priority field is in use, any new routing rule that is created would also need to have a rule priority field value as part of its config."
+  description = "List of maps including request routing rules configurations. With AzureRM v3+ provider, `priority` attribute becomes mandatory."
   type        = list(map(string))
 }
 
