@@ -1,3 +1,11 @@
+# Unreleased
+
+Added
+  * AZ-782: Add `nsg_tags`
+
+Changed
+  * AZ-782: Merge `extra_tags` with `pip_tags`, `app_gateway_tags`, `nsg_tags`
+
 # v5.4.0 - 2022-04-22
 
 Added

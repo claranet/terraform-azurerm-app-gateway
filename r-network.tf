@@ -38,9 +38,9 @@ module "azure_network_security_group" {
 
   deny_all_inbound = false
 
-  default_tags_enabled = var.default_tags_enabled
+  default_tags_enabled = false # already merged in locals-tags.tf
 
-  extra_tags = merge(local.default_tags, var.extra_tags)
+  extra_tags = local.nsg_tags
 }
 
 resource "azurerm_network_security_rule" "web" {

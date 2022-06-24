@@ -11,5 +11,5 @@ resource "azurerm_public_ip" "ip" {
 
   domain_name_label = local.ip_label
 
-  tags = merge(local.default_tags, var.ip_tags)
+  tags = local.ip_tags
 }

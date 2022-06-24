@@ -378,5 +378,5 @@ resource "azurerm_application_gateway" "app_gateway" {
   # Tags
   #
 
-  tags = merge(local.default_tags, var.app_gateway_tags)
+  tags = local.app_gateway_tags
 }
