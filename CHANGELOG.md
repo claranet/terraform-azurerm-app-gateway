@@ -1,4 +1,4 @@
-# unreleased
+# v6.0.0 - 2022-06-30
 
 Changed
   * AZ-769: Update module to AzureRM V3
