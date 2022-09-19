@@ -1,6 +1,6 @@
 module "azure_network_subnet" {
   source  = "claranet/subnet/azurerm"
-  version = "4.2.1"
+  version = "6.0.0"
 
   for_each = var.create_subnet ? toset(["appgw_subnet"]) : []
 
@@ -23,7 +23,7 @@ module "azure_network_subnet" {
 
 module "azure_network_security_group" {
   source  = "claranet/nsg/azurerm"
-  version = "5.1.0"
+  version = "6.0.1"
 
   for_each = var.create_nsg ? toset(["appgw_nsg"]) : []
 
@@ -39,6 +39,21 @@ module "azure_network_security_group" {
   deny_all_inbound = false
 
   default_tags_enabled = false # already merged in locals-tags.tf
+
+  # Flow Logs
+  flow_log_enabled                               = var.flow_log_enabled
+  flow_log_logging_enabled                       = var.flow_log_logging_enabled
+  network_watcher_name                           = var.network_watcher_name
+  network_watcher_resource_group_name            = var.network_watcher_resource_group_name
+  flow_log_storage_account_id                    = var.flow_log_storage_account_id
+  flow_log_retention_policy_enabled              = var.flow_log_retention_policy_enabled
+  flow_log_retention_policy_days                 = var.flow_log_retention_policy_days
+  flow_log_traffic_analytics_enabled             = var.flow_log_traffic_analytics_enabled
+  log_analytics_workspace_guid                   = var.log_analytics_workspace_guid
+  log_analytics_workspace_location               = var.log_analytics_workspace_location
+  log_analytics_workspace_id                     = var.log_analytics_workspace_id
+  flow_log_traffic_analytics_interval_in_minutes = var.flow_log_traffic_analytics_interval_in_minutes
+  flow_log_location                              = var.flow_log_location
 
   extra_tags = local.nsg_tags
 }

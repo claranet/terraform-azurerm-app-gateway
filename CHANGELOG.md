@@ -1,3 +1,8 @@
+# Unreleased
+
+Changed
+  * AZ-844: Bump `subnet` & `nsg` modules to latest version
+
 # v6.0.0 - 2022-06-30
 
 Changed

@@ -236,14 +236,14 @@ module "appgw_v2" {
 | Name | Version |
 |------|---------|
 | azurecaf | ~> 1.1 |
-| azurerm | ~> 3.0 |
+| azurerm | ~> 3.18 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| azure\_network\_security\_group | claranet/nsg/azurerm | 5.1.0 |
-| azure\_network\_subnet | claranet/subnet/azurerm | 4.2.1 |
+| azure\_network\_security\_group | claranet/nsg/azurerm | 6.0.1 |
+| azure\_network\_subnet | claranet/subnet/azurerm | 6.0.0 |
 | diagnostics | claranet/diagnostic-settings/azurerm | 5.0.0 |
 
 ## Resources
@@ -306,12 +306,23 @@ module "appgw_v2" {
 | extra\_tags | Extra tags to add. | `map(string)` | `{}` | no |
 | file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
 | firewall\_policy\_id | ID of a Web Application Firewall Policy | `string` | `null` | no |
+| flow\_log\_enabled | Provision network watcher flow logs | `bool` | `false` | no |
+| flow\_log\_location | The location where the Network Watcher Flow Log resides. Changing this forces a new resource to be created. Defaults to the `location` of the Network Watcher. | `string` | `null` | no |
+| flow\_log\_logging\_enabled | Enable Network Flow Logging | `bool` | `true` | no |
+| flow\_log\_retention\_policy\_days | The number of days to retain flow log records | `number` | `91` | no |
+| flow\_log\_retention\_policy\_enabled | Boolean flag to enable/disable retention | `bool` | `true` | no |
+| flow\_log\_storage\_account\_id | Network watcher flow log storage account id | `string` | `null` | no |
+| flow\_log\_traffic\_analytics\_enabled | Boolean flag to enable/disable traffic analytics | `bool` | `true` | no |
+| flow\_log\_traffic\_analytics\_interval\_in\_minutes | How frequently service should do flow analytics in minutes. | `number` | `10` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | `list(map(string))` | n/a | yes |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |
 | ip\_sku | SKU for the public IP. Warning, can only be `Standard` for the moment. | `string` | `"Standard"` | no |
 | ip\_tags | Public IP tags. | `map(string)` | `{}` | no |
 | location | Azure location. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
+| log\_analytics\_workspace\_guid | The resource GUID of the attached workspace. | `string` | `null` | no |
+| log\_analytics\_workspace\_id | The resource ID of the attached workspace. | `string` | `null` | no |
+| log\_analytics\_workspace\_location | The location of the attached workspace. | `string` | `null` | no |
 | logs\_categories | Log categories to send to destinations. | `list(string)` | `null` | no |
 | logs\_destinations\_ids | List of destination resources Ids for logs diagnostics destination. Can be Storage Account, Log Analytics Workspace and Event Hub. No more than one of each can be set. Empty list to disable logging. | `list(string)` | n/a | yes |
 | logs\_metrics\_categories | Metrics categories to send to destinations. | `list(string)` | `null` | no |
@@ -319,6 +330,8 @@ module "appgw_v2" {
 | max\_request\_body\_size\_kb | The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB. | `number` | `128` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
 | name\_suffix | Optional suffix for the generated name | `string` | `""` | no |
+| network\_watcher\_name | The name of the Network Watcher. Changing this forces a new resource to be created. | `string` | `null` | no |
+| network\_watcher\_resource\_group\_name | The name of the resource group in which the Network Watcher was deployed. Changing this forces a new resource to be created. | `string` | `null` | no |
 | nsg\_tags | Network Security Group tags. | `map(string)` | `{}` | no |
 | nsr\_https\_source\_address\_prefix | Source address prefix to allow to access on port 443 defined in dedicated network security rule. | `string` | `"*"` | no |
 | request\_body\_check | Is Request Body Inspection enabled? | `bool` | `true` | no |
