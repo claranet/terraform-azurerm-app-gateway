@@ -23,7 +23,7 @@ module "azure_network_subnet" {
 
 module "azure_network_security_group" {
   source  = "claranet/nsg/azurerm"
-  version = "6.0.1"
+  version = "7.0.0"
 
   for_each = var.create_nsg ? toset(["appgw_nsg"]) : []
 
