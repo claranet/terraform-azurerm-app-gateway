@@ -306,13 +306,13 @@ module "appgw_v2" {
 | extra\_tags | Extra tags to add. | `map(string)` | `{}` | no |
 | file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
 | firewall\_policy\_id | ID of a Web Application Firewall Policy | `string` | `null` | no |
-| flow\_log\_enabled | Provision network watcher flow logs | `bool` | `false` | no |
+| flow\_log\_enabled | Provision network watcher flow logs. | `bool` | `false` | no |
 | flow\_log\_location | The location where the Network Watcher Flow Log resides. Changing this forces a new resource to be created. Defaults to the `location` of the Network Watcher. | `string` | `null` | no |
-| flow\_log\_logging\_enabled | Enable Network Flow Logging | `bool` | `true` | no |
-| flow\_log\_retention\_policy\_days | The number of days to retain flow log records | `number` | `91` | no |
-| flow\_log\_retention\_policy\_enabled | Boolean flag to enable/disable retention | `bool` | `true` | no |
-| flow\_log\_storage\_account\_id | Network watcher flow log storage account id | `string` | `null` | no |
-| flow\_log\_traffic\_analytics\_enabled | Boolean flag to enable/disable traffic analytics | `bool` | `true` | no |
+| flow\_log\_logging\_enabled | Enable Network Flow Logging. | `bool` | `true` | no |
+| flow\_log\_retention\_policy\_days | The number of days to retain flow log records. | `number` | `31` | no |
+| flow\_log\_retention\_policy\_enabled | Boolean flag to enable/disable retention. | `bool` | `true` | no |
+| flow\_log\_storage\_account\_id | Network watcher flow log storage account ID. | `string` | `null` | no |
+| flow\_log\_traffic\_analytics\_enabled | Boolean flag to enable/disable traffic analytics. | `bool` | `true` | no |
 | flow\_log\_traffic\_analytics\_interval\_in\_minutes | How frequently service should do flow analytics in minutes. | `number` | `10` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | `list(map(string))` | n/a | yes |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |

@@ -1,11 +1,11 @@
 variable "flow_log_enabled" {
-  description = "Provision network watcher flow logs"
+  description = "Provision network watcher flow logs."
   type        = bool
   default     = false
 }
 
 variable "flow_log_logging_enabled" {
-  description = "Enable Network Flow Logging"
+  description = "Enable Network Flow Logging."
   type        = bool
   default     = true
 }
@@ -23,25 +23,25 @@ variable "network_watcher_resource_group_name" {
 }
 
 variable "flow_log_storage_account_id" {
-  description = "Network watcher flow log storage account id"
+  description = "Network watcher flow log storage account ID."
   type        = string
   default     = null
 }
 
 variable "flow_log_retention_policy_enabled" {
-  description = "Boolean flag to enable/disable retention"
+  description = "Boolean flag to enable/disable retention."
   type        = bool
   default     = true
 }
 
 variable "flow_log_retention_policy_days" {
-  description = "The number of days to retain flow log records"
+  description = "The number of days to retain flow log records."
   type        = number
-  default     = 91
+  default     = 31
 }
 
 variable "flow_log_traffic_analytics_enabled" {
-  description = "Boolean flag to enable/disable traffic analytics"
+  description = "Boolean flag to enable/disable traffic analytics."
   type        = bool
   default     = true
 }
