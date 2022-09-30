@@ -1,3 +1,11 @@
+# Unreleased
+
+Breaking
+  * AZ-840: Update to Terraform `v1.3`
+
+Changed
+  * AZ-844: Bump `subnet` & `nsg` modules to latest version
+
 # v6.0.0 - 2022-06-30
 
 Changed
