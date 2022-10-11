@@ -1,13 +1,13 @@
 module "azure_region" {
-  source  = "claranet/regions/azurerm"
-  version = "x.x.x"
+  source = "claranet/regions/azurerm"
+  #version = "x.x.x"
 
   azure_region = var.azure_region
 }
 
 module "rg" {
-  source  = "claranet/rg/azurerm"
-  version = "x.x.x"
+  source = "claranet/rg/azurerm"
+  #version = "x.x.x"
 
   location    = module.azure_region.location
   client_name = var.client_name
@@ -16,8 +16,8 @@ module "rg" {
 }
 
 module "run_common" {
-  source  = "claranet/run-common/azurerm"
-  version = "x.x.x"
+  source = "claranet/run-common/azurerm"
+  #version = "x.x.x"
 
   client_name         = var.client_name
   location            = module.azure_region.location
@@ -32,8 +32,8 @@ module "run_common" {
 }
 
 module "azure_virtual_network" {
-  source  = "claranet/vnet/azurerm"
-  version = "x.x.x"
+  source = "claranet/vnet/azurerm"
+  #version = "x.x.x"
 
   environment    = var.environment
   location       = module.azure_region.location
@@ -48,8 +48,8 @@ module "azure_virtual_network" {
 
 
 module "appgw_v2" {
-  source  = "claranet/app-gateway/azurerm"
-  version = "x.x.x"
+  source = "claranet/app-gateway/azurerm"
+  #version = "x.x.x"
 
   stack               = var.stack
   environment         = var.environment
@@ -60,6 +60,8 @@ module "appgw_v2" {
 
   virtual_network_name = module.azure_virtual_network.virtual_network_name
   subnet_cidr          = "192.168.1.0/24"
+  #custom_nsg_name      = "nsg-example"
+  create_nsg = "true"
 
   appgw_backend_http_settings = [{
     name                  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
@@ -130,7 +132,7 @@ module "appgw_v2" {
     policy_name = "AppGwSslPolicy20170401S"
   }
 
-  appgw_rewrite_rule_set = {
+  appgw_rewrite_rule_set = [{
     name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-set"
     rewrite_rule = [
       {
@@ -169,17 +171,18 @@ module "appgw_v2" {
         url_reroute  = false
       }
     ]
-  }
+    }
+  ]
 
   appgw_url_path_map = [
     {
       name                                = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-map"
       default_backend_address_pool_name   = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
-      default_redirect_configuration_name = "Default-redirect-configuration-name"
+      default_redirect_configuration_name = null
       default_rewrite_rule_set_name       = "Default-rewrite-rule-set-name"
       path_rule = [
         {
-          name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-rule"
+          path_rule_name             = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-rule"
           backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
           backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
           rewrite_rule_set_name      = "Rewrite-rule-set-name"
