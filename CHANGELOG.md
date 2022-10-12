@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-876: Update example to be useable out of the box
+
 # v7.0.0 - 2022-09-30
 
 Breaking

@@ -15,7 +15,7 @@ module "azure_network_subnet" {
   custom_subnet_name = local.subnet_name
   subnet_cidr_list   = [var.subnet_cidr]
 
-  network_security_group_name = local.nsg_name
+  network_security_group_name = var.create_nsg ? local.nsg_name : null
 
   route_table_name = var.route_table_name
   route_table_rg   = var.route_table_rg
