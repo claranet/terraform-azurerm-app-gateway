@@ -273,25 +273,25 @@ resource "azurerm_application_gateway" "app_gateway" {
       name = rewrite_rule_set.value.name
 
       dynamic "rewrite_rule" {
-        for_each = rewrite_rule_set.value.rewrite_rule_set
+        for_each = rewrite_rule_set.value.rewrite_rules
         iterator = rule
         content {
           name          = rule.value.name
           rule_sequence = rule.value.rule_sequence
 
           dynamic "condition" {
-            for_each = rule.value.condition
+            for_each = rule.value.conditions
             iterator = cond
             content {
-              variable    = cond.value.condition_variable
-              pattern     = cond.value.condition_pattern
-              ignore_case = cond.value.condition_ignore_case
-              negate      = cond.value.condition_negate
+              variable    = cond.value.variable
+              pattern     = cond.value.pattern
+              ignore_case = cond.value.ignore_case
+              negate      = cond.value.negate
             }
           }
 
           dynamic "response_header_configuration" {
-            for_each = rule.value.response_header_name
+            for_each = rule.value.response_header_configurations
             iterator = header
             content {
               header_name  = header.value.header_name
@@ -300,7 +300,7 @@ resource "azurerm_application_gateway" "app_gateway" {
           }
 
           dynamic "request_header_configuration" {
-            for_each = rule.value.request_header_name
+            for_each = rule.value.request_header_configurations
             iterator = header
             content {
               header_name  = header.value.header_name
@@ -363,7 +363,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       default_rewrite_rule_set_name       = url_path_map.value.default_rewrite_rule_set_name
 
       dynamic "path_rule" {
-        for_each = url_path_map.value.path_rule
+        for_each = url_path_map.value.path_rules
         content {
           name                       = path_rule.value.name
           backend_address_pool_name  = coalesce(path_rule.value.backend_address_pool_name, path_rule.value.name)

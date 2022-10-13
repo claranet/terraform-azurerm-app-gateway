@@ -126,16 +126,16 @@ module "appgw_v2" {
     ssl_certificate_name           = "${local.base_name}-example-com-sslcert"
     require_sni                    = true
     host_name                      = "example.com"
-    # custom_error_configuration = {
-    #   custom1 = {
+    # custom_error_configuration = [
+    #   {
     #     custom_error_page_url = "https://example.com/custom_error_403_page.html"
     #     status_code           = "HttpStatus403"
     #   },
-    #   custom2 = {
+    #   {
     #     custom_error_page_url = "https://example.com/custom_error_502_page.html"
     #     status_code           = "HttpStatus502"
     #   }
-    # }
+    # ]
   }]
 
   # custom_error_configuration = [
@@ -167,41 +167,45 @@ module "appgw_v2" {
 
   appgw_rewrite_rule_set = [{
     name = "${local.base_name}-example-rewrite-rule-set"
-    rewrite_rule = [
+    rewrite_rules = [
       {
         name          = "${local.base_name}-example-rewrite-rule-response-header"
         rule_sequence = 100
-        condition = [
+        conditions = [
           {
-            condition_ignore_case = true
-            condition_negate      = false
-            condition_pattern     = "text/html(.*)"
-            condition_variable    = "http_resp_Content-Type"
+            ignore_case = true
+            negate      = false
+            pattern     = "text/html(.*)"
+            variable    = "http_resp_Content-Type"
           }
         ]
-        response_header_name  = "X-Frame-Options"
-        response_header_value = "DENY"
+        response_header_configurations = [{
+          header_name  = "X-Frame-Options"
+          header_value = "DENY"
+        }]
       },
       {
         name          = "${local.base_name}-example-rewrite-rule-url"
         rule_sequence = 100
-        condition = [
+        conditions = [
           {
-            condition_ignore_case = false
-            condition_negate      = false
-            condition_pattern     = ".*-R[0-9]{10,10}\\.html"
-            condition_variable    = "var_uri_path"
+            ignore_case = false
+            negate      = false
+            pattern     = ".*-R[0-9]{10,10}\\.html"
+            variable    = "var_uri_path"
           },
           {
-            condition_ignore_case = true
-            condition_negate      = false
-            condition_pattern     = ".*\\.fr"
-            condition_variable    = "var_host"
+            ignore_case = true
+            negate      = false
+            pattern     = ".*\\.fr"
+            variable    = "var_host"
           }
         ]
-        url_path     = "/fr{var_uri_path}"
-        query_string = null
-        url_reroute  = false
+        url_reroute = {
+          path         = "/fr{var_uri_path}"
+          query_string = null
+          reroute      = false
+        }
       }
     ]
   }]
@@ -216,9 +220,9 @@ module "appgw_v2" {
     default_backend_address_pool_name  = "${local.base_name}-backendpool"
     default_rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
     # default_redirect_configuration_name = "${local.base_name}-redirect"
-    path_rule = [
+    path_rules = [
       {
-        path_rule_name             = "${local.base_name}-example-url-path-rule"
+        name                       = "${local.base_name}-example-url-path-rule"
         backend_address_pool_name  = "${local.base_name}-backendpool"
         backend_http_settings_name = "${local.base_name}-backhttpsettings"
         rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
@@ -284,7 +288,7 @@ module "appgw_v2" {
 | appgw\_private\_ip | Private IP for Application Gateway. Used when variable `appgw_private` is set to `true`. | `string` | `null` | no |
 | appgw\_probes | List of objects with probes configurations. | <pre>list(object({<br>    name     = string<br>    host     = optional(string)<br>    port     = optional(number, 443)<br>    interval = optional(number, 30)<br>    path     = optional(string, "/")<br>    protocol = optional(string, "Https")<br>    timeout  = optional(number, 30)<br><br>    unhealthy_threshold                       = optional(number, 3)<br>    pick_host_name_from_backend_http_settings = optional(bool, false)<br>    minimum_servers                           = optional(number, 0)<br><br>    match = optional(object({<br>      body        = optional(string, "")<br>      status_code = optional(list(string), ["200-399"])<br>    }), {})<br>  }))</pre> | `[]` | no |
 | appgw\_redirect\_configuration | List of objects with redirect configurations. | <pre>list(object({<br>    name = string<br><br>    redirect_type        = optional(string, "Permanent")<br>    target_listener_name = optional(string)<br>    target_url           = optional(string)<br><br>    include_path         = optional(bool, true)<br>    include_query_string = optional(bool, true)<br>  }))</pre> | `[]` | no |
-| appgw\_rewrite\_rule\_set | List of rewrite rule set objects with rewrite rules. | <pre>list(object({<br>    name = string<br>    rewrite_rule = list(object({<br>      name          = string<br>      rule_sequence = string<br><br>      condition = optional(list(object({<br>        variable    = string<br>        pattern     = string<br>        ignore_case = optional(bool, false)<br>        negate      = optional(bool, false)<br>      })), [])<br><br>      response_header_configuration = optional(list(object({<br>        header_name  = string<br>        header_value = string<br>      })), [])<br><br>      request_header_configuration = optional(list(object({<br>        header_name  = string<br>        header_value = string<br>      })), [])<br><br>      url_reroute = optional(object({<br>        path         = optional(string)<br>        query_string = optional(string)<br>        components   = optional(string)<br>        reroute      = optional(string)<br>      }))<br>    }))<br>  }))</pre> | `[]` | no |
+| appgw\_rewrite\_rule\_set | List of rewrite rule set objects with rewrite rules. | <pre>list(object({<br>    name = string<br>    rewrite_rules = list(object({<br>      name          = string<br>      rule_sequence = string<br><br>      conditions = optional(list(object({<br>        variable    = string<br>        pattern     = string<br>        ignore_case = optional(bool, false)<br>        negate      = optional(bool, false)<br>      })), [])<br><br>      response_header_configurations = optional(list(object({<br>        header_name  = string<br>        header_value = string<br>      })), [])<br><br>      request_header_configurations = optional(list(object({<br>        header_name  = string<br>        header_value = string<br>      })), [])<br><br>      url_reroute = optional(object({<br>        path         = optional(string)<br>        query_string = optional(string)<br>        components   = optional(string)<br>        reroute      = optional(bool)<br>      }))<br>    }))<br>  }))</pre> | `[]` | no |
 | appgw\_routings | List of objects with request routing rules configurations. With AzureRM v3+ provider, `priority` attribute becomes mandatory. | <pre>list(object({<br>    name                        = string<br>    rule_type                   = optional(string, "Basic")<br>    http_listener_name          = optional(string)<br>    backend_address_pool_name   = optional(string)<br>    backend_http_settings_name  = optional(string)<br>    url_path_map_name           = optional(string)<br>    redirect_configuration_name = optional(string)<br>    rewrite_rule_set_name       = optional(string)<br>    priority                    = optional(number)<br>  }))</pre> | n/a | yes |
 | appgw\_url\_path\_map | List of objects with URL path map configurations. | <pre>list(object({<br>    name = string<br><br>    default_backend_address_pool_name   = optional(string)<br>    default_redirect_configuration_name = optional(string)<br>    default_backend_http_settings_name  = optional(string)<br>    default_rewrite_rule_set_name       = optional(string)<br><br>    path_rules = list(object({<br>      name = string<br><br>      backend_address_pool_name  = optional(string)<br>      backend_http_settings_name = optional(string)<br>      rewrite_rule_set_name      = optional(string)<br><br>      paths = optional(list(string), [])<br>    }))<br>  }))</pre> | `[]` | no |
 | autoscaling\_parameters | Map containing autoscaling parameters. Must contain at least min\_capacity | <pre>object({<br>    min_capacity = number<br>    max_capacity = optional(number, 5)<br>  })</pre> | `null` | no |

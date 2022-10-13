@@ -278,23 +278,23 @@ variable "appgw_rewrite_rule_set" {
   description = "List of rewrite rule set objects with rewrite rules."
   type = list(object({
     name = string
-    rewrite_rule = list(object({
+    rewrite_rules = list(object({
       name          = string
       rule_sequence = string
 
-      condition = optional(list(object({
+      conditions = optional(list(object({
         variable    = string
         pattern     = string
         ignore_case = optional(bool, false)
         negate      = optional(bool, false)
       })), [])
 
-      response_header_configuration = optional(list(object({
+      response_header_configurations = optional(list(object({
         header_name  = string
         header_value = string
       })), [])
 
-      request_header_configuration = optional(list(object({
+      request_header_configurations = optional(list(object({
         header_name  = string
         header_value = string
       })), [])
@@ -303,7 +303,7 @@ variable "appgw_rewrite_rule_set" {
         path         = optional(string)
         query_string = optional(string)
         components   = optional(string)
-        reroute      = optional(string)
+        reroute      = optional(bool)
       }))
     }))
   }))
