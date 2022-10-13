@@ -1,4 +1,4 @@
-# Unreleased
+# v7.0.1 - 2022-10-13
 
 Fixed
   * AZ-876: Update example to be useable out of the box
