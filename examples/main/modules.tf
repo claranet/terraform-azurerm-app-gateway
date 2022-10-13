@@ -46,6 +46,9 @@ module "azure_virtual_network" {
   vnet_cidr = ["192.168.0.0/16"]
 }
 
+locals {
+  base_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}"
+}
 
 module "appgw_v2" {
   source  = "claranet/app-gateway/azurerm"
@@ -62,7 +65,7 @@ module "appgw_v2" {
   subnet_cidr          = "192.168.1.0/24"
 
   appgw_backend_http_settings = [{
-    name                  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
+    name                  = "${local.base_name}-backhttpsettings"
     cookie_based_affinity = "Disabled"
     path                  = "/"
     port                  = 443
@@ -71,48 +74,50 @@ module "appgw_v2" {
   }]
 
   appgw_backend_pools = [{
-    name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
+    name  = "${local.base_name}-backendpool"
     fqdns = ["example.com"]
   }]
 
   appgw_routings = [{
-    name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-routing-https"
+    name                       = "${local.base_name}-routing-https"
     rule_type                  = "Basic"
-    http_listener_name         = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-listener-https"
-    backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
-    backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
+    http_listener_name         = "${local.base_name}-listener-https"
+    backend_address_pool_name  = "${local.base_name}-backendpool"
+    backend_http_settings_name = "${local.base_name}-backhttpsettings"
   }]
+
+  custom_frontend_ip_configuration_name = "${local.base_name}-frontipconfig"
 
   appgw_http_listeners = [{
-    name                           = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-listener-https"
-    frontend_ip_configuration_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-frontipconfig"
+    name                           = "${local.base_name}-listener-https"
+    frontend_ip_configuration_name = "${local.base_name}-frontipconfig"
     frontend_port_name             = "frontend-https-port"
     protocol                       = "Https"
-    ssl_certificate_name           = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-com-sslcert"
-    host_name                      = "example.com"
+    ssl_certificate_name           = "${local.base_name}-example-com-sslcert"
     require_sni                    = true
-    custom_error_configuration = {
-      custom1 = {
-        custom_error_page_url = "https://example.com/custom_error_403_page.html"
-        status_code           = "HttpStatus403"
-      },
-      custom2 = {
-        custom_error_page_url = "https://example.com/custom_error_502_page.html"
-        status_code           = "HttpStatus502"
-      }
-    }
+    host_name                      = "example.com"
+    # custom_error_configuration = {
+    #   custom1 = {
+    #     custom_error_page_url = "https://example.com/custom_error_403_page.html"
+    #     status_code           = "HttpStatus403"
+    #   },
+    #   custom2 = {
+    #     custom_error_page_url = "https://example.com/custom_error_502_page.html"
+    #     status_code           = "HttpStatus502"
+    #   }
+    # }
   }]
 
-  custom_error_configuration = [
-    {
-      custom_error_page_url = "https://example.com/custom_error_403_page.html"
-      status_code           = "HttpStatus403"
-    },
-    {
-      custom_error_page_url = "https://example.com/custom_error_502_page.html"
-      status_code           = "HttpStatus502"
-    }
-  ]
+  # custom_error_configuration = [
+  #   {
+  #     custom_error_page_url = "https://example.com/custom_error_403_page.html"
+  #     status_code           = "HttpStatus403"
+  #   },
+  #   {
+  #     custom_error_page_url = "https://example.com/custom_error_502_page.html"
+  #     status_code           = "HttpStatus502"
+  #   }
+  # ]
 
   frontend_port_settings = [{
     name = "frontend-https-port"
@@ -120,7 +125,7 @@ module "appgw_v2" {
   }]
 
   ssl_certificates_configs = [{
-    name     = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-com-sslcert"
+    name     = "${local.base_name}-example-com-sslcert"
     data     = var.certificate_example_com_filebase64
     password = var.certificate_example_com_password
   }]
@@ -130,11 +135,11 @@ module "appgw_v2" {
     policy_name = "AppGwSslPolicy20170401S"
   }
 
-  appgw_rewrite_rule_set = {
-    name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-set"
+  appgw_rewrite_rule_set = [{
+    name = "${local.base_name}-example-rewrite-rule-set"
     rewrite_rule = [
       {
-        name          = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-response-header"
+        name          = "${local.base_name}-example-rewrite-rule-response-header"
         rule_sequence = 100
         condition = [
           {
@@ -148,7 +153,7 @@ module "appgw_v2" {
         response_header_value = "DENY"
       },
       {
-        name          = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-rewrite-rule-url"
+        name          = "${local.base_name}-example-rewrite-rule-url"
         rule_sequence = 100
         condition = [
           {
@@ -169,25 +174,28 @@ module "appgw_v2" {
         url_reroute  = false
       }
     ]
-  }
+  }]
 
-  appgw_url_path_map = [
-    {
-      name                                = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-map"
-      default_backend_address_pool_name   = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
-      default_redirect_configuration_name = "Default-redirect-configuration-name"
-      default_rewrite_rule_set_name       = "Default-rewrite-rule-set-name"
-      path_rule = [
-        {
-          name                       = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-example-url-path-rule"
-          backend_address_pool_name  = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backendpool"
-          backend_http_settings_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}-backhttpsettings"
-          rewrite_rule_set_name      = "Rewrite-rule-set-name"
-          paths                      = ["/"]
-        }
-      ]
-    },
-  ]
+  # appgw_redirect_configuration = [{
+  #   name = "${local.base_name}-redirect"
+  # }]
+
+  appgw_url_path_map = [{
+    name                               = "${local.base_name}-example-url-path-map"
+    default_backend_http_settings_name = "${local.base_name}-backhttpsettings"
+    default_backend_address_pool_name  = "${local.base_name}-backendpool"
+    default_rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
+    # default_redirect_configuration_name = "${local.base_name}-redirect"
+    path_rule = [
+      {
+        path_rule_name             = "${local.base_name}-example-url-path-rule"
+        backend_address_pool_name  = "${local.base_name}-backendpool"
+        backend_http_settings_name = "${local.base_name}-backhttpsettings"
+        rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
+        paths                      = ["/demo/"]
+      }
+    ]
+  }]
 
   autoscaling_parameters = {
     min_capacity = 2
