@@ -1,4 +1,4 @@
-# Unreleased
+# v7.1.0 - 2022-10-14
 
 Changed
   * AZ-876: Type variables with `list(object)` instead of `any`, default values, more maintainable code.
