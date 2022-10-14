@@ -66,19 +66,39 @@ variable "zones" {
 
 variable "frontend_port_settings" {
   description = "Frontend port settings. Each port setting contains the name and the port for the frontend port."
-  type        = list(map(string))
+  type = list(object({
+    name = string
+    port = number
+  }))
 }
 
 variable "ssl_policy" {
-  description = "Application Gateway SSL configuration. The list of available policies can be found here: https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-ssl-policy-overview#predefined-ssl-policy"
-  type        = any
-  default     = null
+  description = "Application Gateway SSL configuration. The list of available policies can be found here: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#disabled_protocols"
+  type = object({
+    disabled_protocols   = optional(list(string), [])
+    policy_type          = optional(string, "Predefined")
+    policy_name          = optional(string, "AppGwSslPolicy20170401S")
+    cipher_suites        = optional(list(string), [])
+    min_protocol_version = optional(string, "TLSv1_2")
+  })
+  default = null
 }
 
 variable "ssl_profile" {
-  description = "Application Gateway SSL profile. Default profile is used when this variable is set to null."
-  type        = any
-  default     = null
+  description = "Application Gateway SSL profile. Default profile is used when this variable is set to null. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#name"
+  type = object({
+    name                             = string
+    trusted_client_certificate_names = optional(string)
+    verify_client_cert_issuer_dn     = optional(bool, false)
+    ssl_policy = optional(object({
+      disabled_protocols   = optional(list(string), [])
+      policy_type          = optional(string, "Predefined")
+      policy_name          = optional(string, "AppGwSslPolicy20170401S")
+      cipher_suites        = optional(list(string), [])
+      min_protocol_version = optional(string, "TLSv1_2")
+    }))
+  })
+  default = null
 }
 
 variable "firewall_policy_id" {
@@ -88,73 +108,206 @@ variable "firewall_policy_id" {
 }
 
 variable "trusted_root_certificate_configs" {
-  description = "List of trusted root certificates. The needed values for each trusted root certificates are 'name' and 'data' or 'filename'. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate)"
-  type        = list(map(string))
-  default     = []
+  description = "List of trusted root certificates. `file_path` is checked first, using `data` (base64 cert content) if null. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate)."
+  type = list(object({
+    name                = string
+    data                = optional(string)
+    file_path           = optional(string)
+    key_vault_secret_id = optional(string)
+  }))
+  default = []
 }
 
 variable "appgw_backend_pools" {
-  description = "List of maps including backend pool configurations"
-  type        = any
+  description = "List of objects with backend pool configurations."
+  type = list(object({
+    name         = string
+    fqdns        = optional(list(string))
+    ip_addresses = optional(list(string))
+  }))
 }
 
 variable "appgw_http_listeners" {
-  description = "List of maps including http listeners configurations and map of maps including listener custom error configurations"
-  type        = any
+  description = "List of objects with HTTP listeners configurations and custom error configurations."
+  type = list(object({
+    name = string
+
+    frontend_ip_configuration_name = optional(string)
+    frontend_port_name             = optional(string)
+    host_name                      = optional(string)
+    host_names                     = optional(list(string))
+    protocol                       = optional(string, "Https")
+    require_sni                    = optional(bool, false)
+    ssl_certificate_name           = optional(string)
+    ssl_profile_name               = optional(string)
+    firewall_policy_id             = optional(string)
+
+    custom_error_configuration = optional(list(object({
+      status_code           = string
+      custom_error_page_url = string
+    })), [])
+  }))
 }
 
 variable "custom_error_configuration" {
-  description = "List of maps including global level custom error configurations"
-  type        = list(map(string))
-  default     = []
+  description = "List of objects with global level custom error configurations."
+  type = list(object({
+    status_code           = string
+    custom_error_page_url = string
+  }))
+  default = []
 }
 
 variable "ssl_certificates_configs" {
   description = <<EOD
-List of maps including ssl certificates configurations.
-The path to a base-64 encoded certificate is expected in the 'data' parameter:
+List of objects with SSL certificates configurations.
+The path to a base-64 encoded certificate is expected in the 'data' attribute:
 ```
 data = filebase64("./file_path")
 ```
 EOD
-  type        = list(map(string))
-  default     = []
+  type = list(object({
+    name                = string
+    data                = optional(string)
+    password            = optional(string)
+    key_vault_secret_id = optional(string)
+  }))
+  default = []
 }
 
 variable "appgw_routings" {
-  description = "List of maps including request routing rules configurations. With AzureRM v3+ provider, `priority` attribute becomes mandatory."
-  type        = list(map(string))
+  description = "List of objects with request routing rules configurations. With AzureRM v3+ provider, `priority` attribute becomes mandatory."
+  type = list(object({
+    name                        = string
+    rule_type                   = optional(string, "Basic")
+    http_listener_name          = optional(string)
+    backend_address_pool_name   = optional(string)
+    backend_http_settings_name  = optional(string)
+    url_path_map_name           = optional(string)
+    redirect_configuration_name = optional(string)
+    rewrite_rule_set_name       = optional(string)
+    priority                    = optional(number)
+  }))
 }
 
 variable "appgw_probes" {
-  description = "List of maps including request probes configurations"
-  type        = any
-  default     = []
+  description = "List of objects with probes configurations."
+  type = list(object({
+    name     = string
+    host     = optional(string)
+    port     = optional(number, 443)
+    interval = optional(number, 30)
+    path     = optional(string, "/")
+    protocol = optional(string, "Https")
+    timeout  = optional(number, 30)
+
+    unhealthy_threshold                       = optional(number, 3)
+    pick_host_name_from_backend_http_settings = optional(bool, false)
+    minimum_servers                           = optional(number, 0)
+
+    match = optional(object({
+      body        = optional(string, "")
+      status_code = optional(list(string), ["200-399"])
+    }), {})
+  }))
+  default = []
 }
 
 variable "appgw_backend_http_settings" {
-  description = "List of maps including backend http settings configurations"
-  type        = any
+  description = "List of objects including backend http settings configurations."
+  type = list(object({
+    name     = string
+    port     = optional(number, 443)
+    protocol = optional(string, "Https")
+
+    path       = optional(string)
+    probe_name = optional(string)
+
+    cookie_based_affinity               = optional(string, "Disabled")
+    affinity_cookie_name                = optional(string, "ApplicationGatewayAffinity")
+    request_timeout                     = optional(number, 20)
+    host_name                           = optional(string)
+    pick_host_name_from_backend_address = optional(bool, true)
+    trusted_root_certificate_names      = optional(list(string), [])
+
+    connection_draining_timeout_sec = optional(number)
+  }))
 }
 
 variable "appgw_url_path_map" {
-  description = "List of maps including url path map configurations"
-  type        = any
-  default     = []
+  description = "List of objects with URL path map configurations."
+  type = list(object({
+    name = string
+
+    default_backend_address_pool_name   = optional(string)
+    default_redirect_configuration_name = optional(string)
+    default_backend_http_settings_name  = optional(string)
+    default_rewrite_rule_set_name       = optional(string)
+
+    path_rules = list(object({
+      name = string
+
+      backend_address_pool_name  = optional(string)
+      backend_http_settings_name = optional(string)
+      rewrite_rule_set_name      = optional(string)
+
+      paths = optional(list(string), [])
+    }))
+  }))
+  default = []
 }
 
 variable "appgw_redirect_configuration" {
-  description = "List of maps including redirect configurations"
-  type        = list(map(string))
-  default     = []
+  description = "List of objects with redirect configurations."
+  type = list(object({
+    name = string
+
+    redirect_type        = optional(string, "Permanent")
+    target_listener_name = optional(string)
+    target_url           = optional(string)
+
+    include_path         = optional(bool, true)
+    include_query_string = optional(bool, true)
+  }))
+  default = []
 }
 
 ### REWRITE RULE SET
 
 variable "appgw_rewrite_rule_set" {
-  description = "List of rewrite rule set including rewrite rules"
-  type        = any
-  default     = []
+  description = "List of rewrite rule set objects with rewrite rules."
+  type = list(object({
+    name = string
+    rewrite_rules = list(object({
+      name          = string
+      rule_sequence = string
+
+      conditions = optional(list(object({
+        variable    = string
+        pattern     = string
+        ignore_case = optional(bool, false)
+        negate      = optional(bool, false)
+      })), [])
+
+      response_header_configurations = optional(list(object({
+        header_name  = string
+        header_value = string
+      })), [])
+
+      request_header_configurations = optional(list(object({
+        header_name  = string
+        header_value = string
+      })), [])
+
+      url_reroute = optional(object({
+        path         = optional(string)
+        query_string = optional(string)
+        components   = optional(string)
+        reroute      = optional(bool)
+      }))
+    }))
+  }))
+  default = []
 }
 
 ### WAF
@@ -211,15 +364,19 @@ variable "disabled_rule_group_settings" {
 }
 
 variable "disable_waf_rules_for_dev_portal" {
-  description = "Whether to disable some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link"
+  description = "Whether to disable some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link."
   type        = bool
   default     = false
 }
 
 variable "waf_exclusion_settings" {
-  description = "WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#match_variable"
-  type        = list(map(string))
-  default     = []
+  description = "WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#match_variable"
+  type = list(object({
+    match_variable          = string
+    selector_match_operator = optional(string)
+    selector                = optional(string)
+  }))
+  default = []
 }
 
 ### NETWORKING
@@ -292,7 +449,7 @@ variable "nsr_https_source_address_prefix" {
 ### IDENTITY
 
 variable "user_assigned_identity_id" {
-  description = "User assigned identity id assigned to this resource"
+  description = "User assigned identity id assigned to this resource."
   type        = string
   default     = null
 }
@@ -320,7 +477,10 @@ variable "enable_http2" {
 ### Autoscaling
 
 variable "autoscaling_parameters" {
-  type        = map(string)
   description = "Map containing autoscaling parameters. Must contain at least min_capacity"
-  default     = null
+  type = object({
+    min_capacity = number
+    max_capacity = optional(number, 5)
+  })
+  default = null
 }
