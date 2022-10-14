@@ -96,28 +96,28 @@ module "appgw_v2" {
     ssl_certificate_name           = "${local.base_name}-example-com-sslcert"
     require_sni                    = true
     host_name                      = "example.com"
-    # custom_error_configuration = [
-    #   {
-    #     custom_error_page_url = "https://example.com/custom_error_403_page.html"
-    #     status_code           = "HttpStatus403"
-    #   },
-    #   {
-    #     custom_error_page_url = "https://example.com/custom_error_502_page.html"
-    #     status_code           = "HttpStatus502"
-    #   }
-    # ]
+    custom_error_configuration = [
+      {
+        custom_error_page_url = "https://example.com/custom_error_403_page.html"
+        status_code           = "HttpStatus403"
+      },
+      {
+        custom_error_page_url = "https://example.com/custom_error_502_page.html"
+        status_code           = "HttpStatus502"
+      }
+    ]
   }]
 
-  # custom_error_configuration = [
-  #   {
-  #     custom_error_page_url = "https://example.com/custom_error_403_page.html"
-  #     status_code           = "HttpStatus403"
-  #   },
-  #   {
-  #     custom_error_page_url = "https://example.com/custom_error_502_page.html"
-  #     status_code           = "HttpStatus502"
-  #   }
-  # ]
+  custom_error_configuration = [
+    {
+      custom_error_page_url = "https://example.com/custom_error_403_page.html"
+      status_code           = "HttpStatus403"
+    },
+    {
+      custom_error_page_url = "https://example.com/custom_error_502_page.html"
+      status_code           = "HttpStatus502"
+    }
+  ]
 
   frontend_port_settings = [{
     name = "frontend-https-port"
