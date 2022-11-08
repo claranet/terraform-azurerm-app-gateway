@@ -1,3 +1,8 @@
+# v7.1.1 - 2022-11-04
+
+Fixed
+  * AZ-883: Lint code, fix deprecated HCL syntax
+
 # v7.1.0 - 2022-10-14
 
 Changed
