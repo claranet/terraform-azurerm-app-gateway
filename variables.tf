@@ -343,7 +343,7 @@ EOD
     rule_set_version         = string
     disabled_rule_group = optional(list(object({
       rule_group_name = string
-      rules           = list(string)
+      rules           = optional(list(string))
     })), [])
     exclusion = optional(list(object({
       match_variable          = string

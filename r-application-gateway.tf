@@ -69,7 +69,7 @@ resource "azurerm_application_gateway" "app_gateway" {
         for_each = local.disabled_rule_group_settings != null ? local.disabled_rule_group_settings : []
         content {
           rule_group_name = disabled_rule_group.value.rule_group_name
-          rules           = coalesce(disabled_rule_group.value.rules, null)
+          rules           = disabled_rule_group.value.rules
         }
       }
 
@@ -77,8 +77,8 @@ resource "azurerm_application_gateway" "app_gateway" {
         for_each = waf_configuration.value.exclusion != null ? waf_configuration.value.exclusion : []
         content {
           match_variable          = exclusion.value.match_variable
-          selector                = coalesce(exclusion.value.selector, null)
-          selector_match_operator = coalesce(exclusion.value.selector_match_operator, null)
+          selector                = exclusion.value.selector
+          selector_match_operator = exclusion.value.selector_match_operator
         }
       }
     }
