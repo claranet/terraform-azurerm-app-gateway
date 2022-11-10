@@ -52,31 +52,33 @@ resource "azurerm_application_gateway" "app_gateway" {
   # Security
   #
 
+  force_firewall_policy_association = var.force_firewall_policy_association
+
   dynamic "waf_configuration" {
-    for_each = local.enable_waf ? ["enabled"] : []
+    for_each = var.sku == "WAF_v2" && var.waf_configuration != null ? [var.waf_configuration] : []
     content {
-      enabled                  = var.enable_waf
-      file_upload_limit_mb     = coalesce(var.file_upload_limit_mb, 100)
-      firewall_mode            = coalesce(var.waf_mode, "Prevention")
-      max_request_body_size_kb = coalesce(var.max_request_body_size_kb, 128)
-      request_body_check       = var.request_body_check
-      rule_set_type            = var.rule_set_type
-      rule_set_version         = var.rule_set_version
+      enabled                  = waf_configuration.value.enabled
+      file_upload_limit_mb     = waf_configuration.value.file_upload_limit_mb
+      firewall_mode            = waf_configuration.value.firewall_mode
+      max_request_body_size_kb = waf_configuration.value.max_request_body_size_kb
+      request_body_check       = waf_configuration.value.request_body_check
+      rule_set_type            = waf_configuration.value.rule_set_type
+      rule_set_version         = waf_configuration.value.rule_set_version
 
       dynamic "disabled_rule_group" {
-        for_each = local.disabled_rule_group_settings
+        for_each = local.disabled_rule_group_settings != null ? local.disabled_rule_group_settings : []
         content {
-          rule_group_name = lookup(disabled_rule_group.value, "rule_group_name", null)
-          rules           = lookup(disabled_rule_group.value, "rules", null)
+          rule_group_name = coalesce(disabled_rule_group.value.rule_group_name, null)
+          rules           = coalesce(disabled_rule_group.value.rules, null)
         }
       }
 
       dynamic "exclusion" {
-        for_each = var.waf_exclusion_settings
+        for_each = waf_configuration.value.exclusion != null ? waf_configuration.value.exclusion : []
         content {
           match_variable          = exclusion.value.match_variable
-          selector                = exclusion.value.selector
-          selector_match_operator = exclusion.value.selector_match_operator
+          selector                = coalesce(exclusion.value.selector, null)
+          selector_match_operator = coalesce(exclusion.value.selector_match_operator, null)
         }
       }
     }

@@ -2,6 +2,7 @@
 
 Changed
   * AZ-908: Use the new data source for CAF naming (instead of resource)
+  * AZ-903: Rework WAF configuration block
 
 # v7.1.1 - 2022-11-04
 

@@ -312,71 +312,60 @@ variable "appgw_rewrite_rule_set" {
 
 ### WAF
 
-variable "enable_waf" {
-  description = "Boolean to enable WAF."
+variable "force_firewall_policy_association" {
+  description = "Enable if the Firewall Policy is associated with the Application Gateway."
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "file_upload_limit_mb" {
-  description = " The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB."
-  type        = number
-  default     = 100
-}
-
-variable "waf_mode" {
-  description = "The Web Application Firewall Mode. Possible values are Detection and Prevention."
-  type        = string
-  default     = "Prevention"
-}
-
-variable "max_request_body_size_kb" {
-  description = "The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB."
-  type        = number
-  default     = 128
-}
-
-variable "request_body_check" {
-  description = "Is Request Body Inspection enabled?"
-  type        = bool
-  default     = true
-}
-
-variable "rule_set_type" {
-  description = "The Type of the Rule Set used for this Web Application Firewall."
-  type        = string
-  default     = "OWASP"
-}
-
-variable "rule_set_version" {
-  description = "The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1."
-  type        = number
-  default     = 3.1
-}
-
-variable "disabled_rule_group_settings" {
-  description = "The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name"
-  type = list(object({
-    rule_group_name = string
-    rules           = list(string)
-  }))
-  default = []
+variable "waf_configuration" {
+  description = <<EOD
+Map of WAF configuration parameters:
+```
+- enabled:                  Boolean to enable WAF.
+- file_upload_limit_mb:     The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB.
+- firewall_mode:            The Web Application Firewall Mode. Possible values are Detection and Prevention.
+- max_request_body_size_kb: The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB.
+- request_body_check:       Is Request Body Inspection enabled ?
+- rule_set_type:            The Type of the Rule Set used for this Web Application Firewall.
+- rule_set_version:         The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1.
+- disabled_rule_group:      The rule group where specific rules should be disabled. Accepted values can be found here: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#rule_group_name
+- exclusion:                WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#match_variable
+```
+EOD
+  type = object({
+    enabled                  = bool
+    file_upload_limit_mb     = optional(number)
+    firewall_mode            = string
+    max_request_body_size_kb = optional(number)
+    request_body_check       = optional(bool)
+    rule_set_type            = string
+    rule_set_version         = string
+    disabled_rule_group = optional(list(object({
+      rule_group_name = string
+      rules           = list(string)
+    })))
+    exclusion = optional(list(object({
+      match_variable          = string
+      selector                = optional(string)
+      selector_match_operator = optional(string)
+    })))
+  })
+  default = {
+    enabled                  = true
+    file_upload_limit_mb     = 100
+    firewall_mode            = "Prevention"
+    max_request_body_size_kb = 128
+    request_body_check       = true
+    rule_set_type            = "OWASP"
+    rule_set_version         = 3.1
+  }
 }
 
 variable "disable_waf_rules_for_dev_portal" {
   description = "Whether to disable some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link."
   type        = bool
   default     = false
-}
-
-variable "waf_exclusion_settings" {
-  description = "WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#match_variable"
-  type = list(object({
-    match_variable          = string
-    selector_match_operator = optional(string)
-    selector                = optional(string)
-  }))
-  default = []
 }
 
 ### NETWORKING
