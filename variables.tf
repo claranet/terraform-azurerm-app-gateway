@@ -344,7 +344,7 @@ EOD
     disabled_rule_group = optional(list(object({
       rule_group_name = string
       rules           = list(string)
-    })))
+    })), [])
     exclusion = optional(list(object({
       match_variable          = string
       selector                = optional(string)
@@ -359,6 +359,8 @@ EOD
     request_body_check       = true
     rule_set_type            = "OWASP"
     rule_set_version         = 3.1
+    disabled_rule_group      = []
+    exclusion                = []
   }
 }
 
