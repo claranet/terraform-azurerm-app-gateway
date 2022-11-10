@@ -68,7 +68,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       dynamic "disabled_rule_group" {
         for_each = local.disabled_rule_group_settings != null ? local.disabled_rule_group_settings : []
         content {
-          rule_group_name = coalesce(disabled_rule_group.value.rule_group_name, null)
+          rule_group_name = disabled_rule_group.value.rule_group_name
           rules           = coalesce(disabled_rule_group.value.rules, null)
         }
       }
