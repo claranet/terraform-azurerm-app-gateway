@@ -116,6 +116,7 @@ output "appgw_request_routing_rule_url_path_map_ids" {
 output "appgw_ssl_certificate_ids" {
   description = "List of SSL certificate Ids."
   value       = azurerm_application_gateway.app_gateway.ssl_certificate[*].id
+  sensitive   = true
 }
 
 output "appgw_url_path_map_ids" {
