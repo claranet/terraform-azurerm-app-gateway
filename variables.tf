@@ -320,7 +320,7 @@ variable "force_firewall_policy_association" {
 
 variable "waf_configuration" {
   description = <<EOD
-Map of WAF configuration parameters:
+WAF configuration object (only available with WAF_v2 SKU) with following attributes:
 ```
 - enabled:                  Boolean to enable WAF.
 - file_upload_limit_mb:     The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB.
@@ -334,13 +334,13 @@ Map of WAF configuration parameters:
 ```
 EOD
   type = object({
-    enabled                  = bool
-    file_upload_limit_mb     = optional(number)
-    firewall_mode            = string
-    max_request_body_size_kb = optional(number)
-    request_body_check       = optional(bool)
-    rule_set_type            = string
-    rule_set_version         = string
+    enabled                  = optional(bool, true)
+    file_upload_limit_mb     = optional(number, 100)
+    firewall_mode            = optional(string, "Prevention")
+    max_request_body_size_kb = optional(number, 128)
+    request_body_check       = optional(bool, true)
+    rule_set_type            = optional(string, "OWASP")
+    rule_set_version         = optional(string, 3.1)
     disabled_rule_group = optional(list(object({
       rule_group_name = string
       rules           = optional(list(string))
@@ -349,19 +349,9 @@ EOD
       match_variable          = string
       selector                = optional(string)
       selector_match_operator = optional(string)
-    })))
+    })), [])
   })
-  default = {
-    enabled                  = true
-    file_upload_limit_mb     = 100
-    firewall_mode            = "Prevention"
-    max_request_body_size_kb = 128
-    request_body_check       = true
-    rule_set_type            = "OWASP"
-    rule_set_version         = 3.1
-    disabled_rule_group      = []
-    exclusion                = []
-  }
+  default = {}
 }
 
 variable "disable_waf_rules_for_dev_portal" {
