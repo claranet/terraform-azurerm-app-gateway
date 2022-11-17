@@ -247,7 +247,7 @@ module "appgw_v2" {
 
 | Name | Version |
 |------|---------|
-| azurecaf | ~> 1.1 |
+| azurecaf | ~> 1.2, >= 1.2.22 |
 | azurerm | ~> 3.22 |
 
 ## Modules
@@ -262,19 +262,19 @@ module "appgw_v2" {
 
 | Name | Type |
 |------|------|
-| [azurecaf_name.appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
-| [azurecaf_name.frontipconfig](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
-| [azurecaf_name.frontipconfig_priv](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
-| [azurecaf_name.gwipconfig](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
-| [azurecaf_name.nsg_appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
-| [azurecaf_name.nsr_healthcheck](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
-| [azurecaf_name.nsr_https](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
-| [azurecaf_name.pip_appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
-| [azurecaf_name.subnet_appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/resources/name) | resource |
 | [azurerm_application_gateway.app_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway) | resource |
 | [azurerm_network_security_rule.allow_health_probe_app_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_network_security_rule.web](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_public_ip.ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
+| [azurecaf_name.appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.frontipconfig](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.frontipconfig_priv](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.gwipconfig](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.nsg_appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.nsr_healthcheck](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.nsr_https](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.pip_appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
+| [azurecaf_name.subnet_appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
 
 ## Inputs
 
