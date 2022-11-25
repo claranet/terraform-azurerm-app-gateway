@@ -231,6 +231,23 @@ module "appgw_v2" {
     ]
   }]
 
+  # Disabled WAF rule and WAF exclusion configuration example
+  # waf_configuration = {
+  #   disabled_rule_group = [
+  #     {
+  #       rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+  #       rules           = ["920420", "920320", "920330"]
+  #     }
+  #   ]
+  #   exclusion = [
+  #     {
+  #       match_variable          = "RequestArgNames"
+  #       selector                = "picture"
+  #       selector_match_operator = "Equals"
+  #     }
+  #   ]
+  # }
+
   autoscaling_parameters = {
     min_capacity = 2
     max_capacity = 15
@@ -311,12 +328,9 @@ module "appgw_v2" {
 | custom\_subnet\_name | Custom name for the subnet. | `string` | `""` | no |
 | default\_tags\_enabled | Option to enable or disable default tags. | `bool` | `true` | no |
 | disable\_waf\_rules\_for\_dev\_portal | Whether to disable some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link. | `bool` | `false` | no |
-| disabled\_rule\_group\_settings | The rule group where specific rules should be disabled. Accepted values can be found here: https://www.terraform.io/docs/providers/azurerm/r/application_gateway.html#rule_group_name | <pre>list(object({<br>    rule_group_name = string<br>    rules           = list(string)<br>  }))</pre> | `[]` | no |
 | enable\_http2 | Whether to enable http2 or not | `bool` | `true` | no |
-| enable\_waf | Boolean to enable WAF. | `bool` | `true` | no |
 | environment | Project environment | `string` | n/a | yes |
 | extra\_tags | Extra tags to add. | `map(string)` | `{}` | no |
-| file\_upload\_limit\_mb | The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB. Defaults to 100MB. | `number` | `100` | no |
 | firewall\_policy\_id | ID of a Web Application Firewall Policy | `string` | `null` | no |
 | flow\_log\_enabled | Provision network watcher flow logs. | `bool` | `false` | no |
 | flow\_log\_location | The location where the Network Watcher Flow Log resides. Changing this forces a new resource to be created. Defaults to the `location` of the Network Watcher. | `string` | `null` | no |
@@ -326,6 +340,7 @@ module "appgw_v2" {
 | flow\_log\_storage\_account\_id | Network watcher flow log storage account ID. | `string` | `null` | no |
 | flow\_log\_traffic\_analytics\_enabled | Boolean flag to enable/disable traffic analytics. | `bool` | `true` | no |
 | flow\_log\_traffic\_analytics\_interval\_in\_minutes | How frequently service should do flow analytics in minutes. | `number` | `10` | no |
+| force\_firewall\_policy\_association | Enable if the Firewall Policy is associated with the Application Gateway. | `bool` | `false` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | <pre>list(object({<br>    name = string<br>    port = number<br>  }))</pre> | n/a | yes |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |
 | ip\_sku | SKU for the public IP. Warning, can only be `Standard` for the moment. | `string` | `"Standard"` | no |
@@ -339,19 +354,15 @@ module "appgw_v2" {
 | logs\_destinations\_ids | List of destination resources IDs for logs diagnostic destination.<br>Can be `Storage Account`, `Log Analytics Workspace` and `Event Hub`. No more than one of each can be set.<br>If you want to specify an Azure EventHub to send logs and metrics to, you need to provide a formated string with both the EventHub Namespace authorization send ID and the EventHub name (name of the queue to use in the Namespace) separated by the `|` character. | `list(string)` | n/a | yes |
 | logs\_metrics\_categories | Metrics categories to send to destinations. | `list(string)` | `null` | no |
 | logs\_retention\_days | Number of days to keep logs on storage account. | `number` | `30` | no |
-| max\_request\_body\_size\_kb | The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB. | `number` | `128` | no |
 | name\_prefix | Optional prefix for the generated name | `string` | `""` | no |
 | name\_suffix | Optional suffix for the generated name | `string` | `""` | no |
 | network\_watcher\_name | The name of the Network Watcher. Changing this forces a new resource to be created. | `string` | `null` | no |
 | network\_watcher\_resource\_group\_name | The name of the resource group in which the Network Watcher was deployed. Changing this forces a new resource to be created. | `string` | `null` | no |
 | nsg\_tags | Network Security Group tags. | `map(string)` | `{}` | no |
 | nsr\_https\_source\_address\_prefix | Source address prefix to allow to access on port 443 defined in dedicated network security rule. | `string` | `"*"` | no |
-| request\_body\_check | Is Request Body Inspection enabled? | `bool` | `true` | no |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
 | route\_table\_name | The Route Table name to associate with the subnet | `string` | `null` | no |
 | route\_table\_rg | The Route Table RG to associate with the subnet. Default is the same RG than the subnet. | `string` | `null` | no |
-| rule\_set\_type | The Type of the Rule Set used for this Web Application Firewall. | `string` | `"OWASP"` | no |
-| rule\_set\_version | The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1. | `number` | `3.1` | no |
 | sku | The Name of the SKU to use for this Application Gateway. Possible values are Standard\_v2 and WAF\_v2. | `string` | `"WAF_v2"` | no |
 | sku\_capacity | The Capacity of the SKU to use for this Application Gateway - which must be between 1 and 10, optional if autoscale\_configuration is set | `number` | `2` | no |
 | ssl\_certificates\_configs | List of objects with SSL certificates configurations.<br>The path to a base-64 encoded certificate is expected in the 'data' attribute:<pre>data = filebase64("./file_path")</pre> | <pre>list(object({<br>    name                = string<br>    data                = optional(string)<br>    password            = optional(string)<br>    key_vault_secret_id = optional(string)<br>  }))</pre> | `[]` | no |
@@ -365,8 +376,7 @@ module "appgw_v2" {
 | use\_caf\_naming | Use the Azure CAF naming provider to generate default resource name. `custom_rg_name` override this if set. Legacy default name is used if this is set to `false`. | `bool` | `true` | no |
 | user\_assigned\_identity\_id | User assigned identity id assigned to this resource. | `string` | `null` | no |
 | virtual\_network\_name | Virtual network name to attach the subnet. | `string` | n/a | yes |
-| waf\_exclusion\_settings | WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#match_variable | <pre>list(object({<br>    match_variable          = string<br>    selector_match_operator = optional(string)<br>    selector                = optional(string)<br>  }))</pre> | `[]` | no |
-| waf\_mode | The Web Application Firewall Mode. Possible values are Detection and Prevention. | `string` | `"Prevention"` | no |
+| waf\_configuration | WAF configuration object (only available with WAF\_v2 SKU) with following attributes:<pre>- enabled:                  Boolean to enable WAF.<br>- file_upload_limit_mb:     The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB.<br>- firewall_mode:            The Web Application Firewall Mode. Possible values are Detection and Prevention.<br>- max_request_body_size_kb: The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB.<br>- request_body_check:       Is Request Body Inspection enabled ?<br>- rule_set_type:            The Type of the Rule Set used for this Web Application Firewall.<br>- rule_set_version:         The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1.<br>- disabled_rule_group:      The rule group where specific rules should be disabled. Accepted values can be found here: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#rule_group_name<br>- exclusion:                WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#match_variable</pre> | <pre>object({<br>    enabled                  = optional(bool, true)<br>    file_upload_limit_mb     = optional(number, 100)<br>    firewall_mode            = optional(string, "Prevention")<br>    max_request_body_size_kb = optional(number, 128)<br>    request_body_check       = optional(bool, true)<br>    rule_set_type            = optional(string, "OWASP")<br>    rule_set_version         = optional(string, 3.1)<br>    disabled_rule_group = optional(list(object({<br>      rule_group_name = string<br>      rules           = optional(list(string))<br>    })), [])<br>    exclusion = optional(list(object({<br>      match_variable          = string<br>      selector                = optional(string)<br>      selector_match_operator = optional(string)<br>    })), [])<br>  })</pre> | `{}` | no |
 | zones | A collection of availability zones to spread the Application Gateway over. This option is only supported for v2 SKUs | `list(number)` | <pre>[<br>  1,<br>  2,<br>  3<br>]</pre> | no |
 
 ## Outputs
