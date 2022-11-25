@@ -1,4 +1,4 @@
-# Unreleased
+# v7.2.1 - 2022-11-25
 
 Changed
   * AZ-908: Bump Subnet & NSG modules
