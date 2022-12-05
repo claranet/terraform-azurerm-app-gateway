@@ -115,6 +115,24 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
+  dynamic "authentication_certificate" {
+    for_each = var.authentication_certificates_configs
+
+    content {
+      name = authentication_certificate.value.name
+      data = authentication_certificate.value.data
+    }
+  }
+
+  dynamic "trusted_client_certificate" {
+    for_each = var.trusted_client_certificates_configs
+
+    content {
+      name = trusted_client_certificate.value.name
+      data = trusted_client_certificate.value.data
+    }
+  }
+
   #
   # Autoscaling
   #
@@ -148,6 +166,13 @@ resource "azurerm_application_gateway" "app_gateway" {
       host_name                           = back_http_set.value.host_name
       pick_host_name_from_backend_address = back_http_set.value.pick_host_name_from_backend_address
       trusted_root_certificate_names      = back_http_set.value.trusted_root_certificate_names
+
+      dynamic "authentication_certificate" {
+        for_each = back_http_set.value.authentication_certificate != null ? ["enabled"] : []
+        content {
+          name = back_http_set.value.authentication_certificate
+        }
+      }
 
       dynamic "connection_draining" {
         for_each = back_http_set.value.connection_draining_timeout_sec != null ? ["enabled"] : []
