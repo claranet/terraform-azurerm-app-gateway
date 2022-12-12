@@ -44,6 +44,18 @@ variable "ip_allocation_method" {
   default     = "Static"
 }
 
+variable "ip_ddos_protection_mode" {
+  description = "The DDoS protection mode of the public IP. Possible values are `Disabled`, `Enabled`, and `VirtualNetworkInherited`."
+  type        = string
+  default     = "Disabled"
+}
+
+variable "ip_ddos_protection_plan_id" {
+  description = "The ID of DDoS protection plan associated with the public IP."
+  type        = string
+  default     = null
+}
+
 # Application gateway inputs
 
 variable "sku_capacity" {

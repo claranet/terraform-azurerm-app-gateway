@@ -15,5 +15,8 @@ resource "azurerm_public_ip" "ip" {
 
   domain_name_label = local.ip_label
 
+  ddos_protection_mode    = var.ip_ddos_protection_mode
+  ddos_protection_plan_id = var.ip_ddos_protection_plan_id
+
   tags = local.ip_tags
 }
