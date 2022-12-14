@@ -1,4 +1,4 @@
-# Unreleased
+# v7.3.0 - 2022-12-14
 
 Added
   * AZ-939: Add `ip_ddos_protection_mode` and `ip_ddos_protection_plan_id` parameters for the public IP resource
