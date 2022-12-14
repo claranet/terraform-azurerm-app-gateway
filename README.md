@@ -265,7 +265,7 @@ module "appgw_v2" {
 | Name | Version |
 |------|---------|
 | azurecaf | ~> 1.2, >= 1.2.22 |
-| azurerm | ~> 3.22 |
+| azurerm | ~> 3.31 |
 
 ## Modules
 
@@ -343,6 +343,8 @@ module "appgw_v2" {
 | force\_firewall\_policy\_association | Enable if the Firewall Policy is associated with the Application Gateway. | `bool` | `false` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | <pre>list(object({<br>    name = string<br>    port = number<br>  }))</pre> | n/a | yes |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |
+| ip\_ddos\_protection\_mode | The DDoS protection mode of the public IP. Possible values are `Disabled`, `Enabled`, and `VirtualNetworkInherited`. | `string` | `"Disabled"` | no |
+| ip\_ddos\_protection\_plan\_id | The ID of DDoS protection plan associated with the public IP. | `string` | `null` | no |
 | ip\_sku | SKU for the public IP. Warning, can only be `Standard` for the moment. | `string` | `"Standard"` | no |
 | ip\_tags | Public IP tags. | `map(string)` | `{}` | no |
 | location | Azure location. | `string` | n/a | yes |
