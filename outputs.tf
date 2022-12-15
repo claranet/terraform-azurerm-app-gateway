@@ -33,6 +33,16 @@ output "appgw_public_ip_address" {
   value       = azurerm_public_ip.ip.ip_address
 }
 
+output "appgw_public_ip_fqdn" {
+  description = "Fully qualified domain name of the A DNS record associated with the public IP."
+  value       = azurerm_public_ip.ip.fqdn
+}
+
+output "appgw_public_ip_domain_name" {
+  description = "Domain Name part from FQDN of the A DNS record associated with the public IP."
+  value       = var.custom_ip_label
+}
+
 output "appgw_backend_address_pool_ids" {
   description = "List of backend address pool Ids."
   value       = azurerm_application_gateway.app_gateway.backend_address_pool[*].id
