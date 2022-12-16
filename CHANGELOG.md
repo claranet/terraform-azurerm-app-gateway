@@ -1,3 +1,8 @@
+# v7.4.0 - 2022-12-16
+
+Added
+  * AZ-928: Add authentication and client certificates parameters
+
 # v7.3.0 - 2022-12-14
 
 Added
