@@ -40,7 +40,7 @@ output "appgw_public_ip_fqdn" {
 
 output "appgw_public_ip_domain_name" {
   description = "Domain Name part from FQDN of the A DNS record associated with the public IP."
-  value       = var.custom_ip_label
+  value       = local.ip_label
 }
 
 output "appgw_backend_address_pool_ids" {
