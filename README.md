@@ -402,6 +402,8 @@ module "appgw_v2" {
 | appgw\_nsg\_id | The ID of the network security group from the subnet where the Application Gateway is attached. |
 | appgw\_nsg\_name | The name of the network security group from the subnet where the Application Gateway is attached. |
 | appgw\_public\_ip\_address | The public IP address of Application Gateway. |
+| appgw\_public\_ip\_domain\_name | Domain Name part from FQDN of the A DNS record associated with the public IP. |
+| appgw\_public\_ip\_fqdn | Fully qualified domain name of the A DNS record associated with the public IP. |
 | appgw\_redirect\_configuration\_ids | List of redirect configuration Ids. |
 | appgw\_request\_routing\_rule\_backend\_address\_pool\_ids | List of backend address pool Ids attached to request routing rules. |
 | appgw\_request\_routing\_rule\_backend\_http\_settings\_ids | List of HTTP settings Ids attached to request routing rules. |

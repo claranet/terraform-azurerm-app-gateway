@@ -1,3 +1,8 @@
+# Unreleased
+
+Added
+  * GH-11: Add domain related outputs
+
 # v7.4.0 - 2022-12-16
 
 Added
