@@ -100,7 +100,7 @@ variable "ssl_profile" {
   description = "Application Gateway SSL profile. Default profile is used when this variable is set to null. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#name"
   type = object({
     name                             = string
-    trusted_client_certificate_names = optional(string)
+    trusted_client_certificate_names = optional(list(string), [])
     verify_client_cert_issuer_dn     = optional(bool, false)
     ssl_policy = optional(object({
       disabled_protocols   = optional(list(string), [])
@@ -187,6 +187,36 @@ EOD
   default = []
 }
 
+variable "authentication_certificates_configs" {
+  description = <<EOD
+List of objects with authentication certificates configurations.
+The path to a base-64 encoded certificate is expected in the 'data' attribute:
+```
+data = filebase64("./file_path")
+```
+EOD
+  type = list(object({
+    name = string
+    data = string
+  }))
+  default = []
+}
+
+variable "trusted_client_certificates_configs" {
+  description = <<EOD
+List of objects with trusted client certificates configurations.
+The path to a base-64 encoded certificate is expected in the 'data' attribute:
+```
+data = filebase64("./file_path")
+```
+EOD
+  type = list(object({
+    name = string
+    data = string
+  }))
+  default = []
+}
+
 variable "appgw_routings" {
   description = "List of objects with request routing rules configurations. With AzureRM v3+ provider, `priority` attribute becomes mandatory."
   type = list(object({
@@ -241,6 +271,7 @@ variable "appgw_backend_http_settings" {
     host_name                           = optional(string)
     pick_host_name_from_backend_address = optional(bool, true)
     trusted_root_certificate_names      = optional(list(string), [])
+    authentication_certificate          = optional(string)
 
     connection_draining_timeout_sec = optional(number)
   }))
