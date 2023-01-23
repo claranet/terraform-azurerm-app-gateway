@@ -91,7 +91,7 @@ variable "ssl_policy" {
     policy_type          = optional(string, "Predefined")
     policy_name          = optional(string, "AppGwSslPolicy20170401S")
     cipher_suites        = optional(list(string), [])
-    min_protocol_version = optional(string, "TLSv1_2")
+    min_protocol_version = optional(string)
   })
   default = null
 }
@@ -107,7 +107,7 @@ variable "ssl_profile" {
       policy_type          = optional(string, "Predefined")
       policy_name          = optional(string, "AppGwSslPolicy20170401S")
       cipher_suites        = optional(list(string), [])
-      min_protocol_version = optional(string, "TLSv1_2")
+      min_protocol_version = optional(string)
     }))
   })
   default = null
