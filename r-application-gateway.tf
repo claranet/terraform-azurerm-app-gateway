@@ -90,8 +90,8 @@ resource "azurerm_application_gateway" "app_gateway" {
       disabled_protocols   = var.ssl_policy.disabled_protocols
       policy_type          = var.ssl_policy.policy_type
       policy_name          = var.ssl_policy.policy_type == "Predefined" ? var.ssl_policy.policy_name : null
-      cipher_suites        = var.ssl_policy.cipher_suites
-      min_protocol_version = var.ssl_policy.min_protocol_version
+      cipher_suites        = var.ssl_policy.policy_type == "Custom" ? var.ssl_policy.cipher_suites : null
+      min_protocol_version = var.ssl_policy.policy_type == "Custom" ? var.ssl_policy.min_protocol_version : null
     }
   }
 
@@ -108,8 +108,8 @@ resource "azurerm_application_gateway" "app_gateway" {
           disabled_protocols   = var.ssl_profile.ssl_policy.disabled_protocols
           policy_type          = var.ssl_profile.ssl_policy.policy_type
           policy_name          = var.ssl_profile.ssl_policy.policy_type == "Predefined" ? var.ssl_profile.ssl_policy.policy_name : null
-          cipher_suites        = var.ssl_profile.ssl_policy.cipher_suites
-          min_protocol_version = var.ssl_profile.ssl_policy.min_protocol_version
+          cipher_suites        = var.ssl_profile.ssl_policy.policy_type == "Custom" ? var.ssl_profile.ssl_policy.cipher_suites : null
+          min_protocol_version = var.ssl_profile.ssl_policy.policy_type == "Custom" ? var.ssl_profile.ssl_policy.min_protocol_version : null
         }
       }
     }
