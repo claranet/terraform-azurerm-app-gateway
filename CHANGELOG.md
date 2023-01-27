@@ -1,3 +1,8 @@
+# Unreleased
+
+Fixed
+  * AZ-987: Fix `ssl_policy` parameter because `min_protocol_version` is only supported when `policy_type = "Custom"`
+
 # v7.4.1 - 2022-12-23
 
 Added
