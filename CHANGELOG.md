@@ -3,6 +3,9 @@
 Changed
   * [GH-12](https://github.com/claranet/terraform-azurerm-app-gateway/pull/12): Modify `appgw_probes` allowing port-usage from backend HTTP settings
 
+Fixed
+  * AZ-990: Fix `default_backend_http_settings_name` parameter because it cannot be set when `default_redirect_configuration_name` is set in the `url_path_map` block
+
 # v7.4.2 - 2023-01-27
 
 Fixed
