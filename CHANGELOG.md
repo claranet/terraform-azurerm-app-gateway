@@ -1,3 +1,8 @@
+# Unreleased
+
+Changed
+  * [GH-12](https://github.com/claranet/terraform-azurerm-app-gateway/pull/12): Modify `appgw_probes` allowing port-usage from backend HTTP settings
+
 # v7.4.2 - 2023-01-27
 
 Fixed
@@ -6,7 +11,7 @@ Fixed
 # v7.4.1 - 2022-12-23
 
 Added
-  * GH-11: Add domain related outputs
+  * [GH-11](https://github.com/claranet/terraform-azurerm-app-gateway/pull/11): Add domain related outputs
 
 # v7.4.0 - 2022-12-16
 
