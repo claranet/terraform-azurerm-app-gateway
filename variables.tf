@@ -237,7 +237,7 @@ variable "appgw_probes" {
   type = list(object({
     name     = string
     host     = optional(string)
-    port     = optional(number, 443)
+    port     = optional(number, null)
     interval = optional(number, 30)
     path     = optional(string, "/")
     protocol = optional(string, "Https")
