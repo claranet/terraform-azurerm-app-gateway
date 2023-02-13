@@ -386,7 +386,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       name                                = url_path_map.value.name
       default_backend_address_pool_name   = url_path_map.value.default_backend_address_pool_name
       default_redirect_configuration_name = url_path_map.value.default_redirect_configuration_name
-      default_backend_http_settings_name  = coalesce(url_path_map.value.default_backend_http_settings_name, url_path_map.value.default_backend_address_pool_name, url_path_map.value.name)
+      default_backend_http_settings_name  = url_path_map.value.default_redirect_configuration_name == null ? coalesce(url_path_map.value.default_backend_http_settings_name, url_path_map.value.default_backend_address_pool_name) : null
       default_rewrite_rule_set_name       = url_path_map.value.default_rewrite_rule_set_name
 
       dynamic "path_rule" {
