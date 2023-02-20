@@ -9,7 +9,7 @@ resource "azurerm_public_ip" "ip" {
   ## with IP sku to "Standard"
   allocation_method = var.ip_allocation_method
   #Public IP should be distributed across same zones as applicationgateway to avoid this error :
-  # Zonal Application Gateway xxx with zones 2, 3, 1 cannot reference a non-zonal public ip 
+  # Zonal Application Gateway xxx with zones 2, 3, 1 cannot reference a non-zonal public ip
   # The IP should use all zones used by the Application Gateway.
   zones = var.zones
 
