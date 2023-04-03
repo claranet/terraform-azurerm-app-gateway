@@ -15,8 +15,8 @@ module "rg" {
   stack       = var.stack
 }
 
-module "run_common" {
-  source  = "claranet/run/azurerm"
+module "logs" {
+  source  = "claranet/run/azurerm//modules/logs"
   version = "x.x.x"
 
   client_name         = var.client_name
@@ -25,10 +25,6 @@ module "run_common" {
   environment         = var.environment
   stack               = var.stack
   resource_group_name = module.rg.resource_group_name
-
-  tenant_id = var.azure_tenant_id
-
-  monitoring_function_splunk_token = null
 }
 
 module "azure_virtual_network" {
@@ -224,7 +220,7 @@ module "appgw_v2" {
   }
 
   logs_destinations_ids = [
-    module.run_common.log_analytics_workspace_id,
-    module.run_common.logs_storage_account_id,
+    module.logs.log_analytics_workspace_id,
+    module.logs.logs_storage_account_id,
   ]
 }
