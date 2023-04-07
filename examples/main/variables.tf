@@ -27,8 +27,3 @@ variable "certificate_example_com_password" {
   description = "Password of the SSL certificate"
   type        = string
 }
-
-variable "azure_tenant_id" {
-  description = "Azure tenant ID"
-  type        = string
-}
