@@ -3,13 +3,25 @@
 
 This Terraform module creates an [Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/overview) associated with a [Public IP](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-ip-addresses-overview-arm#public-ip-addresses) and with a [Subnet](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet), a [Network Security Group](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview) and network security rules authorizing port 443 and [ports for internal healthcheck of Application Gateway](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview#network-security-groups-on-the-application-gateway-subnet).
 
-## Version compatibility
+<!-- BEGIN_TF_DOCS -->
+## Global versioning rule for Claranet Azure modules
 
-| Module version    | Terraform version | AzureRM version |
-| ----------------- | ----------------- | --------------- |
-| >= 3.x.x          | 0.12.x            | >= 2.1          |
-| >= 2.x.x, < 3.x.x | 0.12.x            | <  2.0          |
-| <  2.x.x          | 0.11.x            | <  2.0          |
+| Module version | Terraform version | AzureRM version |
+| -------------- | ----------------- | --------------- |
+| >= 7.x.x       | 1.3.x             | >= 3.0          |
+| >= 6.x.x       | 1.x               | >= 3.0          |
+| >= 5.x.x       | 0.15.x            | >= 2.0          |
+| >= 4.x.x       | 0.13.x / 0.14.x   | >= 2.0          |
+| >= 3.x.x       | 0.12.x            | >= 2.0          |
+| >= 2.x.x       | 0.12.x            | < 2.0           |
+| <  2.x.x       | 0.11.x            | < 2.0           |
+
+## Contributing
+
+If you want to contribute to this repository, feel free to use our [pre-commit](https://pre-commit.com/) git hook configuration
+which will help you automatically update and format some files for you by enforcing our Terraform code module best-practices.
+
+More details are available in the [CONTRIBUTING.md](../../CONTRIBUTING.md#pull-request-process) file.
 
 ## Usage
 
@@ -18,7 +30,7 @@ which set some terraform variables in the environment needed by this module.
 More details about variables set by the `terraform-wrapper` available in the [documentation](https://github.com/claranet/terraform-wrapper#environment).
 
 ```hcl
-module "azure-region" {
+module "azure_region" {
   source  = "claranet/regions/azurerm"
   version = "x.x.x"
 
@@ -29,68 +41,80 @@ module "rg" {
   source  = "claranet/rg/azurerm"
   version = "x.x.x"
 
-  location    = module.azure-region.location
+  location    = module.azure_region.location
   client_name = var.client_name
   environment = var.environment
   stack       = var.stack
 }
 
-module "azure-network-vnet" {
-  source  = "claranet/vnet/azurerm"
+module "logs" {
+  source  = "claranet/run/azurerm//modules/logs"
   version = "x.x.x"
 
-  environment      = var.environment
-  location         = module.azure-region.location
-  location_short   = module.azure-region.location_short
-  client_name      = var.client_name
-  stack            = var.stack
-
-  resource_group_name = module.rg.resource_group_name
-  vnet_cidr           = ["10.10.0.0/16"]
-}
-
-module "azure-app-gateway" {
-  source  = "claranet/app-gateway/azurerm//modules/app-gateway-v1"
-  version = "x.x.x"
-
-  location            = module.azure-region.location
-  location_short      = module.azure-region.location_short
   client_name         = var.client_name
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
   environment         = var.environment
   stack               = var.stack
   resource_group_name = module.rg.resource_group_name
+}
 
-  virtual_network_name = module.azure-network-vnet.virtual_network_name
+module "azure_virtual_network" {
+  source  = "claranet/vnet/azurerm"
+  version = "x.x.x"
+
+  environment    = var.environment
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  client_name    = var.client_name
+  stack          = var.stack
+
+  resource_group_name = module.rg.resource_group_name
+
+  vnet_cidr = ["192.168.0.0/16"]
+}
+
+module "appgw_v1" {
+  source  = "claranet/app-gateway/azurerm//modules/app-gateway-v1"
+  version = "x.x.x"
+
+  stack               = var.stack
+  environment         = var.environment
+  location            = module.azure_region.location
+  location_short      = module.azure_region.location_short
+  client_name         = var.client_name
+  resource_group_name = module.rg.resource_group_name
+
+  virtual_network_name = module.azure_virtual_network.virtual_network_name
   subnet_cidr_list     = ["10.10.0.0/24"]
 
   sku {
-      name     = "Standard_Large"
-      tier     = "Standard"
-      capacity = "2"
+    name     = "Standard_Large"
+    tier     = "Standard"
+    capacity = "2"
   }
 
   appgw_http_listeners {
-      name                  = "toto_listener"
-      port                  = 443
-      host_name             = "the.test.com"
-      protocol              = "Https"
-      ssl_certificate_name  = "cert_the_test_com.p12"
+    name                 = "contoso_listener"
+    port                 = 443
+    host_name            = "the.test.com"
+    protocol             = "Https"
+    ssl_certificate_name = "cert_the_test_com.p12"
   }
 
   appgw_backend_pools {
-      name  = "toto_backend"
-      fqdns = ["url.backend.target"]
+    name  = "contoso_backend"
+    fqdns = ["url.backend.target"]
   }
 
   appgw_backend_http_settings {
-      name       = "toto_backend_http_settings"
-      port       = 443
-      protocol   = "Https"
+    name     = "contoso_backend_http_settings"
+    port     = 443
+    protocol = "Https"
   }
 }
 ```
 
-<!-- BEGIN_TF_DOCS -->
 ## Providers
 
 | Name | Version |
