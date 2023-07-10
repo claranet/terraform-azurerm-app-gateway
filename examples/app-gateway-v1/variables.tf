@@ -17,13 +17,3 @@ variable "stack" {
   description = "Project stack name"
   type        = string
 }
-
-variable "certificate_example_com_filebase64" {
-  description = "Filebase64 encoded SSL certificate"
-  type        = string
-}
-
-variable "certificate_example_com_password" {
-  description = "Password of the SSL certificate"
-  type        = string
-}

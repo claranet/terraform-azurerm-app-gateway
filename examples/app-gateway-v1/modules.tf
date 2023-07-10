@@ -54,30 +54,36 @@ module "appgw_v1" {
   resource_group_name = module.rg.resource_group_name
 
   virtual_network_name = module.azure_virtual_network.virtual_network_name
-  subnet_cidr_list     = ["10.10.0.0/24"]
+  subnet_cidr_list     = ["192.168.0.0/24"]
 
-  sku {
+  sku = {
     name     = "Standard_Large"
     tier     = "Standard"
     capacity = "2"
   }
 
-  appgw_http_listeners {
+  appgw_http_listeners = [{
     name                 = "contoso_listener"
     port                 = 443
     host_name            = "the.test.com"
     protocol             = "Https"
     ssl_certificate_name = "cert_the_test_com.p12"
-  }
+  }]
 
-  appgw_backend_pools {
+  appgw_backend_pools = [{
     name  = "contoso_backend"
     fqdns = ["url.backend.target"]
-  }
+  }]
 
-  appgw_backend_http_settings {
+  appgw_backend_http_settings = [{
     name     = "contoso_backend_http_settings"
     port     = 443
     protocol = "Https"
-  }
+  }]
+
+  appgw_probes   = []
+  appgw_routings = []
+
+  authentication_certificate_configs = []
+  ssl_certificates_configs           = []
 }
