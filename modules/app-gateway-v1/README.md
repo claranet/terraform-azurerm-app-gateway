@@ -119,7 +119,7 @@ module "appgw_v1" {
 
 | Name | Version |
 |------|---------|
-| azurerm | ~> 1.32 |
+| azurerm | >= 1.32 |
 
 ## Modules
 
