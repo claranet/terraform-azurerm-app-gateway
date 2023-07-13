@@ -1,20 +1,18 @@
 module "azure_network_subnet" {
   source  = "claranet/subnet/azurerm"
-  version = "2.1.0"
+  version = "~> 3.0"
 
-  environment         = var.environment
-  location_short      = var.location_short
-  client_name         = var.client_name
-  stack               = var.stack
-  custom_subnet_names = local.subnet_names
+  for_each = local.subnet_names
+
+  environment        = var.environment
+  location_short     = var.location_short
+  client_name        = var.client_name
+  stack              = var.stack
+  custom_subnet_name = each.key
 
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.virtual_network_name
-  subnet_cidr_list     = var.subnet_cidr_list
+  subnet_cidr_list     = [each.value]
 
-  route_table_ids = {}
-
-  network_security_group_ids = { for name in local.subnet_names :
-    name => module.network_security_group.network_security_group_id
-  }
+  network_security_group_id = module.network_security_group.network_security_group_id
 }

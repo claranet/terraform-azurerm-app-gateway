@@ -21,7 +21,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
-    subnet_id = module.azure_network_subnet.subnet_ids[0]
+    subnet_id = module.azure_network_subnet[*].subnet_ids[0]
   }
 
   dynamic "frontend_port" {
