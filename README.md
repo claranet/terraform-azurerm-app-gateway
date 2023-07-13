@@ -269,13 +269,14 @@ module "appgw_v2" {
 |------|---------|
 | azurecaf | ~> 1.2, >= 1.2.22 |
 | azurerm | ~> 3.39 |
+| null | ~> 3.2 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| azure\_network\_security\_group | claranet/nsg/azurerm | 7.3.0 |
-| azure\_network\_subnet | claranet/subnet/azurerm | 6.1.0 |
+| azure\_network\_security\_group | claranet/nsg/azurerm | ~> 7.4.0 |
+| azure\_network\_subnet | claranet/subnet/azurerm | ~> 6.2.0 |
 | diagnostics | claranet/diagnostic-settings/azurerm | ~> 6.4.1 |
 
 ## Resources
@@ -286,6 +287,7 @@ module "appgw_v2" {
 | [azurerm_network_security_rule.allow_health_probe_app_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_network_security_rule.web](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_public_ip.ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
+| [null_resource.create_subnet_condition](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [azurecaf_name.appgw](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
 | [azurecaf_name.frontipconfig](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
 | [azurecaf_name.frontipconfig_priv](https://registry.terraform.io/providers/aztfmod/azurecaf/latest/docs/data-sources/name) | data source |
@@ -347,7 +349,7 @@ module "appgw_v2" {
 | force\_firewall\_policy\_association | Enable if the Firewall Policy is associated with the Application Gateway. | `bool` | `false` | no |
 | frontend\_port\_settings | Frontend port settings. Each port setting contains the name and the port for the frontend port. | <pre>list(object({<br>    name = string<br>    port = number<br>  }))</pre> | n/a | yes |
 | ip\_allocation\_method | Allocation method for the public IP. Warning, can only be `Static` for the moment. | `string` | `"Static"` | no |
-| ip\_ddos\_protection\_mode | The DDoS protection mode of the public IP. Possible values are `Disabled`, `Enabled`, and `VirtualNetworkInherited`. | `string` | `"Disabled"` | no |
+| ip\_ddos\_protection\_mode | The DDoS protection mode of the public IP. Possible values are `Disabled`, `Enabled`, and `VirtualNetworkInherited`. | `string` | `null` | no |
 | ip\_ddos\_protection\_plan\_id | The ID of DDoS protection plan associated with the public IP. | `string` | `null` | no |
 | ip\_sku | SKU for the public IP. Warning, can only be `Standard` for the moment. | `string` | `"Standard"` | no |
 | ip\_tags | Public IP tags. | `map(string)` | `{}` | no |
@@ -382,7 +384,7 @@ module "appgw_v2" {
 | trusted\_root\_certificate\_configs | List of trusted root certificates. `file_path` is checked first, using `data` (base64 cert content) if null. This parameter is required if you are not using a trusted certificate authority (eg. selfsigned certificate). | <pre>list(object({<br>    name                = string<br>    data                = optional(string)<br>    file_path           = optional(string)<br>    key_vault_secret_id = optional(string)<br>  }))</pre> | `[]` | no |
 | use\_caf\_naming | Use the Azure CAF naming provider to generate default resource name. `custom_rg_name` override this if set. Legacy default name is used if this is set to `false`. | `bool` | `true` | no |
 | user\_assigned\_identity\_id | User assigned identity id assigned to this resource. | `string` | `null` | no |
-| virtual\_network\_name | Virtual network name to attach the subnet. | `string` | n/a | yes |
+| virtual\_network\_name | Virtual network name to attach the subnet. | `string` | `null` | no |
 | waf\_configuration | WAF configuration object (only available with WAF\_v2 SKU) with following attributes:<pre>- enabled:                  Boolean to enable WAF.<br>- file_upload_limit_mb:     The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB.<br>- firewall_mode:            The Web Application Firewall Mode. Possible values are Detection and Prevention.<br>- max_request_body_size_kb: The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB.<br>- request_body_check:       Is Request Body Inspection enabled ?<br>- rule_set_type:            The Type of the Rule Set used for this Web Application Firewall.<br>- rule_set_version:         The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1.<br>- disabled_rule_group:      The rule group where specific rules should be disabled. Accepted values can be found here: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#rule_group_name<br>- exclusion:                WAF exclusion rules to exclude header, cookie or GET argument. More informations on: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#match_variable</pre> | <pre>object({<br>    enabled                  = optional(bool, true)<br>    file_upload_limit_mb     = optional(number, 100)<br>    firewall_mode            = optional(string, "Prevention")<br>    max_request_body_size_kb = optional(number, 128)<br>    request_body_check       = optional(bool, true)<br>    rule_set_type            = optional(string, "OWASP")<br>    rule_set_version         = optional(string, 3.1)<br>    disabled_rule_group = optional(list(object({<br>      rule_group_name = string<br>      rules           = optional(list(string))<br>    })), [])<br>    exclusion = optional(list(object({<br>      match_variable          = string<br>      selector                = optional(string)<br>      selector_match_operator = optional(string)<br>    })), [])<br>  })</pre> | `{}` | no |
 | zones | A collection of availability zones to spread the Application Gateway over. This option is only supported for v2 SKUs | `list(number)` | <pre>[<br>  1,<br>  2,<br>  3<br>]</pre> | no |
 

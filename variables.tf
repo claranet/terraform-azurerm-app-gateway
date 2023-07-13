@@ -47,7 +47,7 @@ variable "ip_allocation_method" {
 variable "ip_ddos_protection_mode" {
   description = "The DDoS protection mode of the public IP. Possible values are `Disabled`, `Enabled`, and `VirtualNetworkInherited`."
   type        = string
-  default     = "Disabled"
+  default     = null
 }
 
 variable "ip_ddos_protection_plan_id" {
@@ -408,6 +408,7 @@ variable "disable_waf_rules_for_dev_portal" {
 variable "virtual_network_name" {
   description = "Virtual network name to attach the subnet."
   type        = string
+  default     = null
 }
 
 variable "subnet_resource_group_name" {
@@ -425,6 +426,7 @@ variable "create_subnet" {
 variable "subnet_id" {
   description = "Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`."
   type        = string
+  nullable    = false
   default     = ""
 }
 
