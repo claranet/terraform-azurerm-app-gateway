@@ -1,3 +1,11 @@
+# Unreleased
+
+Changed
+  * AZ-1117: The `virtual_network_name` variable is no longer required
+  * AZ-1117: The `ip_ddos_protection_mode` variable is set to `null` by default, the value will be inherited from the AzureRM provider which is `VirtualNetworkInherited`
+  * AZ-1117: The `source_address_prefix` parameter is set to `GatewayManager` instead of `Internet` for the healthcheck Network Security Rule
+  * AZ-1117: Bump Subnet & NSG modules
+
 # v7.5.1 - 2023-07-13
 
 Fixed

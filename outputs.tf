@@ -10,12 +10,12 @@ output "appgw_name" {
 
 output "appgw_subnet_id" {
   description = "The ID of the subnet where the Application Gateway is attached."
-  value       = var.create_subnet == true ? module.azure_network_subnet["appgw_subnet"].subnet_id : var.subnet_id
+  value       = try(module.azure_network_subnet["appgw_subnet"].subnet_id, var.subnet_id)
 }
 
 output "appgw_subnet_name" {
   description = "The name of the subnet where the Application Gateway is attached."
-  value       = var.create_subnet == true ? module.azure_network_subnet["appgw_subnet"].subnet_names : null
+  value       = try(module.azure_network_subnet["appgw_subnet"].subnet_names, reverse(split("/", var.subnet_id))[0])
 }
 
 output "appgw_nsg_id" {

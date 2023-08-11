@@ -1,6 +1,22 @@
+resource "null_resource" "create_subnet_condition" {
+  count = var.create_subnet ? 1 : 0
+
+  triggers = {
+    vnet_name   = var.virtual_network_name
+    subnet_cidr = var.subnet_cidr
+  }
+
+  lifecycle {
+    precondition {
+      condition     = var.virtual_network_name != null || var.subnet_cidr != ""
+      error_message = "When `var.create_subnet == true`, `var.virtual_network_name` and `var.subnet_cidr` must not be empty."
+    }
+  }
+}
+
 module "azure_network_subnet" {
   source  = "claranet/subnet/azurerm"
-  version = "6.1.0"
+  version = "~> 6.2.0"
 
   for_each = var.create_subnet ? toset(["appgw_subnet"]) : []
 
@@ -19,11 +35,15 @@ module "azure_network_subnet" {
 
   route_table_name = var.route_table_name
   route_table_rg   = var.route_table_rg
+
+  depends_on = [
+    null_resource.create_subnet_condition,
+  ]
 }
 
 module "azure_network_security_group" {
   source  = "claranet/nsg/azurerm"
-  version = "7.3.0"
+  version = "~> 7.4.0"
 
   for_each = var.create_nsg ? toset(["appgw_nsg"]) : []
 
@@ -78,7 +98,6 @@ resource "azurerm_network_security_rule" "web" {
   destination_address_prefix = "*"
 }
 
-
 resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
   count = var.create_nsg && var.create_nsg_healthprobe_rule ? 1 : 0
 
@@ -95,6 +114,6 @@ resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
   source_port_range       = "*"
   destination_port_ranges = ["65200-65535"]
 
-  source_address_prefix      = "Internet"
+  source_address_prefix      = "GatewayManager"
   destination_address_prefix = "*"
 }
