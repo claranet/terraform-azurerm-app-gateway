@@ -1,4 +1,4 @@
-# Unreleased
+# v7.6.0 - 2023-08-11
 
 Changed
   * AZ-1117: The `virtual_network_name` variable is no longer required
