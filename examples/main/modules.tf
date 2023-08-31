@@ -46,7 +46,7 @@ locals {
   base_name = "${var.stack}-${var.client_name}-${module.azure_region.location_short}-${var.environment}"
 }
 
-module "appgw_v2" {
+module "appgw" {
   source  = "claranet/app-gateway/azurerm"
   version = "x.x.x"
 

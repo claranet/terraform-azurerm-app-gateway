@@ -1,3 +1,9 @@
+# Unreleased
+
+Breaking
+  * AZ-1153: Remove `retention_days` parameters, it must be handled at destination level now. (for reference: [Provider issue](https://github.com/hashicorp/terraform-provider-azurerm/issues/23051))
+  * AZ-1155: Remove sub-module `app-gateway-v1` as its deprecated by Microsoft: [Microsoft Azure announcement](https://azure.microsoft.com/en-us/updates/_application-gateway-v1-will-be-retired-on-28-april-2026-transition-to-application-gateway-v2/)
+
 # v7.6.0 - 2023-08-11
 
 Changed
