@@ -277,7 +277,7 @@ module "appgw" {
 |------|--------|---------|
 | azure\_network\_security\_group | claranet/nsg/azurerm | ~> 7.4.0 |
 | azure\_network\_subnet | claranet/subnet/azurerm | ~> 6.2.0 |
-| diagnostics | git@git.fr.clara.net:claranet/projects/cloud/azure/terraform/modules/diagnostic-settings.git | AZ-1153_drop_retention_param |
+| diagnostics | claranet/diagnostic-settings/azurerm | ~> 6.5.0 |
 
 ## Resources
 
