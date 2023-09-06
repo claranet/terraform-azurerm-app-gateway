@@ -36,6 +36,8 @@ module "azure_network_subnet" {
   route_table_name = var.route_table_name
   route_table_rg   = var.route_table_rg
 
+  service_endpoints = ["Microsoft.KeyVault"]
+
   depends_on = [
     null_resource.create_subnet_condition,
   ]
