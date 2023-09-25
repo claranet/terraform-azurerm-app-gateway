@@ -290,9 +290,10 @@ variable "appgw_url_path_map" {
     path_rules = list(object({
       name = string
 
-      backend_address_pool_name  = optional(string)
-      backend_http_settings_name = optional(string)
-      rewrite_rule_set_name      = optional(string)
+      backend_address_pool_name   = optional(string)
+      backend_http_settings_name  = optional(string)
+      rewrite_rule_set_name       = optional(string)
+      redirect_configuration_name = optional(string)
 
       paths = optional(list(string), [])
     }))
