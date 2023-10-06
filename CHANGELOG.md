@@ -1,4 +1,4 @@
-# Unreleased
+# v7.7.1 - 2023-10-06
 
 Fixed
   * AZ-1132: Fix `url_path_map` block - Add `redirect_configuration_name` attribute in `path_rule`
