@@ -392,11 +392,12 @@ resource "azurerm_application_gateway" "app_gateway" {
       dynamic "path_rule" {
         for_each = url_path_map.value.path_rules
         content {
-          name                       = path_rule.value.name
-          backend_address_pool_name  = coalesce(path_rule.value.backend_address_pool_name, path_rule.value.name)
-          backend_http_settings_name = coalesce(path_rule.value.backend_http_settings_name, path_rule.value.name)
-          rewrite_rule_set_name      = path_rule.value.rewrite_rule_set_name
-          paths                      = path_rule.value.paths
+          name                        = path_rule.value.name
+          backend_address_pool_name   = path_rule.value.redirect_configuration_name == null ? coalesce(path_rule.value.backend_address_pool_name, path_rule.value.name) : null
+          backend_http_settings_name  = path_rule.value.redirect_configuration_name == null ? coalesce(path_rule.value.backend_http_settings_name, path_rule.value.name) : null
+          rewrite_rule_set_name       = path_rule.value.rewrite_rule_set_name
+          redirect_configuration_name = path_rule.value.redirect_configuration_name
+          paths                       = path_rule.value.paths
         }
       }
     }
