@@ -16,7 +16,7 @@ resource "null_resource" "create_subnet_condition" {
 
 module "azure_network_subnet" {
   source  = "claranet/subnet/azurerm"
-  version = "~> 6.2.0"
+  version = "~> 6.3.0"
 
   for_each = var.create_subnet ? toset(["appgw_subnet"]) : []
 
