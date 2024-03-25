@@ -96,20 +96,20 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   dynamic "ssl_profile" {
-    for_each = var.ssl_profile == null ? [] : ["enabled"]
+    for_each = var.ssl_profile
 
     content {
-      name                             = var.ssl_profile.name
-      trusted_client_certificate_names = var.ssl_profile.trusted_client_certificate_names
-      verify_client_cert_issuer_dn     = var.ssl_profile.verify_client_cert_issuer_dn
+      name                             = ssl_profile.value.name
+      trusted_client_certificate_names = ssl_profile.value.trusted_client_certificate_names
+      verify_client_cert_issuer_dn     = ssl_profile.value.verify_client_cert_issuer_dn
       dynamic "ssl_policy" {
-        for_each = var.ssl_profile.ssl_policy == null ? [] : ["enabled"]
+        for_each = ssl_profile.value.ssl_policy == null ? [] : ["enabled"]
         content {
-          disabled_protocols   = var.ssl_profile.ssl_policy.disabled_protocols
-          policy_type          = var.ssl_profile.ssl_policy.policy_type
-          policy_name          = var.ssl_profile.ssl_policy.policy_type == "Predefined" ? var.ssl_profile.ssl_policy.policy_name : null
-          cipher_suites        = var.ssl_profile.ssl_policy.policy_type == "Custom" ? var.ssl_profile.ssl_policy.cipher_suites : null
-          min_protocol_version = var.ssl_profile.ssl_policy.policy_type == "Custom" ? var.ssl_profile.ssl_policy.min_protocol_version : null
+          disabled_protocols   = ssl_profile.value.ssl_policy.disabled_protocols
+          policy_type          = ssl_profile.value.ssl_policy.policy_type
+          policy_name          = ssl_profile.value.ssl_policy.policy_type == "Predefined" ? ssl_profile.value.ssl_policy.policy_name : null
+          cipher_suites        = strcontains(ssl_profile.value.ssl_policy.policy_type, "Custom") ? ssl_profile.value.ssl_policy.cipher_suites : null
+          min_protocol_version = strcontains(ssl_profile.value.ssl_policy.policy_type, "Custom") ? ssl_profile.value.ssl_policy.min_protocol_version : null
         }
       }
     }

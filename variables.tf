@@ -98,7 +98,7 @@ variable "ssl_policy" {
 
 variable "ssl_profile" {
   description = "Application Gateway SSL profile. Default profile is used when this variable is set to null. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#name"
-  type = object({
+  type = list(object({
     name                             = string
     trusted_client_certificate_names = optional(list(string), [])
     verify_client_cert_issuer_dn     = optional(bool, false)
@@ -109,8 +109,9 @@ variable "ssl_profile" {
       cipher_suites        = optional(list(string), [])
       min_protocol_version = optional(string, "TLSv1_2")
     }))
-  })
-  default = null
+  }))
+  default  = []
+  nullable = false
 }
 
 variable "firewall_policy_id" {
