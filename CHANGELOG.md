@@ -1,7 +1,7 @@
 # Unreleased
 
 Fixed
-  * AZ-1382: Fix `ssl_profile`block - Change type to list of object to enabled to allow the creation of mulitiple policy.
+  * AZ-1382: Fix `ssl_profile` block - Change the type to a list of objects to allow the creation of multiple policies.
 
 # v7.7.1 - 2023-10-06
 
