@@ -168,6 +168,21 @@ module "appgw" {
     policy_name = "AppGwSslPolicy20170401S"
   }
 
+  # trusted_client_certificates_configs = [{
+  #   name = "${local.base_name}-example-com-sslcert"
+  #   data = var.certificate_example_com_filebase64
+  # }]
+
+  # ssl_profile = [{
+  #   name = "${local.base_name}-example-ssl-profile-name"
+  #   trusted_client_certificate_names = ["${local.base_name}-example-com-sslcert"]
+  #   ssl_policy = {
+  #     policy_type = "Predefined"
+  #     policy_name = "AppGwSslPolicy20170401S"
+  #     min_protocol_version = "TLSv1_3"
+  #   }
+  # }]
+
   appgw_rewrite_rule_set = [{
     name = "${local.base_name}-example-rewrite-rule-set"
     rewrite_rules = [
@@ -374,7 +389,7 @@ module "appgw" {
 | sku\_capacity | The Capacity of the SKU to use for this Application Gateway - which must be between 1 and 10, optional if autoscale\_configuration is set | `number` | `2` | no |
 | ssl\_certificates\_configs | List of objects with SSL certificates configurations.<br>The path to a base-64 encoded certificate is expected in the 'data' attribute:<pre>data = filebase64("./file_path")</pre> | <pre>list(object({<br>    name                = string<br>    data                = optional(string)<br>    password            = optional(string)<br>    key_vault_secret_id = optional(string)<br>  }))</pre> | `[]` | no |
 | ssl\_policy | Application Gateway SSL configuration. The list of available policies can be found here: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#disabled_protocols | <pre>object({<br>    disabled_protocols   = optional(list(string), [])<br>    policy_type          = optional(string, "Predefined")<br>    policy_name          = optional(string, "AppGwSslPolicy20170401S")<br>    cipher_suites        = optional(list(string), [])<br>    min_protocol_version = optional(string, "TLSv1_2")<br>  })</pre> | `null` | no |
-| ssl\_profile | Application Gateway SSL profile. Default profile is used when this variable is set to null. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#name | <pre>object({<br>    name                             = string<br>    trusted_client_certificate_names = optional(list(string), [])<br>    verify_client_cert_issuer_dn     = optional(bool, false)<br>    ssl_policy = optional(object({<br>      disabled_protocols   = optional(list(string), [])<br>      policy_type          = optional(string, "Predefined")<br>      policy_name          = optional(string, "AppGwSslPolicy20170401S")<br>      cipher_suites        = optional(list(string), [])<br>      min_protocol_version = optional(string, "TLSv1_2")<br>    }))<br>  })</pre> | `null` | no |
+| ssl\_profile | Application Gateway SSL profile. Default profile is used when this variable is set to null. https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#name | <pre>list(object({<br>    name                             = string<br>    trusted_client_certificate_names = optional(list(string), [])<br>    verify_client_cert_issuer_dn     = optional(bool, false)<br>    ssl_policy = optional(object({<br>      disabled_protocols   = optional(list(string), [])<br>      policy_type          = optional(string, "Predefined")<br>      policy_name          = optional(string, "AppGwSslPolicy20170401S")<br>      cipher_suites        = optional(list(string), [])<br>      min_protocol_version = optional(string, "TLSv1_2")<br>    }))<br>  }))</pre> | `[]` | no |
 | stack | Project stack name | `string` | n/a | yes |
 | subnet\_cidr | Subnet CIDR to create. | `string` | `""` | no |
 | subnet\_id | Custom subnet ID for attaching the Application Gateway. Used only when the variable `create_subnet = false`. | `string` | `""` | no |

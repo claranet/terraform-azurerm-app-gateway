@@ -131,6 +131,21 @@ module "appgw" {
     policy_name = "AppGwSslPolicy20170401S"
   }
 
+  # trusted_client_certificates_configs = [{
+  #   name = "${local.base_name}-example-com-sslcert"
+  #   data = var.certificate_example_com_filebase64
+  # }]
+
+  # ssl_profile = [{
+  #   name = "${local.base_name}-example-ssl-profile-name"
+  #   trusted_client_certificate_names = ["${local.base_name}-example-com-sslcert"]
+  #   ssl_policy = {
+  #     policy_type = "Predefined"
+  #     policy_name = "AppGwSslPolicy20170401S"
+  #     min_protocol_version = "TLSv1_3"
+  #   }
+  # }]
+
   appgw_rewrite_rule_set = [{
     name = "${local.base_name}-example-rewrite-rule-set"
     rewrite_rules = [
