@@ -1,15 +1,11 @@
-resource "azurerm_application_gateway" "app_gateway" {
+resource "azurerm_application_gateway" "main" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  name = local.appgw_name
-
-  #
-  # Common
-  #
+  name = local.name
 
   sku {
-    capacity = var.autoscaling_parameters != null ? null : var.sku_capacity
+    capacity = var.autoscale_configuration == null ? var.sku_capacity : null
     name     = var.sku
     tier     = var.sku
   }
@@ -18,25 +14,25 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   firewall_policy_id = var.firewall_policy_id
 
-  enable_http2 = var.enable_http2
+  enable_http2 = var.http2_enabled
 
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.ip.id
+    public_ip_address_id = azurerm_public_ip.main.id
   }
 
   dynamic "frontend_ip_configuration" {
-    for_each = var.appgw_private ? ["enabled"] : []
+    for_each = var.frontend_private_ip_configuration[*]
     content {
       name                          = local.frontend_priv_ip_configuration_name
-      private_ip_address_allocation = var.appgw_private ? "Static" : null
-      private_ip_address            = var.appgw_private ? var.appgw_private_ip : null
-      subnet_id                     = var.appgw_private ? local.subnet_id : null
+      private_ip_address_allocation = frontend_ip_configuration.value.private_ip_address_allocation
+      private_ip_address            = frontend_ip_configuration.value.private_ip_address
+      subnet_id                     = local.subnet_id
     }
   }
 
   dynamic "frontend_port" {
-    for_each = var.frontend_port_settings
+    for_each = var.frontend_ports
     content {
       name = frontend_port.value.name
       port = frontend_port.value.port
@@ -45,17 +41,13 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
-    subnet_id = var.create_subnet ? module.azure_network_subnet["appgw_subnet"].subnet_id : var.subnet_id
+    subnet_id = local.subnet_id
   }
-
-  #
-  # Security
-  #
 
   force_firewall_policy_association = var.force_firewall_policy_association
 
   dynamic "waf_configuration" {
-    for_each = var.sku == "WAF_v2" && var.waf_configuration != null ? [var.waf_configuration] : []
+    for_each = var.sku == "WAF_v2" ? var.waf_configuration[*] : []
     content {
       enabled                  = waf_configuration.value.enabled
       file_upload_limit_mb     = waf_configuration.value.file_upload_limit_mb
@@ -66,7 +58,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       rule_set_version         = waf_configuration.value.rule_set_version
 
       dynamic "disabled_rule_group" {
-        for_each = local.disabled_rule_group_settings != null ? local.disabled_rule_group_settings : []
+        for_each = local.rule_group_settings_enabled
         content {
           rule_group_name = disabled_rule_group.value.rule_group_name
           rules           = disabled_rule_group.value.rules
@@ -74,7 +66,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       }
 
       dynamic "exclusion" {
-        for_each = waf_configuration.value.exclusion != null ? waf_configuration.value.exclusion : []
+        for_each = waf_configuration.value.exclusion
         content {
           match_variable          = exclusion.value.match_variable
           selector                = exclusion.value.selector
@@ -85,25 +77,24 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   dynamic "ssl_policy" {
-    for_each = var.ssl_policy == null ? [] : ["enabled"]
+    for_each = var.ssl_policy[*]
     content {
-      disabled_protocols   = var.ssl_policy.disabled_protocols
-      policy_type          = var.ssl_policy.policy_type
-      policy_name          = var.ssl_policy.policy_type == "Predefined" ? var.ssl_policy.policy_name : null
-      cipher_suites        = var.ssl_policy.policy_type == "Custom" ? var.ssl_policy.cipher_suites : null
-      min_protocol_version = var.ssl_policy.policy_type == "Custom" ? var.ssl_policy.min_protocol_version : null
+      disabled_protocols   = ssl_policy.value.disabled_protocols
+      policy_type          = ssl_policy.value.policy_type
+      policy_name          = ssl_policy.value.policy_type == "Predefined" ? ssl_policy.value.policy_name : null
+      cipher_suites        = ssl_policy.value.policy_type == "Custom" ? ssl_policy.value.cipher_suites : null
+      min_protocol_version = ssl_policy.value.policy_type == "Custom" ? ssl_policy.value.min_protocol_version : null
     }
   }
 
   dynamic "ssl_profile" {
-    for_each = var.ssl_profile
-
+    for_each = var.ssl_profiles
     content {
       name                             = ssl_profile.value.name
       trusted_client_certificate_names = ssl_profile.value.trusted_client_certificate_names
       verify_client_cert_issuer_dn     = ssl_profile.value.verify_client_cert_issuer_dn
       dynamic "ssl_policy" {
-        for_each = ssl_profile.value.ssl_policy == null ? [] : ["enabled"]
+        for_each = ssl_profile.value.ssl_policy[*]
         content {
           disabled_protocols   = ssl_profile.value.ssl_policy.disabled_protocols
           policy_type          = ssl_profile.value.ssl_policy.policy_type
@@ -116,8 +107,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   dynamic "authentication_certificate" {
-    for_each = var.authentication_certificates_configs
-
+    for_each = var.authentication_certificates
     content {
       name = authentication_certificate.value.name
       data = authentication_certificate.value.data
@@ -125,32 +115,23 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   dynamic "trusted_client_certificate" {
-    for_each = var.trusted_client_certificates_configs
-
+    for_each = var.trusted_client_certificates
     content {
       name = trusted_client_certificate.value.name
       data = trusted_client_certificate.value.data
     }
   }
 
-  #
-  # Autoscaling
-  #
-
   dynamic "autoscale_configuration" {
-    for_each = var.autoscaling_parameters != null ? ["enabled"] : []
+    for_each = var.autoscale_configuration[*]
     content {
-      min_capacity = var.autoscaling_parameters.min_capacity
-      max_capacity = var.autoscaling_parameters.max_capacity
+      min_capacity = autoscale_configuration.value.min_capacity
+      max_capacity = autoscale_configuration.value.max_capacity
     }
   }
 
-  #
-  # Backend HTTP settings
-  #
-
   dynamic "backend_http_settings" {
-    for_each = var.appgw_backend_http_settings
+    for_each = var.backend_http_settings
     iterator = back_http_set
     content {
       name     = back_http_set.value.name
@@ -168,42 +149,42 @@ resource "azurerm_application_gateway" "app_gateway" {
       trusted_root_certificate_names      = back_http_set.value.trusted_root_certificate_names
 
       dynamic "authentication_certificate" {
-        for_each = back_http_set.value.authentication_certificate != null ? ["enabled"] : []
+        for_each = back_http_set.value.authentication_certificate[*]
         content {
-          name = back_http_set.value.authentication_certificate
+          name = authentication_certificate.value
         }
       }
 
       dynamic "connection_draining" {
-        for_each = back_http_set.value.connection_draining_timeout_sec != null ? ["enabled"] : []
+        for_each = back_http_set.value.connection_draining_timeout_sec[*]
         content {
           enabled           = true
-          drain_timeout_sec = back_http_set.value.connection_draining_timeout_sec
+          drain_timeout_sec = connection_draining.value
         }
       }
     }
   }
 
-  #
-  # HTTP listener
-  #
-
   dynamic "http_listener" {
-    for_each = var.appgw_http_listeners
+    for_each = var.http_listeners
     iterator = http_listen
     content {
-      name                           = http_listen.value.name
-      frontend_ip_configuration_name = coalesce(http_listen.value.frontend_ip_configuration_name, var.appgw_private ? local.frontend_priv_ip_configuration_name : local.frontend_ip_configuration_name)
-      frontend_port_name             = http_listen.value.frontend_port_name
-      host_name                      = http_listen.value.host_name
-      host_names                     = http_listen.value.host_names
-      protocol                       = http_listen.value.protocol
-      require_sni                    = http_listen.value.require_sni
-      ssl_certificate_name           = http_listen.value.ssl_certificate_name
-      ssl_profile_name               = http_listen.value.ssl_profile_name
-      firewall_policy_id             = http_listen.value.firewall_policy_id
+      name = http_listen.value.name
+      frontend_ip_configuration_name = coalesce(http_listen.value.frontend_ip_configuration_name,
+        var.frontend_private_ip_configuration != null ? local.frontend_priv_ip_configuration_name :
+        local.frontend_ip_configuration_name
+      )
+      frontend_port_name   = http_listen.value.frontend_port_name
+      host_name            = http_listen.value.host_name
+      host_names           = http_listen.value.host_names
+      protocol             = http_listen.value.protocol
+      require_sni          = http_listen.value.require_sni
+      ssl_certificate_name = http_listen.value.ssl_certificate_name
+      ssl_profile_name     = http_listen.value.ssl_profile_name
+      firewall_policy_id   = http_listen.value.firewall_policy_id
+
       dynamic "custom_error_configuration" {
-        for_each = http_listen.value.custom_error_configuration
+        for_each = http_listen.value.custom_error_configurations
         iterator = err_conf
         content {
           status_code           = err_conf.value.status_code
@@ -213,12 +194,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # Custom error configuration
-  #
-
   dynamic "custom_error_configuration" {
-    for_each = var.custom_error_configuration
+    for_each = var.custom_error_configurations
     iterator = err_conf
     content {
       status_code           = err_conf.value.status_code
@@ -226,12 +203,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # Backend address pool
-  #
-
   dynamic "backend_address_pool" {
-    for_each = var.appgw_backend_pools
+    for_each = var.backend_address_pools
     iterator = back_pool
     content {
       name         = back_pool.value.name
@@ -240,12 +213,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # SSL certificate
-  #
-
   dynamic "ssl_certificate" {
-    for_each = var.ssl_certificates_configs
+    for_each = var.ssl_certificates
     iterator = ssl_crt
     content {
       name                = ssl_crt.value.name
@@ -255,12 +224,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # Trusted root certificate
-  #
-
   dynamic "trusted_root_certificate" {
-    for_each = var.trusted_root_certificate_configs
+    for_each = var.trusted_root_certificates
     iterator = ssl_crt
     content {
       name                = ssl_crt.value.name
@@ -269,12 +234,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # Request routing rule
-  #
-
   dynamic "request_routing_rule" {
-    for_each = var.appgw_routings
+    for_each = var.request_routing_rules
     iterator = routing
     content {
       name      = routing.value.name
@@ -290,12 +251,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # Rewrite rule set
-  #
-
   dynamic "rewrite_rule_set" {
-    for_each = var.appgw_rewrite_rule_set
+    for_each = var.rewrite_rule_sets
     content {
       name = rewrite_rule_set.value.name
 
@@ -336,12 +293,12 @@ resource "azurerm_application_gateway" "app_gateway" {
           }
 
           dynamic "url" {
-            for_each = rule.value.url_reroute != null ? ["enabled"] : []
+            for_each = rule.value.url_reroute[*]
             content {
-              path         = rule.value.url_reroute.path
-              query_string = rule.value.url_reroute.query_string
-              components   = rule.value.url_reroute.components
-              reroute      = rule.value.url_reroute.reroute
+              path         = url.value.path
+              query_string = url.value.query_string
+              components   = url.value.components
+              reroute      = url.value.reroute
             }
           }
         }
@@ -349,12 +306,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # Probe
-  #
-
   dynamic "probe" {
-    for_each = var.appgw_probes
+    for_each = var.probes
     content {
       name = probe.value.name
 
@@ -376,12 +329,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # URL path map
-  #
-
   dynamic "url_path_map" {
-    for_each = var.appgw_url_path_map
+    for_each = var.url_path_maps
     content {
       name                                = url_path_map.value.name
       default_redirect_configuration_name = url_path_map.value.default_backend_address_pool_name == null && url_path_map.value.default_backend_http_settings_name == null ? url_path_map.value.default_redirect_configuration_name : null
@@ -404,12 +353,8 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # Redirect configuration
-  #
-
   dynamic "redirect_configuration" {
-    for_each = var.appgw_redirect_configuration
+    for_each = var.redirect_configurations
     iterator = redirect
     content {
       name                 = redirect.value.name
@@ -421,21 +366,18 @@ resource "azurerm_application_gateway" "app_gateway" {
     }
   }
 
-  #
-  # Identity
-  #
-
   dynamic "identity" {
-    for_each = var.user_assigned_identity_id != null ? ["enabled"] : []
+    for_each = var.user_assigned_identity_id[*]
     content {
       type         = "UserAssigned"
-      identity_ids = [var.user_assigned_identity_id]
+      identity_ids = identity.value[*]
     }
   }
 
-  #
-  # Tags
-  #
-
   tags = local.app_gateway_tags
+}
+
+moved {
+  from = azurerm_application_gateway.app_gateway
+  to   = azurerm_application_gateway.main
 }
