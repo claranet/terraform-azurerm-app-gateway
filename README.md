@@ -292,7 +292,7 @@ module "appgw" {
 |------|--------|---------|
 | azure\_network\_security\_group | claranet/nsg/azurerm | ~> 7.8.0 |
 | azure\_network\_subnet | claranet/subnet/azurerm | ~> 7.2.0 |
-| diagnostics | claranet/diagnostic-settings/azurerm | ~> 6.5.0 |
+| diagnostics | claranet/diagnostic-settings/azurerm | ~> 7.0.0 |
 
 ## Resources
 
