@@ -1,3 +1,27 @@
+## 7.9.0 (2024-11-15)
+
+### Features
+
+* **AZ-1480:** add firewall_policy_id parameter for path_rule block 4de6c78
+
+### Miscellaneous Chores
+
+* **deps:** update dependency claranet/diagnostic-settings/azurerm to v7 60ff450
+* **deps:** update dependency claranet/nsg/azurerm to ~> 7.8.0 dad2090
+* **deps:** update dependency claranet/subnet/azurerm to ~> 7.2.0 2ed49d1
+* **deps:** update dependency opentofu to v1.8.3 957f032
+* **deps:** update dependency opentofu to v1.8.4 f4c0ed4
+* **deps:** update dependency pre-commit to v4 86f16ca
+* **deps:** update dependency pre-commit to v4.0.1 96111dc
+* **deps:** update dependency tflint to v0.54.0 5d4781c
+* **deps:** update dependency trivy to v0.56.1 ea69b71
+* **deps:** update dependency trivy to v0.56.2 2850b57
+* **deps:** update pre-commit hook pre-commit/pre-commit-hooks to v5 ea7b8be
+* **deps:** update pre-commit hook tofuutils/pre-commit-opentofu to v2.1.0 711301b
+* **deps:** update tools 145dd4c
+* prepare for new examples structure 091933e
+* update examples structure d008f8a
+
 ## 7.8.0 (2024-10-03)
 
 ### Features
