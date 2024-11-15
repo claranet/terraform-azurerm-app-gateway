@@ -295,6 +295,7 @@ variable "appgw_url_path_map" {
       backend_http_settings_name  = optional(string)
       rewrite_rule_set_name       = optional(string)
       redirect_configuration_name = optional(string)
+      firewall_policy_id          = optional(string)
 
       paths = optional(list(string), [])
     }))

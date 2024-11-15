@@ -398,6 +398,7 @@ resource "azurerm_application_gateway" "app_gateway" {
           rewrite_rule_set_name       = path_rule.value.rewrite_rule_set_name
           redirect_configuration_name = path_rule.value.redirect_configuration_name
           paths                       = path_rule.value.paths
+          firewall_policy_id          = path_rule.value.firewall_policy_id
         }
       }
     }
