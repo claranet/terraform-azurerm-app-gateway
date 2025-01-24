@@ -1,5 +1,5 @@
 locals {
-  subnet_id = var.create_subnet ? module.azure_network_subnet["appgw_subnet"].subnet_id : var.subnet_id
+  subnet_id = var.create_subnet ? one(module.subnet[*].id) : var.subnet_id
 
   # https://docs.microsoft.com/fr-fr/azure/api-management/api-management-howto-integrate-internal-vnet-appgateway#exposing-the-developer-portal-externally-through-application-gateway
   disabled_rule_group_settings_dev_portal = [
@@ -32,5 +32,5 @@ locals {
     }
   ]
 
-  disabled_rule_group_settings = var.disable_waf_rules_for_dev_portal ? concat(local.disabled_rule_group_settings_dev_portal, try(var.waf_configuration.disabled_rule_group, [])) : try(var.waf_configuration.disabled_rule_group, [])
+  rule_group_settings_enabled = var.waf_rules_for_dev_portal_enabled ? try(var.waf_configuration.disabled_rule_group, []) : concat(local.disabled_rule_group_settings_dev_portal, try(var.waf_configuration.disabled_rule_group, []))
 }

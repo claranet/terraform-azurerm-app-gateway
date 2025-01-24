@@ -1,32 +1,3 @@
-module "azure_region" {
-  source  = "claranet/regions/azurerm"
-  version = "x.x.x"
-
-  azure_region = var.azure_region
-}
-
-module "rg" {
-  source  = "claranet/rg/azurerm"
-  version = "x.x.x"
-
-  location    = module.azure_region.location
-  client_name = var.client_name
-  environment = var.environment
-  stack       = var.stack
-}
-
-module "logs" {
-  source  = "claranet/run/azurerm//modules/logs"
-  version = "x.x.x"
-
-  client_name         = var.client_name
-  location            = module.azure_region.location
-  location_short      = module.azure_region.location_short
-  environment         = var.environment
-  stack               = var.stack
-  resource_group_name = module.rg.resource_group_name
-}
-
 module "azure_virtual_network" {
   source  = "claranet/vnet/azurerm"
   version = "x.x.x"
@@ -37,9 +8,9 @@ module "azure_virtual_network" {
   client_name    = var.client_name
   stack          = var.stack
 
-  resource_group_name = module.rg.resource_group_name
+  resource_group_name = module.rg.name
 
-  vnet_cidr = ["192.168.0.0/16"]
+  cidrs = ["192.168.0.0/16"]
 }
 
 locals {
@@ -55,98 +26,90 @@ module "appgw" {
   location            = module.azure_region.location
   location_short      = module.azure_region.location_short
   client_name         = var.client_name
-  resource_group_name = module.rg.resource_group_name
+  resource_group_name = module.rg.name
 
-  virtual_network_name = module.azure_virtual_network.virtual_network_name
+  virtual_network_name = module.azure_virtual_network.name
   subnet_cidr          = "192.168.1.0/24"
 
-  appgw_backend_http_settings = [{
-    name                  = "${local.base_name}-backhttpsettings"
-    cookie_based_affinity = "Disabled"
-    path                  = "/"
-    port                  = 443
-    protocol              = "Https"
-    request_timeout       = 300
-  }]
+  backend_http_settings = [
+    {
+      name                  = "${local.base_name}-backhttpsettings-http"
+      cookie_based_affinity = "Disabled"
+      path                  = "/"
+      port                  = 80
+      protocol              = "Http"
+      request_timeout       = 300
+    },
+    # {
+    #   name                  = "${local.base_name}-backhttpsettings-https"
+    #   cookie_based_affinity = "Disabled"
+    #   path                  = "/"
+    #   port                  = 443
+    #   protocol              = "Https"
+    #   request_timeout       = 300
+    # }
+  ]
 
-  appgw_backend_pools = [{
+  backend_address_pools = [{
     name  = "${local.base_name}-backendpool"
     fqdns = ["example.com"]
   }]
 
-  appgw_routings = [{
-    name                       = "${local.base_name}-routing-https"
-    rule_type                  = "Basic"
-    http_listener_name         = "${local.base_name}-listener-https"
-    backend_address_pool_name  = "${local.base_name}-backendpool"
-    backend_http_settings_name = "${local.base_name}-backhttpsettings"
-  }]
-
-  custom_frontend_ip_configuration_name = "${local.base_name}-frontipconfig"
-
-  appgw_http_listeners = [{
-    name                           = "${local.base_name}-listener-https"
-    frontend_ip_configuration_name = "${local.base_name}-frontipconfig"
-    frontend_port_name             = "frontend-https-port"
-    protocol                       = "Https"
-    ssl_certificate_name           = "${local.base_name}-example-com-sslcert"
-    require_sni                    = true
-    host_name                      = "example.com"
-    custom_error_configuration = [
-      {
-        custom_error_page_url = "https://example.com/custom_error_403_page.html"
-        status_code           = "HttpStatus403"
-      },
-      {
-        custom_error_page_url = "https://example.com/custom_error_502_page.html"
-        status_code           = "HttpStatus502"
-      }
-    ]
-  }]
-
-  custom_error_configuration = [
+  request_routing_rules = [
     {
-      custom_error_page_url = "https://example.com/custom_error_403_page.html"
-      status_code           = "HttpStatus403"
+      name                       = "${local.base_name}-routing-http"
+      rule_type                  = "Basic"
+      http_listener_name         = "${local.base_name}-listener-http"
+      backend_address_pool_name  = "${local.base_name}-backendpool"
+      backend_http_settings_name = "${local.base_name}-backhttpsettings-http"
     },
-    {
-      custom_error_page_url = "https://example.com/custom_error_502_page.html"
-      status_code           = "HttpStatus502"
-    }
+    # {
+    #   name                       = "${local.base_name}-routing-https"
+    #   rule_type                  = "Basic"
+    #   http_listener_name         = "${local.base_name}-listener-https"
+    #   backend_address_pool_name  = "${local.base_name}-backendpool"
+    #   backend_http_settings_name = "${local.base_name}-backhttpsettings-https"
+    # }
   ]
 
-  frontend_port_settings = [{
-    name = "frontend-https-port"
-    port = 443
+  frontend_ip_configuration_custom_name = "${local.base_name}-frontipconfig"
+
+  http_listeners = [
+    {
+      name                           = "${local.base_name}-listener-http"
+      frontend_ip_configuration_name = "${local.base_name}-frontipconfig"
+      frontend_port_name             = "frontend-http-port"
+      protocol                       = "Http"
+      host_name                      = "example.com"
+    },
+    # {
+    #   name                           = "${local.base_name}-listener-https"
+    #   frontend_ip_configuration_name = "${local.base_name}-frontipconfig"
+    #   frontend_port_name             = "frontend-https-port"
+    #   protocol                       = "Https"
+    #   ssl_certificate_name           = "${local.base_name}-example-com-sslcert"
+    #   require_sni                    = true
+    #   host_name                      = "example.com"
+    # }
+  ]
+
+  frontend_ports = [{
+    name = "frontend-http-port"
+    port = 80
   }]
 
-  ssl_certificates_configs = [{
-    name     = "${local.base_name}-example-com-sslcert"
-    data     = var.certificate_example_com_filebase64
-    password = var.certificate_example_com_password
-  }]
+  #  ssl_certificates = [{
+  #    name     = "${local.base_name}-example-com-sslcert"
+  #    data     = var.certificate_example_com_filebase64
+  #    password = var.certificate_example_com_password
+  #  }]
 
   ssl_policy = {
     policy_type = "Predefined"
     policy_name = "AppGwSslPolicy20170401S"
   }
 
-  # trusted_client_certificates_configs = [{
-  #   name = "${local.base_name}-example-com-sslcert"
-  #   data = var.certificate_example_com_filebase64
-  # }]
-
-  # ssl_profile = [{
-  #   name = "${local.base_name}-example-ssl-profile-name"
-  #   trusted_client_certificate_names = ["${local.base_name}-example-com-sslcert"]
-  #   ssl_policy = {
-  #     policy_type = "Predefined"
-  #     policy_name = "AppGwSslPolicy20170401S"
-  #     min_protocol_version = "TLSv1_3"
-  #   }
-  # }]
-
-  appgw_rewrite_rule_set = [{
+  rewrite_rule_sets = [{
     name = "${local.base_name}-example-rewrite-rule-set"
     rewrite_rules = [
       {
@@ -191,26 +154,24 @@ module "appgw" {
     ]
   }]
 
-  # appgw_redirect_configuration = [{
-  #   name = "${local.base_name}-redirect"
-  # }]
-
-  appgw_url_path_map = [{
-    name                               = "${local.base_name}-example-url-path-map"
-    default_backend_http_settings_name = "${local.base_name}-backhttpsettings"
-    default_backend_address_pool_name  = "${local.base_name}-backendpool"
-    default_rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
-    # default_redirect_configuration_name = "${local.base_name}-redirect"
-    path_rules = [
-      {
-        name                       = "${local.base_name}-example-url-path-rule"
-        backend_address_pool_name  = "${local.base_name}-backendpool"
-        backend_http_settings_name = "${local.base_name}-backhttpsettings"
-        rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
-        paths                      = ["/demo/"]
-      }
-    ]
-  }]
+  url_path_maps = [
+    {
+      name                               = "${local.base_name}-example-url-path-map"
+      default_backend_http_settings_name = "${local.base_name}-backhttpsettings-http"
+      default_backend_address_pool_name  = "${local.base_name}-backendpool"
+      default_rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
+      # default_redirect_configuration_name = "${local.base_name}-redirect"
+      path_rules = [
+        {
+          name                       = "${local.base_name}-example-url-path-rule"
+          backend_address_pool_name  = "${local.base_name}-backendpool"
+          backend_http_settings_name = "${local.base_name}-backhttpsettings-http"
+          rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
+          paths                      = ["/demo/"]
+        }
+      ]
+    }
+  ]
 
   # Disabled WAF rule and WAF exclusion configuration example
   # waf_configuration = {
@@ -229,13 +190,13 @@ module "appgw" {
   #   ]
   # }
 
-  autoscaling_parameters = {
+  autoscale_configuration = {
     min_capacity = 2
     max_capacity = 15
   }
 
   logs_destinations_ids = [
-    module.logs.log_analytics_workspace_id,
-    module.logs.logs_storage_account_id,
+    # module.logs.id,
+    # module.logs.storage_account_id,
   ]
 }

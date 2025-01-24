@@ -1,7 +1,7 @@
-resource "null_resource" "create_subnet_condition" {
+resource "terraform_data" "create_subnet_condition" {
   count = var.create_subnet ? 1 : 0
 
-  triggers = {
+  triggers_replace = {
     vnet_name   = var.virtual_network_name
     subnet_cidr = var.subnet_cidr
   }
@@ -14,11 +14,11 @@ resource "null_resource" "create_subnet_condition" {
   }
 }
 
-module "azure_network_subnet" {
+module "subnet" {
   source  = "claranet/subnet/azurerm"
-  version = "~> 7.2.0"
+  version = "~> 8.0.0"
 
-  for_each = var.create_subnet ? toset(["appgw_subnet"]) : []
+  count = var.create_subnet ? 1 : 0
 
   environment         = var.environment
   location_short      = var.location_short
@@ -28,8 +28,8 @@ module "azure_network_subnet" {
 
   virtual_network_name = var.virtual_network_name
 
-  custom_subnet_name = local.subnet_name
-  subnet_cidr_list   = [var.subnet_cidr]
+  custom_name = local.subnet_name
+  cidrs       = var.subnet_cidr[*]
 
   network_security_group_name = var.create_nsg ? local.nsg_name : null
 
@@ -39,15 +39,20 @@ module "azure_network_subnet" {
   service_endpoints = ["Microsoft.KeyVault"]
 
   depends_on = [
-    null_resource.create_subnet_condition,
+    terraform_data.create_subnet_condition,
   ]
 }
 
-module "azure_network_security_group" {
-  source  = "claranet/nsg/azurerm"
-  version = "~> 7.8.0"
+moved {
+  from = module.azure_network_subnet["appgw_subnet"]
+  to   = module.subnet[0]
+}
 
-  for_each = var.create_nsg ? toset(["appgw_nsg"]) : []
+module "nsg" {
+  source  = "claranet/nsg/azurerm"
+  version = "~> 8.0.0"
+
+  count = var.create_nsg ? 1 : 0
 
   client_name         = var.client_name
   environment         = var.environment
@@ -56,9 +61,9 @@ module "azure_network_security_group" {
   location            = var.location
   location_short      = var.location_short
 
-  custom_network_security_group_name = var.custom_nsg_name
+  custom_name = var.nsg_custom_name
 
-  deny_all_inbound = false
+  all_inbound_denied = false
 
   default_tags_enabled = false # already merged in locals-tags.tf
 
@@ -77,45 +82,40 @@ module "azure_network_security_group" {
   flow_log_traffic_analytics_interval_in_minutes = var.flow_log_traffic_analytics_interval_in_minutes
   flow_log_location                              = var.flow_log_location
 
+  additional_rules = concat(
+    var.create_nsg && var.create_nsg_healthprobe_rule ? [{
+      name = local.nsr_healthcheck_name
+
+      direction = "Inbound"
+      access    = "Allow"
+      protocol  = "Tcp"
+      priority  = 101
+
+      source_port_range       = "*"
+      destination_port_ranges = ["65200-65535"]
+
+      source_address_prefix      = "GatewayManager"
+      destination_address_prefix = "*"
+    }] : [],
+    var.create_nsg && var.create_nsg_https_rule ? [{
+      name = local.nsr_https_name
+
+      direction = "Inbound"
+      access    = "Allow"
+      protocol  = "Tcp"
+      priority  = 100
+
+      source_port_range      = "*"
+      destination_port_range = "443"
+
+      source_address_prefix      = var.nsr_https_source_address_prefix
+      destination_address_prefix = "*"
+    }] : []
+  )
   extra_tags = local.nsg_tags
 }
 
-resource "azurerm_network_security_rule" "web" {
-  count = var.create_nsg && var.create_nsg_https_rule ? 1 : 0
-
-  name = local.nsr_https_name
-
-  resource_group_name         = coalesce(var.subnet_resource_group_name, var.resource_group_name)
-  network_security_group_name = module.azure_network_security_group["appgw_nsg"].network_security_group_name
-
-  priority  = 100
-  direction = "Inbound"
-  access    = "Allow"
-  protocol  = "Tcp"
-
-  source_port_range       = "*"
-  destination_port_ranges = ["443"]
-
-  source_address_prefix      = var.nsr_https_source_address_prefix != "*" ? var.nsr_https_source_address_prefix : "*"
-  destination_address_prefix = "*"
-}
-
-resource "azurerm_network_security_rule" "allow_health_probe_app_gateway" {
-  count = var.create_nsg && var.create_nsg_healthprobe_rule ? 1 : 0
-
-  name = local.nsr_healthcheck_name
-
-  resource_group_name         = coalesce(var.subnet_resource_group_name, var.resource_group_name)
-  network_security_group_name = module.azure_network_security_group["appgw_nsg"].network_security_group_name
-
-  priority  = 101
-  direction = "Inbound"
-  access    = "Allow"
-  protocol  = "Tcp"
-
-  source_port_range       = "*"
-  destination_port_ranges = ["65200-65535"]
-
-  source_address_prefix      = "GatewayManager"
-  destination_address_prefix = "*"
+moved {
+  from = module.azure_network_security_group["appgw_nsg"]
+  to   = module.nsg[0]
 }
