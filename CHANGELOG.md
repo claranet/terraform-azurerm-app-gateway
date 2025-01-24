@@ -1,3 +1,28 @@
+## 8.0.0 (2025-01-24)
+
+### ⚠ BREAKING CHANGES
+
+* **AZ-1088:** AzureRM Provider v4+ and OpenTofu 1.8+
+
+### Features
+
+* **AZ-1088:** module v8 structure and updates edd0d87
+
+### Miscellaneous Chores
+
+* **deps:** update dependency opentofu to v1.8.6 b7be6cc
+* **deps:** update dependency opentofu to v1.8.8 6b4161d
+* **deps:** update dependency opentofu to v1.9.0 850713a
+* **deps:** update dependency pre-commit to v4.1.0 350e031
+* **deps:** update dependency tflint to v0.55.0 bf275e5
+* **deps:** update dependency trivy to v0.57.1 4c3b94e
+* **deps:** update dependency trivy to v0.58.1 615e027
+* **deps:** update dependency trivy to v0.58.2 3fce39f
+* **deps:** update pre-commit hook alessandrojcm/commitlint-pre-commit-hook to v9.19.0 bef9b7f
+* **deps:** update pre-commit hook alessandrojcm/commitlint-pre-commit-hook to v9.20.0 6edb762
+* **deps:** update tools 469e61e
+* update tflint config for v0.55.0 7d362e4
+
 ## 7.9.0 (2024-11-15)
 
 ### Features
