@@ -3,9 +3,13 @@ locals {
   name_prefix = lower(var.name_prefix)
   name_suffix = lower(var.name_suffix)
 
-  name        = coalesce(var.custom_name, data.azurecaf_name.appgw.result)
-  subnet_name = coalesce(var.subnet_custom_name, data.azurecaf_name.subnet_appgw.result)
+  name = coalesce(var.custom_name, data.azurecaf_name.appgw.result)
+
+  subnet_name    = coalesce(var.subnet_custom_name, data.azurecaf_name.subnet_appgw.result)
+  subnet_rg_name = coalesce(var.subnet_resource_group_name, var.resource_group_name)
+
   nsg_name    = coalesce(var.nsg_custom_name, data.azurecaf_name.nsg_appgw.result)
+  nsg_rg_name = coalesce(var.nsg_resource_group_name, var.subnet_resource_group_name, var.resource_group_name)
 
   ip_name  = coalesce(var.public_ip_custom_name, data.azurecaf_name.pip_appgw.result)
   ip_label = coalesce(var.public_ip_label_custom_name, data.azurecaf_name.pip_appgw.result)

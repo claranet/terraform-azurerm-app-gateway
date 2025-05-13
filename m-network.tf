@@ -24,7 +24,7 @@ module "subnet" {
   location_short      = var.location_short
   client_name         = var.client_name
   stack               = var.stack
-  resource_group_name = coalesce(var.subnet_resource_group_name, var.resource_group_name)
+  resource_group_name = local.subnet_rg_name
 
   virtual_network_name = var.virtual_network_name
 
@@ -32,6 +32,7 @@ module "subnet" {
   cidrs       = var.subnet_cidr[*]
 
   network_security_group_name = var.create_nsg ? local.nsg_name : null
+  network_security_group_rg   = var.create_nsg ? local.nsg_rg_name : null
 
   route_table_name = var.route_table_name
   route_table_rg   = var.route_table_rg
@@ -57,7 +58,7 @@ module "nsg" {
   client_name         = var.client_name
   environment         = var.environment
   stack               = var.stack
-  resource_group_name = coalesce(var.subnet_resource_group_name, var.resource_group_name)
+  resource_group_name = local.nsg_rg_name
   location            = var.location
   location_short      = var.location_short
 
