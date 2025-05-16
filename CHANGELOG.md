@@ -1,3 +1,27 @@
+## 8.1.0 (2025-05-16)
+
+### Features
+
+* **AZ-1552:** ✨ add `nsg_resource_group_name` variable 6563749
+
+### Miscellaneous Chores
+
+* **deps:** update dependency opentofu to v1.9.1 eb4f492
+* **deps:** update dependency pre-commit to v4.2.0 b053ae7
+* **deps:** update dependency terraform-docs to v0.20.0 7e19ace
+* **deps:** update dependency tflint to v0.55.1 511d760
+* **deps:** update dependency tflint to v0.56.0 fd071e1
+* **deps:** update dependency trivy to v0.59.0 2b2b7e3
+* **deps:** update dependency trivy to v0.59.1 69da6be
+* **deps:** update dependency trivy to v0.60.0 d305f40
+* **deps:** update dependency trivy to v0.61.0 920ac5f
+* **deps:** update dependency trivy to v0.61.1 786a2a7
+* **deps:** update pre-commit hook alessandrojcm/commitlint-pre-commit-hook to v9.21.0 ae3485e
+* **deps:** update pre-commit hook alessandrojcm/commitlint-pre-commit-hook to v9.22.0 12971a0
+* **deps:** update pre-commit hook tofuutils/pre-commit-opentofu to v2.2.0 c44a8fd
+* **deps:** update tools 6cecddf
+* update Github templates 2e192de
+
 ## 8.0.0 (2025-01-24)
 
 ### ⚠ BREAKING CHANGES
