@@ -52,6 +52,12 @@ variable "subnet_cidr" {
   default     = ""
 }
 
+variable "nsg_resource_group_name" {
+  description = "Resource group name of the network security group."
+  type        = string
+  default     = null
+}
+
 variable "create_nsg" {
   description = "Boolean to create the network security group."
   type        = bool

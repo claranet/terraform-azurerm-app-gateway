@@ -327,6 +327,7 @@ module "appgw" {
 | network\_watcher\_name | The name of the Network Watcher. Changing this forces a new resource to be created. | `string` | `null` | no |
 | network\_watcher\_resource\_group\_name | The name of the resource group in which the Network Watcher was deployed. Changing this forces a new resource to be created. | `string` | `null` | no |
 | nsg\_custom\_name | Custom name for the network security group. | `string` | `null` | no |
+| nsg\_resource\_group\_name | Resource group name of the network security group. | `string` | `null` | no |
 | nsg\_tags | Network Security Group tags. | `map(string)` | `{}` | no |
 | nsr\_healthcheck\_custom\_name | Custom name for the network security rule for internal health check of Application Gateway. | `string` | `null` | no |
 | nsr\_https\_custom\_name | Custom name for the network security rule for HTTPS protocol. | `string` | `null` | no |
