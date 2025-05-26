@@ -1,3 +1,13 @@
+## 8.1.1 (2025-05-26)
+
+### Bug Fixes
+
+* **AZ-1552:** 🔧 update `azurerm` provider version to `~> 4.11` 601578d
+
+### Miscellaneous Chores
+
+* **deps:** update dependency tflint to v0.58.0 9769d72
+
 ## 8.1.0 (2025-05-16)
 
 ### Features
