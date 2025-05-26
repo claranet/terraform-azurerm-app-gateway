@@ -1,10 +1,9 @@
 ---
 variables:
   TF_MIN_VERSION: "1.8"
-  AZURERM_PROVIDER_MIN_VERSION: "4.0"
+  AZURERM_PROVIDER_MIN_VERSION: "4.11"
 
 include:
-  - project: 'claranet/projects/cloud/azure/terraform/ci'
+  - project: "claranet/projects/cloud/azure/terraform/ci"
     ref: master
-    file: '/pipeline.yml'
-...
+    file: "/pipeline.yml"

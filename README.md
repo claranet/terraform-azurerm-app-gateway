@@ -248,7 +248,7 @@ module "appgw" {
 | Name | Version |
 |------|---------|
 | azurecaf | ~> 1.2.28 |
-| azurerm | ~> 4.0 |
+| azurerm | ~> 4.11 |
 | terraform | n/a |
 
 ## Modules
@@ -257,7 +257,7 @@ module "appgw" {
 |------|--------|---------|
 | diagnostics | claranet/diagnostic-settings/azurerm | ~> 8.0.0 |
 | nsg | claranet/nsg/azurerm | ~> 8.0.0 |
-| subnet | claranet/subnet/azurerm | ~> 8.0.0 |
+| subnet | claranet/subnet/azurerm | ~> 8.0.1 |
 
 ## Resources
 
