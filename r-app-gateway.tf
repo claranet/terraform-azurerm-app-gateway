@@ -46,36 +46,6 @@ resource "azurerm_application_gateway" "main" {
 
   force_firewall_policy_association = var.force_firewall_policy_association
 
-  dynamic "waf_configuration" {
-    for_each = var.sku == "WAF_v2" ? var.waf_configuration[*] : []
-    content {
-      enabled                  = waf_configuration.value.enabled
-      file_upload_limit_mb     = waf_configuration.value.file_upload_limit_mb
-      firewall_mode            = waf_configuration.value.firewall_mode
-      max_request_body_size_kb = waf_configuration.value.max_request_body_size_kb
-      request_body_check       = waf_configuration.value.request_body_check
-      rule_set_type            = waf_configuration.value.rule_set_type
-      rule_set_version         = waf_configuration.value.rule_set_version
-
-      dynamic "disabled_rule_group" {
-        for_each = local.rule_group_settings_enabled
-        content {
-          rule_group_name = disabled_rule_group.value.rule_group_name
-          rules           = disabled_rule_group.value.rules
-        }
-      }
-
-      dynamic "exclusion" {
-        for_each = waf_configuration.value.exclusion
-        content {
-          match_variable          = exclusion.value.match_variable
-          selector                = exclusion.value.selector
-          selector_match_operator = exclusion.value.selector_match_operator
-        }
-      }
-    }
-  }
-
   dynamic "ssl_policy" {
     for_each = var.ssl_policy[*]
     content {

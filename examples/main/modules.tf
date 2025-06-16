@@ -173,23 +173,6 @@ module "appgw" {
     }
   ]
 
-  # Disabled WAF rule and WAF exclusion configuration example
-  # waf_configuration = {
-  #   disabled_rule_group = [
-  #     {
-  #       rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
-  #       rules           = ["920420", "920320", "920330"]
-  #     }
-  #   ]
-  #   exclusion = [
-  #     {
-  #       match_variable          = "RequestArgNames"
-  #       selector                = "picture"
-  #       selector_match_operator = "Equals"
-  #     }
-  #   ]
-  # }
-
   autoscale_configuration = {
     min_capacity = 2
     max_capacity = 15
