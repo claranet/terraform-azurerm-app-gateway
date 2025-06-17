@@ -51,7 +51,7 @@ moved {
 
 module "nsg" {
   source  = "claranet/nsg/azurerm"
-  version = "~> 8.0.0"
+  version = "~> 8.1.0"
 
   count = var.create_nsg ? 1 : 0
 
