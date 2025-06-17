@@ -2,15 +2,39 @@ module "azure_virtual_network" {
   source  = "claranet/vnet/azurerm"
   version = "x.x.x"
 
-  environment    = var.environment
   location       = module.azure_region.location
   location_short = module.azure_region.location_short
   client_name    = var.client_name
+  environment    = var.environment
   stack          = var.stack
 
   resource_group_name = module.rg.name
 
   cidrs = ["192.168.0.0/16"]
+}
+
+module "waf_policy" {
+  source  = "claranet/waf-policy/azurerm"
+  version = "x.x.x"
+
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  client_name    = var.client_name
+  environment    = var.environment
+  stack          = var.stack
+
+  resource_group_name = module.rg.name
+
+  managed_rule_set_configuration = [
+    {
+      type    = "Microsoft_BotManagerRuleSet"
+      version = "1.0"
+    },
+    {
+      type    = "Microsoft_DefaultRuleSet"
+      version = "2.1"
+    },
+  ]
 }
 
 locals {
@@ -21,15 +45,19 @@ module "appgw" {
   source  = "claranet/app-gateway/azurerm"
   version = "x.x.x"
 
-  stack               = var.stack
-  environment         = var.environment
-  location            = module.azure_region.location
-  location_short      = module.azure_region.location_short
-  client_name         = var.client_name
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  client_name    = var.client_name
+  environment    = var.environment
+  stack          = var.stack
+
   resource_group_name = module.rg.name
 
   virtual_network_name = module.azure_virtual_network.name
   subnet_cidr          = "192.168.1.0/24"
+
+  firewall_policy_id                = module.waf_policy.id
+  force_firewall_policy_association = true
 
   backend_http_settings = [
     {
