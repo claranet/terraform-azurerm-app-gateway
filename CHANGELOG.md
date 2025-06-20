@@ -1,3 +1,16 @@
+## 8.2.0 (2025-06-20)
+
+### Features
+
+* ✨ update example 9590864
+* 🗑️ remove WAF configuration examples and related variables e838ec2
+
+### Miscellaneous Chores
+
+* **deps:** update dependency trivy to v0.63.0 51ecaa1
+* **deps:** update pre-commit hook tofuutils/pre-commit-opentofu to v2.2.1 8642525
+* **deps:** update terraform claranet/nsg/azurerm to ~> 8.1.0 cbd4a68
+
 ## 8.1.1 (2025-05-26)
 
 ### Bug Fixes
