@@ -43,15 +43,39 @@ module "azure_virtual_network" {
   source  = "claranet/vnet/azurerm"
   version = "x.x.x"
 
-  environment    = var.environment
   location       = module.azure_region.location
   location_short = module.azure_region.location_short
   client_name    = var.client_name
+  environment    = var.environment
   stack          = var.stack
 
   resource_group_name = module.rg.name
 
   cidrs = ["192.168.0.0/16"]
+}
+
+module "waf_policy" {
+  source  = "claranet/waf-policy/azurerm"
+  version = "x.x.x"
+
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  client_name    = var.client_name
+  environment    = var.environment
+  stack          = var.stack
+
+  resource_group_name = module.rg.name
+
+  managed_rule_set_configuration = [
+    {
+      type    = "Microsoft_BotManagerRuleSet"
+      version = "1.0"
+    },
+    {
+      type    = "Microsoft_DefaultRuleSet"
+      version = "2.1"
+    },
+  ]
 }
 
 locals {
@@ -62,15 +86,19 @@ module "appgw" {
   source  = "claranet/app-gateway/azurerm"
   version = "x.x.x"
 
-  stack               = var.stack
-  environment         = var.environment
-  location            = module.azure_region.location
-  location_short      = module.azure_region.location_short
-  client_name         = var.client_name
+  location       = module.azure_region.location
+  location_short = module.azure_region.location_short
+  client_name    = var.client_name
+  environment    = var.environment
+  stack          = var.stack
+
   resource_group_name = module.rg.name
 
   virtual_network_name = module.azure_virtual_network.name
   subnet_cidr          = "192.168.1.0/24"
+
+  firewall_policy_id                = module.waf_policy.id
+  force_firewall_policy_association = true
 
   backend_http_settings = [
     {
@@ -214,23 +242,6 @@ module "appgw" {
     }
   ]
 
-  # Disabled WAF rule and WAF exclusion configuration example
-  # waf_configuration = {
-  #   disabled_rule_group = [
-  #     {
-  #       rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
-  #       rules           = ["920420", "920320", "920330"]
-  #     }
-  #   ]
-  #   exclusion = [
-  #     {
-  #       match_variable          = "RequestArgNames"
-  #       selector                = "picture"
-  #       selector_match_operator = "Equals"
-  #     }
-  #   ]
-  # }
-
   autoscale_configuration = {
     min_capacity = 2
     max_capacity = 15
@@ -357,8 +368,6 @@ module "appgw" {
 | url\_path\_maps | List of objects with URL path map configurations. | <pre>list(object({<br/>    name = string<br/><br/>    default_backend_address_pool_name   = optional(string)<br/>    default_redirect_configuration_name = optional(string)<br/>    default_backend_http_settings_name  = optional(string)<br/>    default_rewrite_rule_set_name       = optional(string)<br/><br/>    path_rules = list(object({<br/>      name = string<br/><br/>      backend_address_pool_name   = optional(string)<br/>      backend_http_settings_name  = optional(string)<br/>      rewrite_rule_set_name       = optional(string)<br/>      redirect_configuration_name = optional(string)<br/>      firewall_policy_id          = optional(string)<br/><br/>      paths = optional(list(string), [])<br/>    }))<br/>  }))</pre> | `[]` | no |
 | user\_assigned\_identity\_id | User assigned identity id assigned to this resource. | `string` | `null` | no |
 | virtual\_network\_name | Virtual network name to attach the subnet. | `string` | `null` | no |
-| waf\_configuration | WAF configuration object (only available with WAF\_v2 SKU) with following attributes:<pre>- enabled:                  Boolean to enable WAF.<br/>- file_upload_limit_mb:     The File Upload Limit in MB. Accepted values are in the range 1MB to 500MB.<br/>- firewall_mode:            The Web Application Firewall Mode. Possible values are Detection and Prevention.<br/>- max_request_body_size_kb: The Maximum Request Body Size in KB. Accepted values are in the range 1KB to 128KB.<br/>- request_body_check:       Is Request Body Inspection enabled ?<br/>- rule_set_type:            The Type of the Rule Set used for this Web Application Firewall.<br/>- rule_set_version:         The Version of the Rule Set used for this Web Application Firewall. Possible values are 2.2.9, 3.0, and 3.1.<br/>- disabled_rule_group:      The rule group where specific rules should be disabled. Accepted values can be found [here](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#rule_group_name).<br/>- exclusion:                WAF exclusion rules to exclude header, cookie or GET argument. More informations [here](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_gateway#match_variable).</pre> | <pre>object({<br/>    enabled                  = optional(bool, true)<br/>    file_upload_limit_mb     = optional(number, 100)<br/>    firewall_mode            = optional(string, "Prevention")<br/>    max_request_body_size_kb = optional(number, 128)<br/>    request_body_check       = optional(bool, true)<br/>    rule_set_type            = optional(string, "OWASP")<br/>    rule_set_version         = optional(string, "3.1")<br/>    disabled_rule_group = optional(list(object({<br/>      rule_group_name = string<br/>      rules           = optional(list(string))<br/>    })), [])<br/>    exclusion = optional(list(object({<br/>      match_variable          = string<br/>      selector                = optional(string)<br/>      selector_match_operator = optional(string)<br/>    })), [])<br/>  })</pre> | `{}` | no |
-| waf\_rules\_for\_dev\_portal\_enabled | Whether to enabled some WAF rules if the APIM developer portal is hosted behind this Application Gateway. See locals.tf for the documentation link. | `bool` | `true` | no |
 | zones | A collection of availability zones to spread the Application Gateway over. This option is only supported for v2 SKUs. | `list(number)` | <pre>[<br/>  1,<br/>  2,<br/>  3<br/>]</pre> | no |
 
 ## Outputs
