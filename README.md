@@ -268,7 +268,7 @@ module "appgw" {
 |------|--------|---------|
 | diagnostics | claranet/diagnostic-settings/azurerm | ~> 8.0.0 |
 | nsg | claranet/nsg/azurerm | ~> 8.1.0 |
-| subnet | claranet/subnet/azurerm | ~> 8.0.1 |
+| subnet | claranet/subnet/azurerm | ~> 8.1.0 |
 
 ## Resources
 

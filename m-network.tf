@@ -16,7 +16,7 @@ resource "terraform_data" "create_subnet_condition" {
 
 module "subnet" {
   source  = "claranet/subnet/azurerm"
-  version = "~> 8.0.1"
+  version = "~> 8.1.0"
 
   count = var.create_subnet ? 1 : 0
 
