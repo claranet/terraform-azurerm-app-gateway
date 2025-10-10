@@ -1,3 +1,13 @@
+## 8.3.0 (2025-10-10)
+
+### Features
+
+* **AZ-1617:** ✨  add private link configuration support 53d6383
+
+### Miscellaneous Chores
+
+* **deps:** update dependency trivy to v0.67.1 a62ae84
+
 ## 8.2.1 (2025-09-30)
 
 ### Code Refactoring
