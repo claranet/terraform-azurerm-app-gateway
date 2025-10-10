@@ -24,10 +24,11 @@ resource "azurerm_application_gateway" "main" {
   dynamic "frontend_ip_configuration" {
     for_each = var.frontend_private_ip_configuration[*]
     content {
-      name                          = local.frontend_priv_ip_configuration_name
-      private_ip_address_allocation = frontend_ip_configuration.value.private_ip_address_allocation
-      private_ip_address            = frontend_ip_configuration.value.private_ip_address
-      subnet_id                     = local.subnet_id
+      name                            = local.frontend_priv_ip_configuration_name
+      private_ip_address_allocation   = frontend_ip_configuration.value.private_ip_address_allocation
+      private_ip_address              = frontend_ip_configuration.value.private_ip_address
+      subnet_id                       = local.subnet_id
+      private_link_configuration_name = frontend_ip_configuration.value.private_link_configuration_name
     }
   }
 
@@ -42,6 +43,22 @@ resource "azurerm_application_gateway" "main" {
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
     subnet_id = local.subnet_id
+  }
+
+  dynamic "private_link_configuration" {
+    for_each = var.private_links
+    content {
+      name = private_link_configuration.value.name
+      dynamic "ip_configuration" {
+        for_each = private_link_configuration.value.ip_configurations
+        content {
+          name                          = ip_configuration.value.name
+          subnet_id                     = ip_configuration.value.subnet_id
+          primary                       = ip_configuration.value.primary
+          private_ip_address_allocation = "Dynamic"
+        }
+      }
+    }
   }
 
   force_firewall_policy_association = var.force_firewall_policy_association

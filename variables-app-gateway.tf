@@ -45,10 +45,24 @@ variable "http2_enabled" {
 variable "frontend_private_ip_configuration" {
   description = "Configuration of frontend private IP."
   type = object({
-    private_ip_address_allocation = optional(string, "Static")
-    private_ip_address            = optional(string)
+    private_ip_address_allocation   = optional(string, "Static")
+    private_ip_address              = optional(string)
+    private_link_configuration_name = optional(string)
   })
   default = null
+}
+
+variable "private_links" {
+  description = "Configuration of private link. Feature `AllowApplicationGatewayPrivateLink` must be registered on the subscription."
+  type = list(object({
+    name = string
+    ip_configurations = list(object({
+      name      = string
+      subnet_id = string
+      primary   = optional(bool, true)
+    }))
+  }))
+  default = []
 }
 
 variable "frontend_ports" {
