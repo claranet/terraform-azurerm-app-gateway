@@ -1,4 +1,6 @@
 resource "azurerm_public_ip" "main" {
+  count = var.public_ip.enabled ? 1 : 0
+
   name     = local.ip_name
   location = var.location
 
@@ -23,4 +25,9 @@ resource "azurerm_public_ip" "main" {
 moved {
   from = azurerm_public_ip.ip
   to   = azurerm_public_ip.main
+}
+
+moved {
+  from = azurerm_public_ip.main
+  to   = azurerm_public_ip.main[0]
 }

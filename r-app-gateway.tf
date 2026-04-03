@@ -16,9 +16,12 @@ resource "azurerm_application_gateway" "main" {
 
   enable_http2 = var.http2_enabled
 
-  frontend_ip_configuration {
-    name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.main.id
+  dynamic "frontend_ip_configuration" {
+    for_each = var.public_ip.enabled ? [1] : []
+    content {
+      name                 = local.frontend_ip_configuration_name
+      public_ip_address_id = azurerm_public_ip.main[0].id
+    }
   }
 
   dynamic "frontend_ip_configuration" {
