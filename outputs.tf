@@ -50,17 +50,17 @@ output "nsg_name" {
 
 output "public_ip_address" {
   description = "The public IP address of Application Gateway."
-  value       = azurerm_public_ip.main.ip_address
+  value       = one(azurerm_public_ip.main[*].ip_address)
 }
 
 output "public_ip_fqdn" {
   description = "Fully qualified domain name of the A DNS record associated with the public IP."
-  value       = azurerm_public_ip.main.fqdn
+  value       = one(azurerm_public_ip.main[*].fqdn)
 }
 
 output "public_ip_domain_name" {
   description = "Domain Name part from FQDN of the A DNS record associated with the public IP."
-  value       = azurerm_public_ip.main.domain_name_label
+  value       = one(azurerm_public_ip.main[*].domain_name_label)
 }
 
 output "backend_address_pool_ids" {

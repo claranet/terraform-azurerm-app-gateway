@@ -1,6 +1,7 @@
 variable "public_ip" {
   description = "Public IP parameters."
   type = object({
+    enabled                 = optional(bool, true)
     ddos_protection_mode    = optional(string, "VirtualNetworkInherited")
     ddos_protection_plan_id = optional(string)
     extra_tags              = optional(map(string), {})
