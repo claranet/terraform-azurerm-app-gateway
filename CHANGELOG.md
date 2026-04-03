@@ -1,3 +1,13 @@
+## 8.4.0 (2026-04-03)
+
+### Features
+
+* ✨ allow to disabled the public IP resource 8bed974
+
+### Miscellaneous Chores
+
+* **deps:** 🔗 update mise conf for OpenTofu 5789d37
+
 ## 8.3.2 (2026-03-27)
 
 ### Bug Fixes
