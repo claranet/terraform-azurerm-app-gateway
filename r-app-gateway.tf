@@ -365,6 +365,12 @@ resource "azurerm_application_gateway" "main" {
   }
 
   tags = local.app_gateway_tags
+
+  lifecycle {
+    ignore_changes = [
+      waf_configuration,
+    ]
+  }
 }
 
 moved {
