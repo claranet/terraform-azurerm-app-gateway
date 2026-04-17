@@ -20,7 +20,7 @@ resource "azurerm_application_gateway" "main" {
     for_each = var.public_ip.enabled ? [1] : []
     content {
       name                 = local.frontend_ip_configuration_name
-      public_ip_address_id = azurerm_public_ip.main[0].id
+      public_ip_address_id = var.existing_public_ip_id == null ? azurerm_public_ip.main[0].id : var.existing_public_ip_id
     }
   }
 
