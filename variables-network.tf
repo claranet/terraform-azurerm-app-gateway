@@ -17,7 +17,7 @@ variable "custom_public_ip_id" {
   default     = null
 
   validation {
-    condition     = var.custom_public_ip_id == null || can(regex("^/subscriptions/[a-f0-9-]{36}/resourceGroups/.+/providers/Microsoft.Network/publicIPAddresses/.+", var.custom_public_ip_id))
+    condition     = var.custom_public_ip_id == null || can(regex("(?i)^/subscriptions/[a-f0-9-]{36}/resourceGroups/.+/providers/Microsoft.Network/publicIPAddresses/.+", var.custom_public_ip_id))
     error_message = "When provided, custom_public_ip_id must be a valid Azure public IP resource ID in the format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Network/publicIPAddresses/{name}"
   }
 }
