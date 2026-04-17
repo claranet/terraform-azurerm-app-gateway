@@ -10,15 +10,15 @@ variable "public_ip" {
   nullable = false
 }
 
-variable "existing_public_ip_id" {
-  description = "ID of an existing azurerm_public_ip to use for the Application Gateway frontend. If provided, the public IP will not be created."
+variable "custom_public_ip_id" {
+  description = "ID of a custom azurerm_public_ip to use for the Application Gateway frontend. If provided, the public IP will not be created."
   type        = string
   nullable    = true
   default     = null
 
   validation {
-    condition     = var.existing_public_ip_id == null || can(regex("^/subscriptions/[a-f0-9-]{36}/resourceGroups/.+/providers/Microsoft.Network/publicIPAddresses/.+", var.existing_public_ip_id))
-    error_message = "When provided, existing_public_ip_id must be a valid Azure public IP resource ID in the format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Network/publicIPAddresses/{name}"
+    condition     = var.custom_public_ip_id == null || can(regex("^/subscriptions/[a-f0-9-]{36}/resourceGroups/.+/providers/Microsoft.Network/publicIPAddresses/.+", var.custom_public_ip_id))
+    error_message = "When provided, custom_public_ip_id must be a valid Azure public IP resource ID in the format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Network/publicIPAddresses/{name}"
   }
 }
 

@@ -303,10 +303,10 @@ module "appgw" {
 | create\_subnet | Boolean to create subnet with this module. | `bool` | `true` | no |
 | custom\_error\_configurations | List of objects with global level custom error configurations. | <pre>list(object({<br/>    status_code           = string<br/>    custom_error_page_url = string<br/>  }))</pre> | `[]` | no |
 | custom\_name | Custom Application Gateway name, generated if not set. | `string` | `""` | no |
+| custom\_public\_ip\_id | ID of a custom azurerm\_public\_ip to use for the Application Gateway frontend. If provided, the public IP will not be created. | `string` | `null` | no |
 | default\_tags\_enabled | Option to enable or disable default tags. | `bool` | `true` | no |
 | diagnostic\_settings\_custom\_name | Custom name of the diagnostics settings, name will be 'default' if not set. | `string` | `"default"` | no |
 | environment | Project environment. | `string` | n/a | yes |
-| existing\_public\_ip\_id | ID of an existing azurerm\_public\_ip to use for the Application Gateway frontend. If provided, the public IP will not be created. | `string` | `null` | no |
 | extra\_tags | Extra tags to add. | `map(string)` | `{}` | no |
 | firewall\_policy\_id | ID of a Web Application Firewall Policy. | `string` | `null` | no |
 | flow\_log\_enabled | Provision network watcher flow logs. | `bool` | `false` | no |
