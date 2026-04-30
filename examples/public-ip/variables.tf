@@ -18,7 +18,7 @@ variable "stack" {
   type        = string
 }
 
-variable "custom_public_ip_id" {
-  description = "ID of a custom public IP to use with the Application Gateway."
+variable "existing_public_ip_id" {
+  description = "ID of an existing public IP to use with the Application Gateway."
   type        = string
 }

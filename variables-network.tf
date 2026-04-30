@@ -2,23 +2,17 @@ variable "public_ip" {
   description = "Public IP parameters."
   type = object({
     enabled                 = optional(bool, true)
+    existing_id             = optional(string)
     ddos_protection_mode    = optional(string, "VirtualNetworkInherited")
     ddos_protection_plan_id = optional(string)
     extra_tags              = optional(map(string), {})
   })
   default  = {}
   nullable = false
-}
-
-variable "custom_public_ip_id" {
-  description = "ID of a custom azurerm_public_ip to use for the Application Gateway frontend. If provided, the public IP will not be created."
-  type        = string
-  nullable    = true
-  default     = null
 
   validation {
-    condition     = var.custom_public_ip_id == null || can(regex("(?i)^/subscriptions/[a-f0-9-]{36}/resourceGroups/.+/providers/Microsoft.Network/publicIPAddresses/.+", var.custom_public_ip_id))
-    error_message = "When provided, custom_public_ip_id must be a valid Azure public IP resource ID in the format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Network/publicIPAddresses/{name}"
+    condition     = contains(keys(var.public_ip), "existing_id") == false || var.public_ip.existing_id == null || can(regex("(?i)^/subscriptions/[a-f0-9-]{36}/resourceGroups/.+/providers/Microsoft.Network/publicIPAddresses/.+", var.public_ip.existing_id))
+    error_message = "When provided, public_ip.existing_id must be a valid Azure public IP resource ID in the format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Network/publicIPAddresses/{name}"
   }
 }
 

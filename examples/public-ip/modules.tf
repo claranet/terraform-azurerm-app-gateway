@@ -59,8 +59,10 @@ module "appgw" {
   firewall_policy_id                = module.waf_policy.id
   force_firewall_policy_association = true
 
-  # Use a custom public IP instead of creating a new one
-  custom_public_ip_id = var.custom_public_ip_id
+  # Use a custom existing public IP instead of creating a new one
+  public_ip = {
+    existing_id = var.existing_public_ip_id
+  }
 
   backend_http_settings = [
     {
