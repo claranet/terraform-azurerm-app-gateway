@@ -1,3 +1,23 @@
+## 8.5.0 (2026-04-30)
+
+### Features
+
+* ✨ add `subnet_service_endpoints` variable 58875a5
+* **GH-14:** ✨ allow use pre-existing Public IP 8edf7a0
+* **public_ip:** add existing_id attribute to public_ip object 0e5a023
+
+### Documentation
+
+* 📚️ add example usage fc9a0ea
+
+### Miscellaneous Chores
+
+* 🔧 apply :mrai: suggestions 4c41309
+* **deps:** update pre-commit hook tofuutils/pre-commit-opentofu to v2.3.0 02e4a8b
+* **deps:** update tools 04416b3
+* **GH-14:** apply suggestions 525ac8e
+* **pre-commit:** 🔧 move to prek 04cab36
+
 ## 8.4.0 (2026-04-03)
 
 ### Features
