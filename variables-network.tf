@@ -53,6 +53,12 @@ variable "subnet_cidr" {
   default     = ""
 }
 
+variable "subnet_service_endpoints" {
+  description = "Service endpoints to enable on the subnet."
+  type        = list(string)
+  default     = ["Microsoft.KeyVault"]
+}
+
 variable "nsg_resource_group_name" {
   description = "Resource group name of the network security group."
   type        = string

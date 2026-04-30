@@ -37,7 +37,7 @@ module "subnet" {
   route_table_name = var.route_table_name
   route_table_rg   = var.route_table_rg
 
-  service_endpoints = ["Microsoft.KeyVault"]
+  service_endpoints = var.subnet_service_endpoints
 
   depends_on = [
     terraform_data.create_subnet_condition,
