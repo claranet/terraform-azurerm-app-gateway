@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "main" {
-  count = var.public_ip.enabled ? 1 : 0
+  count = var.public_ip.enabled && try(var.public_ip.existing_id, null) == null ? 1 : 0
 
   name     = local.ip_name
   location = var.location
