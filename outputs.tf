@@ -11,6 +11,7 @@ output "name" {
 output "resource" {
   description = "Application Gateway resource object."
   value       = azurerm_application_gateway.main
+  sensitive   = true
 }
 
 output "module_subnet" {
@@ -26,6 +27,7 @@ output "module_nsg" {
 output "resource_public_ip" {
   description = "Public IP resource object."
   value       = azurerm_public_ip.main
+  sensitive   = true
 }
 
 output "subnet_id" {
