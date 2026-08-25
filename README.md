@@ -259,17 +259,17 @@ module "appgw" {
 
 | Name | Version |
 | ---- | ------- |
-| azurecaf | >= 1.2.28 |
-| azurerm | ~> 4.31 |
+| azurecaf | ~> 1.3.0 |
+| azurerm | ~> 5.0 |
 | terraform | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
-| diagnostics | claranet/diagnostic-settings/azurerm | ~> 8.2.0 |
-| nsg | claranet/nsg/azurerm | ~> 8.1.0 |
-| subnet | claranet/subnet/azurerm | ~> 8.1.0 |
+| diagnostics | claranet/diagnostic-settings/azurerm | ~> 9.0 |
+| nsg | claranet/nsg/azurerm | ~> 9.0 |
+| subnet | claranet/subnet/azurerm | ~> 9.0 |
 
 ## Resources
 
@@ -293,10 +293,9 @@ module "appgw" {
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | app\_gateway\_tags | Application Gateway tags. | `map(string)` | `{}` | no |
-| authentication\_certificates | List of objects with authentication certificates configurations.<br/>The path to a base-64 encoded certificate is expected in the 'data' attribute:<pre>data = filebase64("./file_path")</pre> | <pre>list(object({<br/>    name = string<br/>    data = string<br/>  }))</pre> | `[]` | no |
 | autoscale\_configuration | Map containing autoscaling parameters. Must contain at least min\_capacity. | <pre>object({<br/>    min_capacity = number<br/>    max_capacity = optional(number, 5)<br/>  })</pre> | `null` | no |
 | backend\_address\_pools | List of objects with backend pool configurations. | <pre>list(object({<br/>    name         = string<br/>    fqdns        = optional(list(string))<br/>    ip_addresses = optional(list(string))<br/>  }))</pre> | n/a | yes |
-| backend\_http\_settings | List of objects including backend http settings configurations. | <pre>list(object({<br/>    name     = string<br/>    port     = optional(number, 443)<br/>    protocol = optional(string, "Https")<br/><br/>    path       = optional(string)<br/>    probe_name = optional(string)<br/><br/>    cookie_based_affinity               = optional(string, "Disabled")<br/>    affinity_cookie_name                = optional(string, "ApplicationGatewayAffinity")<br/>    request_timeout                     = optional(number, 20)<br/>    host_name                           = optional(string)<br/>    pick_host_name_from_backend_address = optional(bool, true)<br/>    trusted_root_certificate_names      = optional(list(string), [])<br/>    authentication_certificate          = optional(string)<br/><br/>    connection_draining_timeout_sec = optional(number)<br/>  }))</pre> | n/a | yes |
+| backend\_http\_settings | List of objects including backend http settings configurations. | <pre>list(object({<br/>    name     = string<br/>    port     = optional(number, 443)<br/>    protocol = optional(string, "Https")<br/><br/>    path       = optional(string)<br/>    probe_name = optional(string)<br/><br/>    cookie_based_affinity               = optional(string, "Disabled")<br/>    affinity_cookie_name                = optional(string, "ApplicationGatewayAffinity")<br/>    request_timeout                     = optional(number, 20)<br/>    host_name                           = optional(string)<br/>    pick_host_name_from_backend_address = optional(bool, true)<br/>    trusted_root_certificate_names      = optional(list(string), [])<br/><br/>    connection_draining_timeout_sec = optional(number)<br/>  }))</pre> | n/a | yes |
 | client\_name | Client name/account used in naming. | `string` | n/a | yes |
 | create\_nsg | Boolean to create the network security group. | `bool` | `false` | no |
 | create\_nsg\_healthprobe\_rule | Boolean to create the network security group rule for the health probes. | `bool` | `true` | no |

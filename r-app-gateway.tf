@@ -14,7 +14,7 @@ resource "azurerm_application_gateway" "main" {
 
   firewall_policy_id = var.firewall_policy_id
 
-  enable_http2 = var.http2_enabled
+  http2_enabled = var.http2_enabled
 
   dynamic "frontend_ip_configuration" {
     for_each = var.public_ip.enabled ? [1] : []
@@ -80,9 +80,9 @@ resource "azurerm_application_gateway" "main" {
   dynamic "ssl_profile" {
     for_each = var.ssl_profiles
     content {
-      name                             = ssl_profile.value.name
-      trusted_client_certificate_names = ssl_profile.value.trusted_client_certificate_names
-      verify_client_cert_issuer_dn     = ssl_profile.value.verify_client_cert_issuer_dn
+      name                                = ssl_profile.value.name
+      trusted_client_certificate_names    = ssl_profile.value.trusted_client_certificate_names
+      verify_client_certificate_issuer_dn = ssl_profile.value.verify_client_cert_issuer_dn
       dynamic "ssl_policy" {
         for_each = ssl_profile.value.ssl_policy[*]
         content {
@@ -93,14 +93,6 @@ resource "azurerm_application_gateway" "main" {
           min_protocol_version = strcontains(ssl_profile.value.ssl_policy.policy_type, "Custom") ? ssl_profile.value.ssl_policy.min_protocol_version : null
         }
       }
-    }
-  }
-
-  dynamic "authentication_certificate" {
-    for_each = var.authentication_certificates
-    content {
-      name = authentication_certificate.value.name
-      data = authentication_certificate.value.data
     }
   }
 
@@ -137,13 +129,6 @@ resource "azurerm_application_gateway" "main" {
       host_name                           = back_http_set.value.host_name
       pick_host_name_from_backend_address = back_http_set.value.pick_host_name_from_backend_address
       trusted_root_certificate_names      = back_http_set.value.trusted_root_certificate_names
-
-      dynamic "authentication_certificate" {
-        for_each = back_http_set.value.authentication_certificate[*]
-        content {
-          name = authentication_certificate.value
-        }
-      }
 
       dynamic "connection_draining" {
         for_each = back_http_set.value.connection_draining_timeout_sec[*]

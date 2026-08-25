@@ -179,21 +179,6 @@ EOD
   default = []
 }
 
-variable "authentication_certificates" {
-  description = <<EOD
-List of objects with authentication certificates configurations.
-The path to a base-64 encoded certificate is expected in the 'data' attribute:
-```
-data = filebase64("./file_path")
-```
-EOD
-  type = list(object({
-    name = string
-    data = string
-  }))
-  default = []
-}
-
 variable "trusted_client_certificates" {
   description = <<EOD
 List of objects with trusted client certificates configurations.
@@ -263,7 +248,6 @@ variable "backend_http_settings" {
     host_name                           = optional(string)
     pick_host_name_from_backend_address = optional(bool, true)
     trusted_root_certificate_names      = optional(list(string), [])
-    authentication_certificate          = optional(string)
 
     connection_draining_timeout_sec = optional(number)
   }))
