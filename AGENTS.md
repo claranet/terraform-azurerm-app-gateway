@@ -226,7 +226,10 @@ When upgrading a module to v9, apply the following changes in addition to the gu
   ```
 - Modules still pinned to `~> 8.0` (or with the `version` line commented out) must be updated: the `8.x` releases
   require AzureRM `~> 4.31`, which conflicts with the root module's `~> 5.0` constraint and breaks provider resolution.
-- Apply the same bump to any other Claranet submodule call in the module and its `examples/`.
+- Apply the same bump to any other Claranet submodule call in the module and its `examples/`, but pin those with
+  the three-part form `~> 9.0.0` instead of `~> 9.0`: it only allows patch releases (`9.0.x`), so bugfixes are
+  picked up automatically while a new minor release stays an explicit, reviewed bump. `diagnostic-settings` is the
+  exception, `~> 9.0` is fine there.
 
 ### 4. Examples Directory
 
