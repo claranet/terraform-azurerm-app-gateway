@@ -3,6 +3,7 @@ variable "public_ip" {
   type = object({
     enabled                 = optional(bool, true)
     existing_id             = optional(string)
+    idle_timeout_in_minutes = optional(number, 4)
     ddos_protection_mode    = optional(string, "VirtualNetworkInherited")
     ddos_protection_plan_id = optional(string)
     extra_tags              = optional(map(string), {})
@@ -13,6 +14,10 @@ variable "public_ip" {
   validation {
     condition     = contains(keys(var.public_ip), "existing_id") == false || var.public_ip.existing_id == null || can(regex("(?i)^/subscriptions/[a-f0-9-]{36}/resourceGroups/.+/providers/Microsoft.Network/publicIPAddresses/.+", var.public_ip.existing_id))
     error_message = "When provided, public_ip.existing_id must be a valid Azure public IP resource ID in the format: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Network/publicIPAddresses/{name}"
+  }
+  validation {
+    condition     = contains(keys(var.public_ip), "idle_timeout_in_minutes") == false || (var.public_ip.idle_timeout_in_minutes >= 4 && var.public_ip.idle_timeout_in_minutes <= 30)
+    error_message = "When provided, public_ip.idle_timeout_in_minutes must be between 4 and 30 minutes."
   }
 }
 
