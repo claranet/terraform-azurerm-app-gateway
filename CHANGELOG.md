@@ -1,3 +1,18 @@
+## 9.1.0 (2026-11-05)
+
+### Features
+
+* add idle_timeout_in_minutes for public_ip 8821663
+
+### Miscellaneous Chores
+
+* **deps:** ⬆️ update tools 🔗 37b0a4e
+* **deps:** update dependency opentofu to v1.13.0 6bd7723
+* **deps:** update dependency opentofu to v1.13.1 6f6f72b
+* **deps:** update dependency opentofu to v1.13.2 a659733
+* **deps:** update dependency tflint to v0.65.0 a314f10
+* update docs e518b04
+
 ## 9.0.0 (2026-08-25)
 
 ### ⚠ BREAKING CHANGES
