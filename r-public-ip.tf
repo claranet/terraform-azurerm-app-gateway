@@ -9,7 +9,8 @@ resource "azurerm_public_ip" "main" {
   sku               = "Standard"
   allocation_method = "Static"
 
-  domain_name_label = local.ip_label
+  domain_name_label       = local.ip_label
+  idle_timeout_in_minutes = var.public_ip.idle_timeout_in_minutes
 
   ddos_protection_mode    = var.public_ip.ddos_protection_mode
   ddos_protection_plan_id = var.public_ip.ddos_protection_plan_id
